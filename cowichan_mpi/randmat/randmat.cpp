@@ -6,11 +6,11 @@
  * \date 01-26-09
  */
 
-#include "stdafx.h"
+#include "../include/stdafx.h"
 #include "serial.h"
 //#include "parallel.h"
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, _TCHAR* argv[])
 {
   int2D matrix; /* to fill */
   int   nr;     /* row size */

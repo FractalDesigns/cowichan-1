@@ -10,7 +10,7 @@
 EXTERN_ENV
 #endif
 
-#include "stdafx.h"
+#include "../include/stdafx.h"
 #include "serial.h"
 
 // public

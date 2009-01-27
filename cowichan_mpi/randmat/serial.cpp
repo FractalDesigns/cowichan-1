@@ -6,7 +6,7 @@
  * \date 01-26-09
  */
 
-#include "stdafx.h"
+#include "../include/stdafx.h"
 #include "serial.h"
 
 // public
@@ -37,4 +37,4 @@ randmat(
 #endif
 
   /* return */
-} 
+}

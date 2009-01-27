@@ -1,5 +1,5 @@
 /**
- * Serial implementation of conway's game of life
+ * Serial implementation of random matrix generation
  *
  * \file serial.h
  * \author Andrew Borzenko
