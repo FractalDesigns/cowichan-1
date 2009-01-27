@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "life", "life\life.vcproj", "{441AD076-AD99-4E22-AB03-4D5F5EEA2175}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "randmat", "randmat\randmat.vcproj", "{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{441AD076-AD99-4E22-AB03-4D5F5EEA2175}.Debug|Win32.ActiveCfg = Debug|Win32
+		{441AD076-AD99-4E22-AB03-4D5F5EEA2175}.Debug|Win32.Build.0 = Debug|Win32
+		{441AD076-AD99-4E22-AB03-4D5F5EEA2175}.Release|Win32.ActiveCfg = Release|Win32
+		{441AD076-AD99-4E22-AB03-4D5F5EEA2175}.Release|Win32.Build.0 = Release|Win32
+		{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}.Debug|Win32.Build.0 = Debug|Win32
+		{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}.Release|Win32.ActiveCfg = Release|Win32
+		{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
