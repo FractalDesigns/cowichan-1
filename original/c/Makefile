@@ -141,7 +141,7 @@ numa		:
 
 targets		:
 	make -f Makefile auxil					\
-		auxb_d=${root_d}/bin src_d=${root_d}/auxil
+		auxb_d=${root_d}/bin src_d=${root_d}/aux
 	make -f Makefile binaries plat_d=${root_d}/ser		\
 		plat_f="${serial_f}" plat_l="${serial_l}"
 	make -f Makefile binaries plat_d=${root_d}/fj		\
