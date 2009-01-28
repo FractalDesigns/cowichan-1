@@ -82,9 +82,9 @@ fail(
 void print_matrix (bool2D matrix, int nr, int nc)
 {
   int i, j;
-  for (i = 0; i < MAXEXT; i++)
+  for (i = 0; i < nr; i++)
   {
-    for (j = 0; j < MAXEXT; j++)
+    for (j = 0; j < nc; j++)
     {
       if (matrix[i][j] == 0) {
         printf ("0");
@@ -101,13 +101,121 @@ void print_matrix (bool2D matrix, int nr, int nc)
 void print_matrix (int2D matrix, int nr, int nc)
 {
   int i, j;
-  for (i = 0; i < MAXEXT; i++)
+  for (i = 0; i < nr; i++)
   {
-    for (j = 0; j < MAXEXT; j++)
+    for (j = 0; j < nc; j++)
     {
       printf ("%d", matrix[i][j]);
     }
     printf ("\n");
   }
   printf ("\n");
+}
+
+void print_matrix (bool1DX matrix, int nr, int nc)
+{
+  int i, j;
+  for (i = 0; i < nr; i++)
+  {
+    for (j = 0; j < nc; j++)
+    {
+      if (matrix[i * nc + j] == 0) {
+        printf ("0");
+      }
+      else {
+        printf ("1");
+      }
+    }
+    printf ("\n");
+  }
+  printf ("\n");
+}
+
+void print_matrix (int1DX matrix, int nr, int nc)
+{
+  int i, j;
+  for (i = 0; i < nr; i++)
+  {
+    for (j = 0; j < nc; j++)
+    {
+      printf ("%d", matrix[i * nc + j]);
+    }
+    printf ("\n");
+  }
+  printf ("\n");
+}
+
+/*
+ * @ sch_block : block scheduling function
+ * > none
+ * + set start/end/stride values for block work allocation
+ */
+
+bool
+sch_block(
+  int		n,			/* number of threads */
+  int		i,			/* this thread's ID */
+  int		base,			/* base of loop section */
+  int		lim,			/* limit of loop section */
+  int	      * start,			/* loop start */
+  int	      * end,			/* loop end */
+  int	      * stride			/* loop stride */
+){
+  int		nl;			/* number of loops */
+  int		num;			/* number to do */
+  int		extra;			/* spillage */
+
+  nl    = lim - base;
+  num   = nl / n;
+  extra = nl % n;
+
+  if ((nl <= 0) || (i >= nl)){		/* do nothing */
+    *start = 0;
+    *end = -1;
+    *stride = 1;
+  } else {				/* do share of work */
+    if (i < extra){
+      num += 1;
+      *start = base + i * num;
+    } else {
+      *start = base + (extra * (num + 1)) + ((i - extra) * num);
+    }
+    *end = *start + num;
+    *stride = 1;
+  }
+
+  return (*end != -1);
+}
+
+/*
+ * @ sch_cyclic : cyclic scheduling function
+ * > none
+ * + set start/end/stride values for cyclic work allocation
+ */
+
+bool
+sch_cyclic(
+  int		n,			/* number of threads */
+  int		i,			/* this thread's ID */
+  int		base,			/* base of loop section */
+  int		lim,			/* limit of loop section */
+  int	      * start,			/* loop start */
+  int	      * end,			/* loop end */
+  int	      * stride			/* loop stride */
+){
+  int		nl;			/* number of loops */
+
+  nl = lim - base;
+
+  if ((nl <= 0) || (i >= nl)){		/* do nothing */
+    *start = 0;
+    *end = -1;
+    *stride = 1;
+  } else {				/* do share of work */
+    *start  = base + i;
+    *end    = lim;
+    *stride = n;
+  }
+
+  return (*end != -1);
 }

@@ -14,6 +14,7 @@
 #define IS_PARALLEL
 
 #include <boost/mpi.hpp>
+namespace mpi = boost::mpi;
 
 /*#if defined(WIN32)   // Windows
 #else                // Linux
