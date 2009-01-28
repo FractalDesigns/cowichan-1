@@ -3,9 +3,9 @@ CFLAGS = -g -Wall
 CC = g++
 LIBS = 
 INCLUDES = 
-OBJS = serial.o ../shared/stdafx.o ../shared/util.o
-SRCS = randmat.cpp serial.cpp ../shared/stdafx.cpp ../shared/util.cpp
-HDRS =  serial.h ../include/stdafx.h ../include/util.h
+OBJS = serial.o ../shared/util.o
+SRCS = randmat.cpp serial.cpp ../shared/util.cpp
+HDRS =  serial.h ../include/main.h ../include/util.h
 
 all: randmat
 
