@@ -4,6 +4,8 @@
 //
 
 #pragma once
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,4 +26,4 @@ namespace mpi = boost::mpi;
 #include "../include/generic.h"
 #include "../include/util.h"
 
-// TODO: reference additional headers your program requires here
+#endif /* MAIN_H */
