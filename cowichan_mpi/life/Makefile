@@ -1,23 +1,18 @@
 CFLAGS = -g -Wall
 
+APP = life
 CC = g++
 LIBS = 
 INCLUDES = 
-OBJS = serial.o ../shared/stdafx.o ../shared/util.o
-SRCS = life.cpp serial.cpp ../shared/stdafx.cpp ../shared/util.cpp
-HDRS =  serial.h ../include/stdafx.h ../include/util.h
+OBJS = serial.o parallel.o ../shared/stdafx.o ../shared/util.o
+SRCS = ${APP}.cpp serial.cpp parallel.cpp ../shared/stdafx.cpp ../shared/util.cpp
+HDRS =  serial.h parallel.h ../include/stdafx.h ../include/util.h
 
 all: life
 
 # The variable $@ has the value of the target.
-life: life.o ${OBJS}
-	${CC} ${CFLAGS} ${INCLUDES} -o $@ life.o ${OBJS} ${LIBS}
-
-.c.o:
-	${CC} ${CFLAGS} ${INCLUDES} -c $<
-
-depend: 
-	makedepend ${SRCS}
-
+life: ${APP}.o ${OBJS}
+	${CC} ${CFLAGS} ${INCLUDES} -o $@ ${APP}.o ${OBJS} ${LIBS}
+	
 clean:
 	rm *.o

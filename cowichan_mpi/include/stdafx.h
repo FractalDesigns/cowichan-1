@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <time.h>
 
+//#include <boost/mpi.hpp>
+
 #if defined(WIN32)   // Windows
   #include <tchar.h>
 #else                // Linux
