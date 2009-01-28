@@ -6,7 +6,7 @@
  * \date 01-26-09
  */
 
-#include "../include/stdafx.h"
+#include "../include/main.h"
 #include "serial.h"
 //#include "parallel.h"
 
