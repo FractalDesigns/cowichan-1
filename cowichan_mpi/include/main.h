@@ -11,15 +11,13 @@
 #include <stdarg.h>
 #include <time.h>
 
-//#include <boost/mpi.hpp>
+#define IS_PARALLEL
 
-#if defined(WIN32)   // Windows
-  #include <tchar.h>
+#include <boost/mpi.hpp>
+
+/*#if defined(WIN32)   // Windows
 #else                // Linux
-  #define _T(arg) arg
-  #define TCHAR char
-  #define _TCHAR char
-#endif               // end of WIN32/Linux definitions
+#endif               // end of WIN32/Linux definitions*/
 
 #include "../include/type.h"
 #include "../include/generic.h"

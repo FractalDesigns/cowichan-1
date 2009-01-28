@@ -40,6 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;C:\Andrew\boost\include\boost-1_37&quot;;&quot;C:\Program Files (x86)\MPICH\SDK\Include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,7 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="mpich.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="C:\Andrew\boost\lib;&quot;C:\Program Files (x86)\MPICH\SDK\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

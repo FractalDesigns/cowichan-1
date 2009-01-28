@@ -10,7 +10,7 @@
 #include "serial.h"
 //#include "parallel.h"
 
-int main(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
   int2D matrix; /* to fill */
   int   nr;     /* row size */
@@ -25,7 +25,7 @@ int main(int argc, _TCHAR* argv[])
 
   randmat (matrix, nr, nc, limit, seed);
 
-  print_world (matrix, nr, nc);
+  print_matrix (matrix, nr, nc);
 
 	return 0;
 }

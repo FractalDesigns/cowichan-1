@@ -13,5 +13,5 @@ fail(
   ...					/* other things to print */
 );
 
-void print_world (bool2D world, int nr, int nc);
-void print_world (int2D world, int nr, int nc);
+void print_matrix (bool2D matrix, int nr, int nc);
+void print_matrix (int2D matrix, int nr, int nc);

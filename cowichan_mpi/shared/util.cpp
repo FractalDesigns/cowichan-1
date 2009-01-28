@@ -79,14 +79,14 @@ fail(
   /* return */
 }
 
-void print_world (bool2D world, int nr, int nc)
+void print_matrix (bool2D matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < MAXEXT; i++)
   {
     for (j = 0; j < MAXEXT; j++)
     {
-      if (world[i][j] == 0) {
+      if (matrix[i][j] == 0) {
         printf ("0");
       }
       else {
@@ -98,14 +98,14 @@ void print_world (bool2D world, int nr, int nc)
   printf ("\n");
 }
 
-void print_world (int2D world, int nr, int nc)
+void print_matrix (int2D matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < MAXEXT; i++)
   {
     for (j = 0; j < MAXEXT; j++)
     {
-      printf ("%d", world[i][j]);
+      printf ("%d", matrix[i][j]);
     }
     printf ("\n");
   }

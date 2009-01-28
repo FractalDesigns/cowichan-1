@@ -2,7 +2,7 @@
 /* generic/hdr/type.h : generic type definitions		*/
 /*==============================================================*/
 
-typedef unsigned char BOOL;		/* boolean */
+typedef unsigned char boolean;		/* boolean */
 typedef double real;			/* double-precision reals */
 
 #define FMT_REAL_ERR "%r"
@@ -19,9 +19,9 @@ typedef struct {
 #define FMT_PT_RD "%le%le%d"
 #define FMT_PT_WR "%e\t%e\t%d\n"
 
-typedef BOOL	bool1D		[MAXEXT];
-typedef BOOL	bool1DX		[MAXEXT * MAXEXT];
-typedef BOOL	bool2D		[MAXEXT][MAXEXT];
+typedef boolean	bool1D		[MAXEXT];
+typedef boolean	bool1DX		[MAXEXT * MAXEXT];
+typedef boolean	bool2D		[MAXEXT][MAXEXT];
 
 typedef int	int1D		[MAXEXT];
 typedef int	int1DX		[MAXEXT * MAXEXT];

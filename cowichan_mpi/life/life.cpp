@@ -7,12 +7,49 @@
  */
 
 #include "../include/main.h"
-#include "serial.h"
-#include "parallel.h"
+#ifdef IS_PARALLEL
+  #include "parallel.h"
+#else
+  #include "serial.h"
+#endif
 
-int main(int argc, _TCHAR* argv[])
+namespace mpi = boost::mpi;
+
+int main(int argc, char* argv[])
 {
-  bool2D world; /* world to evolve */
+#ifdef IS_PARALLEL
+  mpi::environment env(argc, argv);
+  mpi::communicator world;
+
+  printf ("I am process %d\n", world.rank ());
+
+  bool2D matrix; /* world to evolve */
+  int    nr;    /* row size */
+  int    nc;    /* column size */
+  int    iters; /* number of iterations */
+
+  int i, j;
+
+  //srand ((unsigned int) time (NULL));
+  srand (222);
+
+  for (i = 0; i < MAXEXT; i++)
+  {
+    for (j = 0; j < MAXEXT; j++)
+    {
+      matrix[i][j] = rand () % 2;
+    }
+  }
+
+  nr = MAXEXT;
+  nc = MAXEXT;
+  iters = 10;
+
+  life_mpi (matrix, nr, nc, iters);
+
+  print_matrix (matrix, nr, nc);
+#else
+  bool2D matrix; /* world to evolve */
   int    nr;    /* row size */
   int    nc;    /* column size */
   int    iters; /* number of iterations */
@@ -28,7 +65,7 @@ int main(int argc, _TCHAR* argv[])
   {
     for (j = 0; j < MAXEXT; j++)
     {
-      world[i][j] = rand () % 2;
+      matrix[i][j] = rand () % 2;
     }
   }
 
@@ -36,30 +73,10 @@ int main(int argc, _TCHAR* argv[])
   nc = MAXEXT;
   iters = 10;
 
-  life (world, nr, nc, iters);
+  life (matrix, nr, nc, iters);
 
-  print_world (world, nr, nc);
-
-  printf ("parallel execution...\n");
-
-  //srand ((unsigned int) time (NULL));
-  srand (222);
-
-  for (i = 0; i < MAXEXT; i++)
-  {
-    for (j = 0; j < MAXEXT; j++)
-    {
-      world[i][j] = rand () % 2;
-    }
-  }
-
-  nr = MAXEXT;
-  nc = MAXEXT;
-  iters = 10;
-
-  life_mpi (world, nr, nc, iters);
-
-  print_world (world, nr, nc);
+  print_matrix (matrix, nr, nc);
+#endif
 
   return 0;
 }
