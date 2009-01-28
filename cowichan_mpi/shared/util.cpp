@@ -105,7 +105,7 @@ void print_matrix (int2D matrix, int nr, int nc)
   {
     for (j = 0; j < nc; j++)
     {
-      printf ("%d", matrix[i][j]);
+      printf ("%d\t", matrix[i][j]);
     }
     printf ("\n");
   }
@@ -138,7 +138,7 @@ void print_matrix (int1DX matrix, int nr, int nc)
   {
     for (j = 0; j < nc; j++)
     {
-      printf ("%d", matrix[i * nc + j]);
+      printf ("%d\t", matrix[i * nc + j]);
     }
     printf ("\n");
   }

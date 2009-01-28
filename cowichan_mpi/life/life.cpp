@@ -43,6 +43,8 @@ int main(int argc, char* argv[])
     }
   }
 
+  print_matrix (matrix, nr, nc);
+
   life_mpi (world, matrix, nr, nc, iters);
 
   print_matrix (matrix, nr, nc);

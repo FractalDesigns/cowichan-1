@@ -53,9 +53,8 @@ life_mpi(
     }
     // all_gather
     if (work) {
-      all_gather (world, &count[r * nc], nc * ((hi - lo) / str), count_gathered);
+      all_gather (world, &count[lo * nc], nc * ((hi - lo) / str), count_gathered);
     }
-    print_matrix (count_gathered, nr, nc);
     /* update cells */
     alive = 0;
     if (work) {
@@ -73,7 +72,7 @@ life_mpi(
     }
     // all_gather
     if (work) {
-      all_gather (world, &matrix[r * nc], nc * ((hi - lo) / str), matrix_gathered);
+      all_gather (world, &matrix[lo * nc], nc * ((hi - lo) / str), matrix_gathered);
     }
     for (r=0; r<nr; r++) {
       for (c=0; c<nc; c++) {
