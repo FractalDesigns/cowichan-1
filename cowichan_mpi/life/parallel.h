@@ -23,7 +23,7 @@
 void
 life_mpi(
   mpi::communicator world,
-  bool1DX	matrix,			/* world to evolve */
+  bool2D	matrix,			/* world to evolve */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		iters			/* number of iterations */
@@ -41,8 +41,8 @@ life_mpi(
 
 static void
 life_one_mpi(
-  bool1DX	matrix,			/* world to evolve */
-  int1DX		count,			/* neighborhood counts */
+  bool2D	matrix,			/* world to evolve */
+  int2D		count,			/* neighborhood counts */
   int		r,			/* this row */
   int		r_lo,			/* lower row */
   int		r_hi,			/* higher row */
@@ -60,8 +60,8 @@ life_one_mpi(
 
 static void
 life_row_mpi(
-  bool1DX	matrix,			/* world to evolve */
-  int1DX		count,			/* neighborhood counts */
+  bool2D	matrix,			/* world to evolve */
+  int2D		count,			/* neighborhood counts */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		r,			/* this row */

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
-  bool1DX matrix; /* world to evolve */
+  bool2D matrix; /* world to evolve */
   int    nr;    /* row size */
   int    nc;    /* column size */
   int    iters; /* number of iterations */
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
   {
     for (j = 0; j < nc; j++)
     {
-      matrix[i * nc + j] = rand () % 2;
+      matrix[i][j] = rand () % 2;
     }
   }
 
