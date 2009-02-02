@@ -18,9 +18,10 @@
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
 
-/*#if defined(WIN32)   // Windows
+#if defined(WIN32)   // Windows
+#include <windows.h>
 #else                // Linux
-#endif               // end of WIN32/Linux definitions*/
+#endif               // end of WIN32/Linux definitions
 
 #include "../include/type.h"
 #include "../include/generic.h"

@@ -37,30 +37,32 @@ life_mpi(
 
   int		lo, hi, str;		/* work controls */
   bool		work;			/* useful work to do? */ 
-  int1DX		count_gathered;			/* gathered neighborhood counts */
-  bool1DX		matrix_gathered;			/* gathered neighborhood counts */
+  int is_alive = 1;
+  int rank;
 
-  /* work */
+  // work
   printf ("world size is %d\n", world.size());
-  work = sch_block (world.size (), world.rank (), 0, nr, &lo, &hi, &str);
-  printf ("lo is %d, hi is %d, stride is %d\n", lo, hi, str);
-  for (i=0; (i<iters) && alive; i++){
-    /* fill neighborhood counts */
+  work = get_block_rows_mpi (world, 0, nr, &lo, &hi, &str);
+  printf ("lo is %d, hi is %d\n", lo, hi);
+  for (i=0; (i<iters) && is_alive; i++){
+    // fill neighborhood counts
     if (work) {
-      for (r=lo; r<hi; r+=str) {
-        life_row_mpi(matrix, count, nr, nc, r, (nr+r-1)%nr, (nr+r+1)%nr);
+      for (r = lo; r < hi; r++) {
+        life_row_mpi(matrix, count, nr, nc, r,
+          (nr + r - 1) % nr, (nr + r + 1) % nr);
       }
     }
-    // all_gather
-    if (work) {
-      all_gather (world, &count[lo * nc], nc * ((hi - lo) / str), count_gathered);
+    // broadcast counts
+    for (r = 0; r < nr; r++) {
+      rank = get_block_rank_mpi (world, 0, nr, r);
+      broadcast (world, &count[r * nc], nc, rank);
     }
-    /* update cells */
-    alive = 0;
+    // update cells
+    alive = 1;
     if (work) {
       for (r=lo; r<hi; r+=str) {
         for (c=0; c<nc; c++) {
-          if ((count_gathered[r * nc + c] == 3) || ((count_gathered[r * nc + c] == 2) && matrix[r * nc + c])) {
+          if ((count[r * nc + c] == 3) || ((count[r * nc + c] == 2) && matrix[r * nc + c])) {
             matrix[r * nc + c] = TRUE;
             alive++;
           }
@@ -70,15 +72,19 @@ life_mpi(
         }
       }
     }
-    // all_gather
-    if (work) {
-      all_gather (world, &matrix[lo * nc], nc * ((hi - lo) / str), matrix_gathered);
+    // broadcast matrix
+    for (r = 0; r < nr; r++) {
+      rank = get_block_rank_mpi (world, 0, nr, r);
+      broadcast (world, &matrix[r * nc], nc, rank);
     }
-    for (r=0; r<nr; r++) {
-      for (c=0; c<nc; c++) {
-        matrix[r * nc + c] = matrix_gathered[r * nc + c];
-      }
+    // is_alive is maximum of local alive's
+    if (world.rank () == 0) {
+      reduce (world, alive, is_alive, mpi::maximum<int>(), 0);
     }
+    else {
+      reduce (world, alive, mpi::maximum<int>(), 0);
+    }
+    broadcast (world, is_alive, 0);
 
 #if GRAPHICS
     gfx_life(gfxCount++, matrix, nr, nc);
@@ -86,7 +92,7 @@ life_mpi(
   }
 
   /* check */
-  if (alive == 0){
+  if (is_alive == 0){
     fail("life", "no cells left alive", "iteration", "%d", i, NULL);
   }
 
