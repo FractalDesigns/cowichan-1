@@ -43,11 +43,11 @@ life_mpi(
   // work
   printf ("world size is %d\n", world.size());
   work = get_block_rows_mpi (world, 0, nr, &lo, &hi, &str);
-  printf ("lo is %d, hi is %d\n", lo, hi);
-  for (i=0; (i<1) && is_alive; i++){
+  printf ("lo is %d, hi is %d, str is %d\n", lo, hi, str);
+  for (i=0; (i<iters) && is_alive; i++){
     // fill neighborhood counts
     if (work) {
-      for (r = lo; r < hi; r++) {
+      for (r = lo; r < hi; r += str) {
         life_row_mpi(matrix, count, nr, nc, r,
           (nr + r - 1) % nr, (nr + r + 1) % nr);
       }
@@ -60,7 +60,7 @@ life_mpi(
     // update cells
     alive = 1;
     if (work) {
-      for (r=lo; r<hi; r+=str) {
+      for (r = lo; r < hi; r += str) {
         for (c=0; c<nc; c++) {
           if ((count[r][c] == 3) || ((count[r][c] == 2) && matrix[r][c])){ 
             matrix[r][c] = TRUE;

@@ -223,3 +223,60 @@ int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
 
   return rank;
 }
+
+/**
+ * Assign rows to this process
+ *
+ * \param world [in] Communicator
+ * \param lo [in] Matrix low row
+ * \param hi [in] Matrix high row
+ * \param start [out] Start row
+ * \param end [out] End row
+ * \param stride [out] Row stride
+ * \return Returns whether at least one row is assigned
+ */
+bool get_cyclic_rows_mpi(mpi::communicator world, int lo, int hi,
+                         int* start, int* end, int* stride)
+{
+  int size = world.size ();
+  int rank = world.rank ();
+  
+  int		nl;			/* number of loops */
+
+  nl = hi - lo;
+
+  if ((nl <= 0) || (rank >= nl)){		/* do nothing */
+    *start = 0;
+    *end = -1;
+    *stride = 1;
+  } else {				/* do share of work */
+    *start  = lo + rank;
+    *end    = hi;
+    *stride = size;
+  }
+
+  return (*end != -1);
+}
+
+/**
+ * Return which process is working on row
+ *
+ * \param world [in] Communicator
+ * \param lo [in] Matrix low row
+ * \param hi [in] Matrix high row
+ * \param row [in] Row
+ * \return Returns process number assigned to row
+ */
+int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
+                        int row)
+{
+  int size = world.size ();
+  int rank;
+
+  int nl;	   /* number of rows */
+
+  nl    = hi - lo;
+  rank = (row - lo) % size;
+
+  return rank;
+}

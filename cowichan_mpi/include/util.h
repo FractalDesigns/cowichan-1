@@ -22,3 +22,7 @@ bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride);
 int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
                         int row);
+bool get_cyclic_rows_mpi (mpi::communicator world, int lo, int hi,
+                         int* start, int* end, int* stride);
+int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
+                        int row);
