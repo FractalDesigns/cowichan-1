@@ -26,3 +26,9 @@ bool get_cyclic_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride);
 int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
                         int row);
+
+void randStateInit (int seed,       /* RNG seed */
+                    int width,      /* number of participants */
+                    int	* state,    /* per-thread state vector */
+                    int	* aPrime,   /* new multiplicative */
+                    int	* cPrime);  /* new additive value */

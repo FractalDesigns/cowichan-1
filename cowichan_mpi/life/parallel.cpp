@@ -58,7 +58,7 @@ life_mpi(
       broadcast (world, count[r], nc, rank);
     }
     // update cells
-    alive = 1;
+    alive = 0;
     if (work) {
       for (r = lo; r < hi; r += str) {
         for (c=0; c<nc; c++) {

@@ -280,3 +280,32 @@ int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
 
   return rank;
 }
+
+/*
+ * @ randStateInit : initialize parallel random state vector
+ * > none
+ * + fill vector and calculate constants
+ */
+
+void
+randStateInit(
+  int		seed,			/* RNG seed */
+  int		width,			/* number of participants */
+  int	      * state,			/* per-thread state vector */
+  int	      * aPrime,			/* new multiplicative */
+  int	      * cPrime			/* new additive value */
+){
+  int		i;			/* loop index */
+
+  state[0] = seed % RAND_M;
+  *aPrime = RAND_A;
+  *cPrime = 1;
+  for (i=1; i<width; i++){
+    state[i] = (RAND_A * state[i-1] + RAND_C) % RAND_M;
+    *cPrime = (*cPrime + *aPrime) % RAND_M;
+    *aPrime = (*aPrime * RAND_A) % RAND_M;
+  }
+  *cPrime = (*cPrime * RAND_C) % RAND_M;
+
+  /* return */
+} 
