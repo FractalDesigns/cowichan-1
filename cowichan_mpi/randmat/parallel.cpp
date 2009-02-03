@@ -14,8 +14,8 @@
 #define MAXPAR 100
 
 // TODO: change to use std::vector
-static int	state[MAXPAR];		/* random state vector */
-static int	aPrime, cPrime;		/* modified constants */ 
+static unsigned int state[MAXPAR];		/* random state vector */
+static unsigned int aPrime, cPrime;		/* modified constants */ 
 
 // public
 
@@ -25,10 +25,10 @@ randmat_mpi (
   int2D		matrix,			/* to fill */
   int		nr,			/* row size */
   int		nc,			/* column size */
-  int		limit,			/* value limit */
-  int		seed			/* RNG seed */
+  unsigned int		limit,			/* value limit */
+  unsigned int		seed			/* RNG seed */
 ){
-  int		i;			/* loop index */
+  int		i, j;			/* loop index */
   int		lo, hi, str;		/* work controls */
 #if GRAPHICS
   int		gfxCount = 0;
@@ -37,26 +37,36 @@ randmat_mpi (
   int rank = world.rank ();
   int size = world.size ();
 
-  /* set up */
+  // set up
   if (rank == 0) {
     randStateInit(seed, size, state, &aPrime, &cPrime);
   }
-  //thr_bar(tid);
+  // broadcast set up
   broadcast (world, state, size, 0);
+  broadcast (world, aPrime, 0);
+  broadcast (world, cPrime, 0);
   for (i = 0; i < size; i++) {
-    printf ("state %d is %d\n", i, state[i]);
+    printf ("state %d is %u\n", i, state[i]);
   }
+  printf ("aPrime is %u\n", aPrime);
+  printf ("cPrime is %u\n", cPrime);
 
-  /* special scheduling */
-  if (get_cyclic_rows_mpi (world, 0, nr*nc, &lo, &hi, &str)) {
+  // special scheduling
+  if (get_cyclic_rows_mpi (world, 0, nr * nc, &lo, &hi, &str)) {
     printf ("lo is %d, hi is %d, str is %d\n", lo, hi, str);
     for (i = lo; i < hi; i += str) {
       matrix[i / nr][i % nr] = state[rank] % limit;
       state[rank] = (aPrime * state[rank] + cPrime) % RAND_M;
     }
   }
-  //thr_bar(tid);
-  // broadcast
+  // broadcast result
+  for (i = 0; i < nr; i++) {
+    for (j = 0; j < nc; j++) {
+      rank = get_cyclic_rank_mpi (world, 0, nr * nc, i * nc + j);
+      broadcast (world, matrix[i][j], rank);
+    }
+  }
+  
 
 #if GRAPHICS
   if (MASTER(tid)){

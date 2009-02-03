@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
   int2D matrix; /* to fill */
   int   nr;     /* row size */
   int   nc;     /* column size */
-  int   limit;  /* value limit */
-  int   seed;   /* RNG seed */
+  unsigned int   limit;  /* value limit */
+  unsigned int   seed;   /* RNG seed */
 
   nr = MAXEXT;
   nc = MAXEXT;

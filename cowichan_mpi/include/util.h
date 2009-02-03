@@ -25,10 +25,10 @@ int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
 bool get_cyclic_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride);
 int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
-                        int row);
+                        int element);
 
-void randStateInit (int seed,       /* RNG seed */
+void randStateInit (unsigned int seed,       /* RNG seed */
                     int width,      /* number of participants */
-                    int	* state,    /* per-thread state vector */
-                    int	* aPrime,   /* new multiplicative */
-                    int	* cPrime);  /* new additive value */
+                    unsigned int	* state,    /* per-thread state vector */
+                    unsigned int	* aPrime,   /* new multiplicative */
+                    unsigned int	* cPrime);  /* new additive value */

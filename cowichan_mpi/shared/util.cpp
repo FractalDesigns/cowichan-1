@@ -146,15 +146,15 @@ void print_matrix (int1DX matrix, int nr, int nc)
 }
 
 /**
- * Assign rows to this process
+ * Assign elements to this process
  *
  * \param world [in] Communicator
- * \param lo [in] Matrix low row
- * \param hi [in] Matrix high row
- * \param start [out] Start row
- * \param end [out] End row
- * \param stride [out] Row stride
- * \return Returns whether at least one row is assigned
+ * \param lo [in] Low element
+ * \param hi [in] High element
+ * \param start [out] Start element
+ * \param end [out] End element
+ * \param stride [out] Element stride
+ * \return Returns whether at least one element is assigned
  */
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride)
@@ -162,7 +162,7 @@ bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
   int size = world.size ();
   int rank = world.rank ();
   
-  int nl;	   /* number of rows */
+  int nl;	   /* number of elements */
   int num;	 /* number to do */
   int extra; /* spillage */
 
@@ -192,21 +192,21 @@ bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
 }
 
 /**
- * Return which process is working on row
+ * Return which process is working on element
  *
  * \param world [in] Communicator
- * \param lo [in] Matrix low row
- * \param hi [in] Matrix high row
- * \param row [in] Row
- * \return Returns process number assigned to row
+ * \param lo [in] Low element
+ * \param hi [in] High element
+ * \param element [in] Element
+ * \return Returns process number assigned to element
  */
 int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
-                        int row)
+                        int element)
 {
   int size = world.size ();
   int rank;
 
-  int nl;	   /* number of rows */
+  int nl;	   /* number of elements */
   int num;	 /* number to do */
   int extra; /* spillage */
 
@@ -214,26 +214,26 @@ int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
   num   = nl / size;
   extra = nl % size;
 
-  if (row < lo + extra * (num + 1)) {
-    rank = (row - lo) / (num + 1);
+  if (element < lo + extra * (num + 1)) {
+    rank = (element - lo) / (num + 1);
   }
   else {
-    rank = (row - extra * (num + 1)) / num + extra;
+    rank = (element - extra * (num + 1)) / num + extra;
   }
 
   return rank;
 }
 
 /**
- * Assign rows to this process
+ * Assign elements to this process
  *
  * \param world [in] Communicator
- * \param lo [in] Matrix low row
- * \param hi [in] Matrix high row
- * \param start [out] Start row
- * \param end [out] End row
- * \param stride [out] Row stride
- * \return Returns whether at least one row is assigned
+ * \param lo [in] Low element
+ * \param hi [in] High element
+ * \param start [out] Start element
+ * \param end [out] End element
+ * \param stride [out] Element stride
+ * \return Returns whether at least one element is assigned
  */
 bool get_cyclic_rows_mpi(mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride)
@@ -259,16 +259,16 @@ bool get_cyclic_rows_mpi(mpi::communicator world, int lo, int hi,
 }
 
 /**
- * Return which process is working on row
+ * Return which process is working on element
  *
  * \param world [in] Communicator
- * \param lo [in] Matrix low row
- * \param hi [in] Matrix high row
- * \param row [in] Row
- * \return Returns process number assigned to row
+ * \param lo [in] Low element
+ * \param hi [in] High element
+ * \param element [in] Element
+ * \return Returns process number assigned to element
  */
 int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
-                        int row)
+                        int element)
 {
   int size = world.size ();
   int rank;
@@ -276,7 +276,7 @@ int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
   int nl;	   /* number of rows */
 
   nl    = hi - lo;
-  rank = (row - lo) % size;
+  rank = (element - lo) % size;
 
   return rank;
 }
@@ -289,11 +289,11 @@ int get_cyclic_rank_mpi (mpi::communicator world, int lo, int hi,
 
 void
 randStateInit(
-  int		seed,			/* RNG seed */
+  unsigned int		seed,			/* RNG seed */
   int		width,			/* number of participants */
-  int	      * state,			/* per-thread state vector */
-  int	      * aPrime,			/* new multiplicative */
-  int	      * cPrime			/* new additive value */
+  unsigned int	      * state,			/* per-thread state vector */
+  unsigned int	      * aPrime,			/* new multiplicative */
+  unsigned int	      * cPrime			/* new additive value */
 ){
   int		i;			/* loop index */
 
