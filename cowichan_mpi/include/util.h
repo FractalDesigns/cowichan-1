@@ -15,8 +15,13 @@ fail(
 
 void print_matrix (bool2D matrix, int nr, int nc);
 void print_matrix (int2D matrix, int nr, int nc);
+void print_matrix (real2D matrix, int nr, int nc);
 void print_matrix (bool1DX matrix, int nr, int nc);
 void print_matrix (int1DX matrix, int nr, int nc);
+void print_matrix (real1DX matrix, int nr, int nc);
+void print_vector (bool1D vector, int nr);
+void print_vector (int1D vector, int nr);
+void print_vector (real1D vector, int nr);
 
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride);

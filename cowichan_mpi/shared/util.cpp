@@ -112,6 +112,20 @@ void print_matrix (int2D matrix, int nr, int nc)
   printf ("\n");
 }
 
+void print_matrix (real2D matrix, int nr, int nc)
+{
+  int i, j;
+  for (i = 0; i < nr; i++)
+  {
+    for (j = 0; j < nc; j++)
+    {
+      printf ("%lg\t", matrix[i][j]);
+    }
+    printf ("\n");
+  }
+  printf ("\n");
+}
+
 void print_matrix (bool1DX matrix, int nr, int nc)
 {
   int i, j;
@@ -144,6 +158,53 @@ void print_matrix (int1DX matrix, int nr, int nc)
   }
   printf ("\n");
 }
+
+void print_matrix (real1DX matrix, int nr, int nc)
+{
+  int i, j;
+  for (i = 0; i < nr; i++)
+  {
+    for (j = 0; j < nc; j++)
+    {
+      printf ("%lg\t", matrix[i * nc + j]);
+    }
+    printf ("\n");
+  }
+  printf ("\n");
+}
+
+void print_vector (bool1D vector, int nr)
+{
+  int i;
+  for (i = 0; i < nr; i++)
+  {
+    if (vector[i] == 0) {
+      printf ("0\n");
+    }
+    else {
+      printf ("1\n");
+    }
+  }
+}
+
+void print_vector (int1D vector, int nr)
+{
+  int i;
+  for (i = 0; i < nr; i++)
+  {
+    printf ("%d\n", vector[i]);
+  }
+}
+
+void print_vector (real1D vector, int nr)
+{
+  int i;
+  for (i = 0; i < nr; i++)
+  {
+    printf ("%lg\n", vector[i]);
+  }
+}
+
 
 /**
  * Assign elements to this process
