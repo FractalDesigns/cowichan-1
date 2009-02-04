@@ -115,6 +115,9 @@ int main(int argc, char** argv) {
 			board1[y][x] = decision;
 		}
 	}
+
+	// show the initial array
+	print_array(&board1);
 	
 	// start up TBB
 	task_scheduler_init init;
