@@ -10,11 +10,15 @@
 #include "tbb/parallel_reduce.h"
 using namespace tbb;
 
-const int NROWS = 1024;		// the number of rows in the produced matrix
+const int NROWS = 55;		// the number of rows in the produced matrix
 const int NCOLS = 1024;		// the number of columns in the produced matrix
-const int S = 681304;		// seed value for simple random number generator
+const uint S = 681304;		// seed value for simple random number generator
 
 /*****************************************************************************/
+
+typedef unsigned int uint;
+
+/****************************************************************************/
 
 /**
  * This class generates random integers in a matrix, using a simple linear
@@ -27,22 +31,22 @@ const int S = 681304;		// seed value for simple random number generator
  */
 class RandomGenerator {
 
-	const static int a = 1103515245; // these two constants are values for the
-	const static int c = 12345;		 // linear congruential RNG algorithm
-	const static int m = INT_MAX;	 // the modulus to use
-	int s;							 // the initial, seed value.
+	const static uint a = 1103515245; // these two constants are values for the
+	const static uint c = 12345;	  // linear congruential RNG algorithm
+	const static uint m = UINT_MAX;	  // the modulus to use
+	uint s;							  // the initial, seed value.
 
 private:
 
-	int (*_matrix)[NROWS][NCOLS];
-	int state[NROWS];
-	int aPrime, cPrime;
+	uint (*_matrix)[NROWS][NCOLS];
+	uint state[NROWS];
+	uint aPrime, cPrime;
 
 	/**
 	 * Generates the next random number.
 	 * Convenience method for next(current, a, c);
 	 */
-	inline int next(int& current) const {
+	inline uint next(uint& current) const {
 		return (a * current + c) % m;
 	}
 	
@@ -51,7 +55,7 @@ private:
 	 * 		where A = a^k mod m
 	 *        and C = c * sum[j=0..k-1](a^j mod m).
 	 */
-	inline int nextK(int& current) const {
+	inline uint nextK(uint& current) const {
 		return (aPrime * current + cPrime) % m;
 	}
 	
@@ -86,8 +90,8 @@ public:
 	 */
 	void operator()(const blocked_range<size_t>& rows) const {
 		
-		int (&matrix)[NROWS][NCOLS] = *_matrix;
-		const int (&init)[NROWS] = state;
+		uint (&matrix)[NROWS][NCOLS] = *_matrix;
+		const uint (&init)[NROWS] = state;
 		
 		for (size_t row = rows.begin(); row != rows.end(); ++row) {
 			
@@ -106,19 +110,16 @@ public:
 
 public:
 
-	RandomGenerator(int seed): s(seed) {
+	RandomGenerator(uint seed): s(seed) {
 		initialise();
 	}
 
-	void executeParallel(int (*matrix)[NROWS][NCOLS]) {
+	void executeParallel(uint (*matrix)[NROWS][NCOLS]) {
 		_matrix = matrix;
-		
-		std::cout << a << " " << c << " " << m << " " << s << std::endl;
-		
 		parallel_for(blocked_range<size_t>(0, NROWS), *this, auto_partitioner());
 	}
 	
-	void executeSerial(int (*matrix)[NROWS][NCOLS]) {
+	void executeSerial(uint (*matrix)[NROWS][NCOLS]) {
 		_matrix = matrix;
 		(*this)(blocked_range<size_t>(0, NROWS));
 	}
@@ -129,7 +130,7 @@ public:
 
 int main(int argc, char** argv) {
 
-	int matrix[NROWS][NCOLS];
+	uint matrix[NROWS][NCOLS];
 
 	// start up TBB
 	task_scheduler_init init;
