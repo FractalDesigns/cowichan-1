@@ -1,5 +1,5 @@
 /**
- * Random matrix generation
+ * Matrix-vector product
  *
  * \file randmat.cpp
  * \author Andrew Borzenko
