@@ -42,7 +42,7 @@ private:
 	 * Generates the next random number.
 	 * Convenience method for next(current, a, c);
 	 */
-	inline int next(int& current) {
+	inline int next(int& current) const {
 		return (a * current + c) % m;
 	}
 	
@@ -51,7 +51,7 @@ private:
 	 * 		where A = a^k mod m
 	 *        and C = c * sum[j=0..k-1](a^j mod m).
 	 */
-	inline int nextK(int& current) {
+	inline int nextK(int& current) const {
 		return (aPrime * current + cPrime) % m;
 	}
 	
@@ -86,8 +86,8 @@ public:
 	 */
 	void operator()(const blocked_range<size_t>& rows) const {
 		
-		float (&matrix)[SIZE][SIZE] = *_matrix;
-		float (&init)[SIZE] = *state;
+		int (&matrix)[NROWS][NCOLS] = *_matrix;
+		const int (&init)[NROWS] = state;
 		
 		for (size_t row = rows.begin(); row != rows.end(); ++row) {
 			
@@ -96,7 +96,7 @@ public:
 			
 			// for every other column, provide NROWS-spaced random numbers
 			// using the specialty method RandomGenerator.nextK(current).
-			for (int col = 1; col < SIZE; ++col) {
+			for (int col = 1; col < NCOLS; ++col) {
 				matrix[row][col] = nextK(matrix[row][col - 1]);
 			}
 			
@@ -112,6 +112,9 @@ public:
 
 	void executeParallel(int (*matrix)[NROWS][NCOLS]) {
 		_matrix = matrix;
+		
+		std::cout << a << " " << c << " " << m << " " << s << std::endl;
+		
 		parallel_for(blocked_range<size_t>(0, NROWS), *this, auto_partitioner());
 	}
 	
