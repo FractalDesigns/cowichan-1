@@ -55,15 +55,15 @@ int main(int argc, char* argv[])
   printf ("Answer\n");
   print_vector (answer, n);
 #else
-  real2D	matrix;			/* to multiply by */
-  real1D	vector = {197,129,175,209,125,228,152,176,118,262};			/* to be multiplied */
-  real1D	answer;			/* result of multiply */
+  real2D	matrix;			/* matrix x */
+  real1D	answer;			/* answer */
+  real1D	vector;			/* = vector */
   int		n;			/* matrix size */
   int limit;
   int i, j;
 
   //srand ((unsigned int) time (NULL));
-  srand (222);
+  srand (333);
 
   n = MAXEXT;
   limit = 10;
@@ -74,6 +74,10 @@ int main(int argc, char* argv[])
     {
       matrix[i][j] = rand () % limit;
     }
+  }
+
+  for (i = 0; i < n; i++) {
+    vector[i] = rand () % limit;
   }
 
   printf ("\n");
