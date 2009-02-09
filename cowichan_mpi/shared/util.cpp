@@ -369,4 +369,4 @@ randStateInit(
   *cPrime = (*cPrime * RAND_C) % RAND_M;
 
   /* return */
-} 
+}
