@@ -23,7 +23,7 @@ void gauss_mpi (mpi::communicator world,
 #endif
   int rank;
 
-  /* forward elimination */
+  // forward elimination
   for (k=0; k<n; k++){
 #if GRAPHICS
     if (MASTER(tid)){
@@ -31,49 +31,63 @@ void gauss_mpi (mpi::communicator world,
     }
     thr_bar(tid);
 #endif
-    /* calculate pivots in k'th column */
-    if ((work = get_block_rows_mpi (world, k + 1, n, &lo, &hi, &str))){
+
+    // calculate pivots in k'th column
+    if ((work = get_block_rows_mpi (world, k + 1, n, &lo, &hi, &str))) {
       for (r = lo; r < hi; r += str) {
         matrix[r][k] = matrix[r][k] / matrix[k][k];
       }
     }
-    //thr_bar(tid);
-    for (r = 0; r < n; r += str) {
-      //rank = get_block_rank_mpi (world, r + 1, n, r);
-      //broadcast ();
+    // broadcast rows
+    for (r = k + 1; r < n; r++) {
+      rank = get_block_rank_mpi (world, k + 1, n, r);
+      //printf ("k is %d, n is %d, lo is %d, hi is %d, str is %d, r is %d, rank is %d\n", k, n, lo, hi, str, r, rank);
+      broadcast (world, matrix[r], n, rank);
     }
-    /* update elements below k'th row */
-    if (work){
-      for (r=lo; r<hi; r+=str){
-	for (c=k+1; c<n; c++){
-	  matrix[r][c] = matrix[r][c] - (matrix[r][k] * matrix[k][c]);
-	}
+
+    // update elements below k'th row
+    if (work) {
+      for (r = lo; r < hi; r += str) {
+        for (c = k + 1; c < n; c++) {
+          matrix[r][c] = matrix[r][c] - (matrix[r][k] * matrix[k][c]);
+        }
       }
     }
-    thr_bar(tid);
-    /* update element of solution vector */
-    if (work){
-      for (r=lo; r<hi; r+=str){
-	vector[r] = vector[r] - (matrix[r][k] * vector[k]);
+    // broadcast rows
+    for (r = k + 1; r < n; r++) {
+      rank = get_block_rank_mpi (world, k + 1, n, r);
+      broadcast (world, matrix[r], n, rank);
+    }
+
+    // update element of solution vector
+    if (work) {
+      for (r = lo; r < hi; r += str) {
+        vector[r] = vector[r] - (matrix[r][k] * vector[k]);
       }
     }
-    thr_bar(tid);
+    // broadcast solution vector
+    for (r = k + 1; r < n; r++) {
+      rank = get_block_rank_mpi (world, k + 1, n, r);
+      broadcast (world, vector[r], rank);
+    }
   }
 
-  /* back substitution */
+  // back substitution
   for (k=(n-1); k>=0; k--){
-    /* set this element */
-    if (MASTER(tid)){
-      answer[k] = vector[k]/matrix[k][k];
-    }
-    thr_bar(tid);
-    /* update other elements */
-    if (sch_work(ParWidth, tid, 0, k, &lo, &hi, &str)){
-      for (r=lo; r<hi; r+=str){
-	vector[r] = vector[r] - (matrix[r][k] * answer[k]);
+    // set this element
+    answer[k] = vector[k] / matrix[k][k];
+    
+    // update other elements
+    if (get_block_rows_mpi (world, 0, k, &lo, &hi, &str)) {
+      for (r = lo; r < hi; r += str) {
+	    vector[r] = vector[r] - (matrix[r][k] * answer[k]);
       }
     }
-    thr_bar(tid);
+    // broadcast solution vector
+    for (r = 0; r < k; r++) {
+      rank = get_block_rank_mpi (world, 0, k, r);
+      broadcast (world, vector[r], rank);
+    }
   }
 
   /* return */

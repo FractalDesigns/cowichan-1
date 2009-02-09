@@ -279,7 +279,7 @@ int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
     rank = (element - lo) / (num + 1);
   }
   else {
-    rank = (element - extra * (num + 1)) / num + extra;
+    rank = (element - lo - extra * (num + 1)) / num + extra;
   }
 
   return rank;
