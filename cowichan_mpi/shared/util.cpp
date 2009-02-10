@@ -205,6 +205,14 @@ void print_vector (real1D vector, int nr)
   }
 }
 
+void print_vector (pt1D vector, int nr)
+{
+  int i;
+  for (i = 0; i < nr; i++)
+  {
+    printf ("(%lg, %lg) = %d\n", vector[i].x, vector[i].y, vector[i].w);
+  }
+}
 
 /**
  * Assign elements to this process
@@ -367,6 +375,37 @@ randStateInit(
     *aPrime = (*aPrime * RAND_A) % RAND_M;
   }
   *cPrime = (*cPrime * RAND_C) % RAND_M;
+
+  /* return */
+}
+
+/*
+ * @ redPt1DPos : find min/max point positions
+ * > none
+ * + fill arguments
+ */
+
+void
+redPt1DPos(
+  pt1D		vec,			/* vector of points */
+  int		n,			/* number of points */
+  pt	      * ptMin,			/* minimum location */
+  pt	      * ptMax			/* maximum location */
+){
+  int		i;
+
+  ASSERT(ptMin != NULL);
+  ASSERT(ptMax != NULL);
+
+  ptMin->x = vec[0].x; ptMin->y = vec[0].y;
+  ptMax->x = vec[0].x; ptMax->y = vec[0].y;
+  for (i=1; i<n; i++){
+    if (vec[i].x < ptMin->x) ptMin->x = vec[i].x;
+    if (vec[i].x > ptMax->x) ptMax->x = vec[i].x;
+    if (vec[i].y < ptMin->y) ptMin->y = vec[i].y;
+    if (vec[i].y > ptMax->y) ptMax->y = vec[i].y;
+  }
+  ptMin->w = 0; ptMax->w = 0;
 
   /* return */
 }

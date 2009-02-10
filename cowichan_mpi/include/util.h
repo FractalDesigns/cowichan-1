@@ -22,6 +22,7 @@ void print_matrix (real1DX matrix, int nr, int nc);
 void print_vector (bool1D vector, int nr);
 void print_vector (int1D vector, int nr);
 void print_vector (real1D vector, int nr);
+void print_vector (pt1D vector, int nr);
 
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end, int* stride);
@@ -37,3 +38,8 @@ void randStateInit (unsigned int seed,       /* RNG seed */
                     unsigned int	* state,    /* per-thread state vector */
                     unsigned int	* aPrime,   /* new multiplicative */
                     unsigned int	* cPrime);  /* new additive value */
+
+void redPt1DPos (pt1D		vec,			/* vector of points */
+                 int		n,			/* number of points */
+                 pt	      * ptMin,			/* minimum location */
+                 pt	      * ptMax);			/* maximum location */

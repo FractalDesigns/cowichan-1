@@ -1,7 +1,7 @@
 /**
  * Matrix-vector product
  *
- * \file randmat.cpp
+ * \file product.cpp
  * \author Andrew Borzenko
  * \date 02-02-09
  */
