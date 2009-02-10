@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
 
   mandel_mpi (world, matrix, nr, nc, base_x, base_y, ext_x, ext_y);
 
-//  printf ("Mandelbrot set:\n");
-//  print_matrix (matrix, nr, nc);
+  printf ("Mandelbrot set:\n");
+  print_matrix (matrix, nr, nc);
 #else
   int2D	    matrix;			/* matrix to fill */
   int		nr, nc;			/* matrix size */
