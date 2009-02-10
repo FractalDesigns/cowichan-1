@@ -21,6 +21,30 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
+  pt1D vec;
+  int n;
+  int limit;
+  int i;
+
+  n = MAXEXT;
+  limit = MAXEXT;
+
+  //srand ((unsigned int) time (NULL));
+  srand (333);
+
+  for (i = 0; i < n; i++) {
+    vec[i].x = rand () % limit;
+    vec[i].y = rand () % limit;
+    vec[i].w = rand () % limit;
+  }
+
+  printf ("Vector:\n");
+  print_vector (vec, n);
+
+  norm_mpi (world, vec, n);
+
+  printf ("Norm:\n");
+  print_vector (vec, n);
 #else
   pt1D vec;
   int n;

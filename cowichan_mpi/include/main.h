@@ -13,7 +13,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-//#define IS_PARALLEL
+#define IS_PARALLEL
 
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
