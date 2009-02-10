@@ -6,7 +6,7 @@ LIBS = -L/h/u4/c8/03/c8borzen/494/boost_mpi/lib -lboost_mpi-gcc41-mt-1_37 -lboos
 INCLUDES = -I/h/u4/c8/03/c8borzen/494/boost_mpi/include/boost-1_37
 OBJS = ${APP}.o serial.o parallel.o util.o
 SRCS = ${APP}.cpp serial.cpp parallel.cpp ../shared/util.cpp
-HDRS =  serial.h parallel.h ../include/main.h ../include/util.h
+HDRS =  serial.h parallel.h ../include/main.h ../include/util.h ../include/generic.h ../include/type.h
 
 all: gauss
 
