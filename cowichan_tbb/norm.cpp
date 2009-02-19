@@ -198,6 +198,12 @@ real uniform(real mean, real range) {
 	return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
 }
 
+void print(Point (&points)[SIZE]) {
+	for (int i = 0; i < SIZE; ++i) {
+		std::cout << "(" << points[i].x << ", " << points[i].y << ") ";
+	}
+}
+
 /**
  * Entry point of the program.
  */
@@ -216,8 +222,16 @@ int main(int argc, char** argv) {
 	// start up TBB
 	task_scheduler_init init;
 
+	std::cout << "before: ";
+	print(points);
+	std::cout << std::endl;
+		
 	// multiply the matrix by the vector (NB. answer == vector).
 	Normalizer::perform(&points);
+	
+	std::cout << "after:  ";
+	print(points);
+	std::cout << std::endl;
 	
 }
 
