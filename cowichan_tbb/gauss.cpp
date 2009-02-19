@@ -38,8 +38,6 @@ public:
 			float (*matrix)[SIZE][SIZE]	= parent->_matrix;
 			float (*vector)[SIZE]		= parent->_vector;
 			float (*answer)[SIZE]		= parent->_answer;
-		
-			// TODO modify vector too.
 			
 			for (size_t row = rows.begin(); row != rows.end(); ++row) {
 				
@@ -51,13 +49,20 @@ public:
 					for (int col = 0; col < SIZE; ++col) {
 						matrix[row][col] -= factor * matrix[previous][col];
 					}
+					vector[row] -= factor * vector[previous];
+					
+					// should be zero anyway, but because of rounding issues...					
 					matrix[row][previous] = 0.0;
 					
 				}
 							
 				// re-normalize the remaining values
-				for (int col = row + 1; col < SIZE; ++col)
+				for (int col = row + 1; col < SIZE; ++col) {
 					matrix[row][col] /= matrix[row][row];
+				}
+				vector[row] /= matrix[row][row];
+				
+				// rounding issues again.
 				matrix[row][row] = 1.0;
 				
 			}
@@ -80,8 +85,6 @@ public:
 			float (*vector)[SIZE]		= parent->_vector;
 			float (*answer)[SIZE]		= parent->_answer;
 
-			// TODO modify vector too.
-
 			for (size_t row = rows.begin(); row != rows.end(); ++row) {
 	
 				// for each following row...
@@ -92,6 +95,9 @@ public:
 					for (int col = row + 1; col < SIZE; ++col) {
 						matrix[row][col] -= factor * matrix[next][col];
 					}
+					vector[row] -= factor * vector[next];
+					
+					// rounding issues again (see ForwardElimination::operator()).
 					matrix[row][next] = 0.0;
 			
 				}
@@ -125,7 +131,9 @@ public:
 		parallel_for(gauss.forward, blocked_range<size_t>(0, SIZE), auto_partitioner());
 		parallel_for(gauss.backward, blocked_range<size_t>(0, SIZE), auto_partitioner());
 		
-		return answer;
+		// return the answer to the calling function.
+		// I'll re-iterate that the calling function owns the pointer.
+		return gauss->answer;
 		
 	}
 
@@ -162,29 +170,30 @@ private:
 
 /*****************************************************************************/
 
+/**
+ * Returns a pseudorandom number ~ U[mean - range, mean + range].
+ */
 float uniform(float mean, float range) {
 	return (rand() / (float)RAND_MAX) * (2.0f * range) - range + mean;
 }
 
+/**
+ * Entry point of the program.
+ */
 int main(int argc, char** argv) {
 
 	float matrix[SIZE][SIZE];
 	float vector[SIZE];
-	float result[SIZE];
+	float* result[SIZE];
 	
 	// seed the random number generator.
 	srand(time(0));
 	
-	// SERIAL: generate random values for the vector; create an identity matrix
+	// SERIAL: generate random values for the vector and matrix
 	for (int row = 0; row < SIZE; ++row) {
 		vector[row] = uniform(0.0f, 100.0f);
 		for (int col = 0; col < SIZE; ++col) {
-			// set up matrix
-			if (row == col) {
-				matrix[row][col] = 1.0f;
-			} else {
-				matrix[row][col] = 0.0f;
-			}
+			matrix[row][col] = uniform(-20.0f, 20.0f);
 		}
 	}
 	
@@ -192,13 +201,10 @@ int main(int argc, char** argv) {
 	task_scheduler_init init;
 	
 	// multiply the matrix by the vector; store the result in result.
-	Product product(&matrix, &vector, &result);
-	parallel_for(blocked_range<size_t>(0, SIZE), product, auto_partitioner());
+	result = GaussJordan::perform(&matrix, &vector);
 	
 	// report the 2-norm of the difference between vector and result.
-	std::cout << "The 2-norm is "
-			  << NormDiff::exec((float*)vector, (float*)result, SIZE)
-			  << "; should be close to zero." << std::endl;
+	std::cout << "Done!?" << std::endl;
 	
 }
 
