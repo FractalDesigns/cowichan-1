@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
+#include <iomanip>
 
 #include "tbb/task_scheduler_init.h"
 #include "tbb/blocked_range.h"
@@ -8,7 +10,9 @@
 #include "tbb/parallel_reduce.h"
 using namespace tbb;
 
-const int SIZE = 100;
+const int SIZE = 4;
+
+typedef float real;
 
 /**
  * This class performs Gauss-Jordan elimination on a matrix. It computes the
@@ -17,9 +21,8 @@ const int SIZE = 100;
 class GaussJordan {
 public:
 	
-	float (*_matrix)[SIZE][SIZE];
-	float (*_vector)[SIZE];
-	float (*_answer)[SIZE];
+	real (*_matrix)[SIZE][SIZE];
+	real (*_vector)[SIZE];
 
 public:
 	
@@ -28,16 +31,16 @@ public:
 	 * Expects a pivoted matrix as input (but makes no other assumptions).
 	 */
 	class ForwardElimination {
+	public:
 	
 		GaussJordan* parent;
 		ForwardElimination(GaussJordan* parent): parent(parent) { };
 		
-		void operator()(const blocked_range<size_t>& rows) {
+		void operator()(const blocked_range<size_t>& rows) const {
 			
 			// Get pointers locally.
-			float (*matrix)[SIZE][SIZE]	= parent->_matrix;
-			float (*vector)[SIZE]		= parent->_vector;
-			float (*answer)[SIZE]		= parent->_answer;
+			real (&matrix)[SIZE][SIZE]	= *(parent->_matrix);
+			real (&vector)[SIZE]		= *(parent->_vector);
 			
 			for (size_t row = rows.begin(); row != rows.end(); ++row) {
 				
@@ -68,23 +71,23 @@ public:
 			}
 		}
 		
-	} forward;
+	};
 
 	/** 
 	 * Performs the back-substitution phase (=> reduced row-echelon)
 	 */
 	class BackSubstitution {
+	public:
 		
 		GaussJordan* parent;
-		ForwardElimination(GaussJordan* parent): parent(parent) { };
+		BackSubstitution(GaussJordan* parent): parent(parent) { };
 
-		void operator()(const blocked_range<size_t>& rows) {
+		void operator()(const blocked_range<size_t>& rows) const {
 			
 			// Get pointers locally.
-			float (*matrix)[SIZE][SIZE]	= parent->_matrix;
-			float (*vector)[SIZE]		= parent->_vector;
-			float (*answer)[SIZE]		= parent->_answer;
-
+			real (&matrix)[SIZE][SIZE]	= *(parent->_matrix);
+			real (&vector)[SIZE]		= *(parent->_vector);
+			
 			for (size_t row = rows.begin(); row != rows.end(); ++row) {
 	
 				// for each following row...
@@ -105,35 +108,37 @@ public:
 			}			
 		}
 		
-	} backward;
+	};
+	
+	ForwardElimination forward;
+	BackSubstitution backward;
 
 public:
 
-	GaussJordan(float (*matrix)[SIZE][SIZE], float (*vector)[SIZE], float (*answer)[SIZE]):
+	GaussJordan(real (*matrix)[SIZE][SIZE], real (*vector)[SIZE]):
 		forward(this), backward(this),
-		_matrix(matrix), _vector(vector), _answer(answer)
+		_matrix(matrix), _vector(vector)
 		{ }
 		
 	/**
 	 * Performs Gauss-Jordan elimination to solve Ax = b, given A and b.
-	 * Modifies .
-	 * @return x, the "answer" to the "question" Ax = b.
-	 *         the calling function should call delete[] on x.
+	 * @param A the matrix. This matrix is modified to become the identity matrix,
+	 *          and may be rank-deficient (of course, based on A!)
+	 * @param b the vector. This vector is modified to become the answer.
 	 */
-	(float[SIZE])* GaussJordan::perform(float (*A)[SIZE][SIZE], float (*b)[SIZE][SIZE]) {
+	static void perform(real (*A)[SIZE][SIZE], real (*b)[SIZE]) {
 		
-		GaussJordan gauss(A, b, new float[SIZE]);
+		GaussJordan gauss(A, b);
 		
 		// pivoting must be done in series.
 		gauss.pivot();
 		
 		// the forward/backward phases can be split up among the workers.
-		parallel_for(gauss.forward, blocked_range<size_t>(0, SIZE), auto_partitioner());
-		parallel_for(gauss.backward, blocked_range<size_t>(0, SIZE), auto_partitioner());
+		parallel_for(blocked_range<size_t>(0, SIZE), gauss.forward, auto_partitioner());
+		parallel_for(blocked_range<size_t>(0, SIZE), gauss.backward, auto_partitioner());
 		
-		// return the answer to the calling function.
-		// I'll re-iterate that the calling function owns the pointer.
-		return gauss->answer;
+		// b is transformed to become the answer, so we needn't return anything.
+		return;
 		
 	}
 
@@ -144,6 +149,11 @@ private:
 	 * and the associated "b" vector.
 	 */
 	void pivot() {
+		
+		// Get pointers locally.
+		real (&matrix)[SIZE][SIZE]	= *(_matrix);
+		real (&vector)[SIZE]		= *(_vector);
+			
 		for (int col = 0; col < SIZE; ++col) {
 	
 			// compute the pivot for this column
@@ -154,14 +164,10 @@ private:
 			}
 		
 			// swap rows (col) and (pivotRow)
-			real rowPointer[SIZE] = matrix[col];
-			matrix[col] = matrix[pivotRow];
-			matrix[pivotRow] = rowPointer;
-		
+			std::swap_ranges(matrix[col], matrix[col] + (SIZE - 1), matrix[pivotRow]);
+			
 			// swap vector rows in the same fashion
-			real savedValue = vector[col];
-			vector[col] = vector[pivotRow];
-			vector[pivotRow] = savedValue;
+			std::swap(vector[col], vector[pivotRow]);
 		
 		}
 	}
@@ -173,8 +179,8 @@ private:
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
  */
-float uniform(float mean, float range) {
-	return (rand() / (float)RAND_MAX) * (2.0f * range) - range + mean;
+real uniform(real mean, real range) {
+	return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
 }
 
 /**
@@ -182,9 +188,10 @@ float uniform(float mean, float range) {
  */
 int main(int argc, char** argv) {
 
-	float matrix[SIZE][SIZE];
-	float vector[SIZE];
-	float* result[SIZE];
+	real matrix[SIZE][SIZE];
+	real savedmatrix[SIZE][SIZE];
+	real vector[SIZE];
+	real answer[SIZE];
 	
 	// seed the random number generator.
 	srand(time(0));
@@ -192,19 +199,41 @@ int main(int argc, char** argv) {
 	// SERIAL: generate random values for the vector and matrix
 	for (int row = 0; row < SIZE; ++row) {
 		vector[row] = uniform(0.0f, 100.0f);
+		answer[row] = vector[row];
 		for (int col = 0; col < SIZE; ++col) {
 			matrix[row][col] = uniform(-20.0f, 20.0f);
+			savedmatrix[row][col] = matrix[row][col];
 		}
 	}
 	
 	// start up TBB
 	task_scheduler_init init;
+
+	// multiply the matrix by the vector (NB. answer == vector).
+	GaussJordan::perform(&matrix, &answer);
 	
-	// multiply the matrix by the vector; store the result in result.
-	result = GaussJordan::perform(&matrix, &vector);
-	
-	// report the 2-norm of the difference between vector and result.
-	std::cout << "Done!?" << std::endl;
+	// we've got the answer, now, in answer. Print it out.
+	std::cout.precision(3);
+	for (int row = 0; row < SIZE; ++row) {
+
+		// print out the (saved) matrix
+		std::cout << " [ ";
+		for (int col = 0; col < SIZE; ++col) {
+			std:: cout << savedmatrix[row][col] << "\t";
+		}
+		
+		// print out the answer
+		std::cout << "] [ " << answer[row] << " ]\t";
+
+		// print out the (saved) vector
+		if (row == int(SIZE / 2)) {
+			std::cout << "= [ ";
+		} else {
+			std::cout << "  [ ";
+		}
+		std::cout << vector[row] << " ]" << std::endl;
+		
+	}
 	
 }
 
