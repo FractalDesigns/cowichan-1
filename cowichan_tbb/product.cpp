@@ -31,7 +31,7 @@ public:
 	/**
 	 * Performs matrix-vector multiplication on the given row range.
 	 */
-	void operator()(const blocked_range<size_t>& rows) const {
+	void operator()(const blocked_range<size_t>& rows) {
 		
 		float (&matrix)[SIZE][SIZE] = *_matrix;
 		float (&vector)[SIZE] = *_vector;
@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
 	
 	// SERIAL: generate random values for the vector; create an identity matrix
 	for (int row = 0; row < SIZE; ++row) {
-		vector[row] = uniform(0.0f, 100.0f); // I know, I know...
+		vector[row] = uniform(0.0f, 100.0f);
 		for (int col = 0; col < SIZE; ++col) {
 			// set up matrix
 			if (row == col) {
@@ -144,3 +144,4 @@ int main(int argc, char** argv) {
 			  << "; should be close to zero." << std::endl;
 	
 }
+
