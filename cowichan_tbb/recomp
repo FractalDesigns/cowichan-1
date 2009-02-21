@@ -1,2 +1,0 @@
-g++ -o try try.cpp -ltbb
-g++ -o life life.cpp -ltbb

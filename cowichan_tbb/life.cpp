@@ -8,8 +8,13 @@
 #include "tbb/parallel_reduce.h"
 using namespace tbb;
 
-#define BOARD_SIZE 20 	   // The dimension size of the Game of Life board.
+#define BOARD_SIZE 300 	   // The dimension size of the Game of Life board.
 #define ITERATIONS 2000    // The number of times to iterate the Game o'.
+
+#ifdef GRAPHICS
+	// must be included after BOARD_SIZE... this is UGLY, sorry.
+	#include "sdl.hpp"
+#endif
 
 /**
  * This class does the game of life, and facilitates a ping-pong memory model.
@@ -117,26 +122,37 @@ int main(int argc, char** argv) {
 	}
 
 	// show the initial array
-	print_array(&board1);
+	//print_array(&board1);
 	
 	// start up TBB
 	task_scheduler_init init;
+	
+	// start up the graphics
+	#ifdef GRAPHICS
+		Graphics::init(BOARD_SIZE, BOARD_SIZE);
+	#endif
 	
 	// play the game of life for a while
 	GameOfLife game(&board1, &board2);
 	for (int i = 0; i < ITERATIONS; ++i) {
 
 		// clear the screen
-		system("clear");
+		//system("clear");
 	
 		// update CA simulation
 		parallel_for(
 			blocked_range2d<size_t,size_t>(0, BOARD_SIZE, 0, BOARD_SIZE),
 			game, auto_partitioner());
 
+		// Show the current game state in SDL.
+		#ifdef GRAPHICS
+			Graphics::draw(game._second);
+			Graphics::delay(20);
+		#endif
+		
 		// show the current game state and wait for user interaction
-		print_array(game._second);
-		std::cin.get();
+		//print_array(game._second);
+		//std::cin.get();
 		
 		// swap arrays (ping-pong approach)
 		game.swap();		
@@ -144,6 +160,9 @@ int main(int argc, char** argv) {
 	}
 
 	// exit the program.	
+	#ifdef GRAPHICS
+		Graphics::deinit();
+	#endif
 	return 0;
 
 }
