@@ -49,15 +49,27 @@ int main(int argc, char* argv[])
     vector[i] = rand () % limit;
   }
 
-  printf ("Matrix\n");
-  print_matrix (matrix, nr, nc);
-  printf ("x Vector\n");
-  print_vector (vector, nr);
+//  printf ("Matrix\n");
+//  print_matrix (matrix, nr, nc);
+//  printf ("x Vector\n");
+//  print_vector (vector, nr);
 
-  product_mpi (world, matrix, vector, result, nr, nc);
+  DWORD startTime,endTime;
 
-  printf ("=\n");
-  print_vector (result, nr);
+  startTime = GetTickCount ();
+  DWORD total = 0;
+
+  for (i = 0; i < 100; i++) {
+    total += product_mpi (world, matrix, vector, result, nr, nc);
+  }
+
+  endTime = GetTickCount ();
+
+  printf ("Done without broadcast in %ums\n\n", total);
+  printf ("Done in %ums\n\n", endTime - startTime);
+
+//  printf ("=\n");
+//  print_vector (result, nr);
 #else
   real2D	matrix;			/* to multiply by */
   real1D	vector;			/* to be multiplied */
@@ -87,15 +99,23 @@ int main(int argc, char* argv[])
     vector[i] = rand () % limit;
   }
 
-  printf ("Matrix\n");
-  print_matrix (matrix, nr, nc);
-  printf ("x Vector\n");
-  print_vector (vector, nr);
+//  printf ("Matrix\n");
+//  print_matrix (matrix, nr, nc);
+//  printf ("x Vector\n");
+//  print_vector (vector, nr);
+
+  DWORD startTime,endTime;
+
+  startTime = GetTickCount ();
 
   product (matrix, vector, result, nr, nc);
 
-  printf ("=\n");
-  print_vector (result, nr);
+  endTime = GetTickCount ();
+
+  printf ("Done in %ums\n\n", endTime - startTime);
+
+//  printf ("=\n");
+//  print_vector (result, nr);
 #endif
 
 	return 0;

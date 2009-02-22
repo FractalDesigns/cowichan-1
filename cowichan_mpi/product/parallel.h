@@ -14,7 +14,7 @@
 /* public functions						*/
 /*--------------------------------------------------------------*/
 
-void product_mpi(mpi::communicator world,
+DWORD product_mpi(mpi::communicator world,
                  real2D matrix,          /* to multiply by */
                  real1D	vector,          /* to be multiplied */
                  real1D	result,          /* result of multiply */
