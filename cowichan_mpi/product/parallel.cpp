@@ -9,41 +9,38 @@
 #include "../include/main.h"
 #include "parallel.h"
 
-DWORD product_mpi (mpi::communicator world,
-                  real2D matrix,           /* to multiply by */
+void product_mpi (mpi::communicator world,
+                  real1DX matrix,           /* to multiply by */
                   real1D	vector,          /* to be multiplied */
                   real1D	result,          /* result of multiply */
                   int   nr,                /* row size */
                   int		nc)                /* column size */
 {
-  int		lo, hi, str;		/* work controls */
+  int		lo, hi;		/* work controls */
   int		r, c;			/* loop indices */ 
   int rank;
-  DWORD startTime,endTime;
 
   // work
-  if (get_block_rows_mpi (world, 0, nr, &lo, &hi, &str)) {
-    printf ("lo is %d, hi is %d, str is %d\n", lo, hi, str);
+  if (get_block_rows_mpi (world, 0, nr, &lo, &hi)) {
+    //printf ("lo is %d, hi is %d\n", lo, hi);
 
-    startTime = GetTickCount ();
-
-    for (r = lo; r < hi; r += str) {
-      result[r] = matrix[r][0] * vector[0];
+    for (r = lo; r < hi; r ++) {
+      result[r] = matrix[r * nc] * vector[0];
       for (c = 1; c < nc; c++) {
-        result[r] += matrix[r][c] * vector[c];
+        result[r] += matrix[r * nc + c] * vector[c];
       }
     }
-
-    endTime = GetTickCount ();
 
   }
   else {
     printf ("no work\n");
   }
+
   // broadcast result
-  for (r = 0; r < nr; r++) {
-    rank = get_block_rank_mpi (world, 0, nr, r);
-    broadcast (world, result[r], rank);
+  for (rank = 0; rank < world.size (); rank++) {
+    if (get_block_rows_mpi (world, 0, nr, &lo, &hi, rank)) {
+      broadcast (world, &result[lo], hi - lo, rank);
+    }
   }
-  return endTime - startTime;
+
 }

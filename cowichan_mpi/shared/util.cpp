@@ -222,11 +222,10 @@ void print_vector (pt1D vector, int nr)
  * \param hi [in] High element
  * \param start [out] Start element
  * \param end [out] End element
- * \param stride [out] Element stride
  * \return Returns whether at least one element is assigned
  */
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
-                         int* start, int* end, int* stride)
+                         int* start, int* end)
 {
   int size = world.size ();
   int rank = world.rank ();
@@ -243,7 +242,6 @@ bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
     /* do nothing */
     *start = 0;
     *end = -1;
-    *stride = 1;
   }
   else {
     /* do share of work */
@@ -254,7 +252,49 @@ bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
       *start = lo + (extra * (num + 1)) + ((rank - extra) * num);
     }
     *end = *start + num;
-    *stride = 1;
+  }
+
+  return (*end != -1);
+}
+
+/**
+ * Assign elements to this process
+ *
+ * \param world [in] Communicator
+ * \param lo [in] Low element
+ * \param hi [in] High element
+ * \param start [out] Start element
+ * \param end [out] End element
+ * \param rank [in] Process rank
+ * \return Returns whether at least one element is assigned
+ */
+bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
+                         int* start, int* end, int rank)
+{
+  int size = world.size ();
+  
+  int nl;	   /* number of elements */
+  int num;	 /* number to do */
+  int extra; /* spillage */
+
+  nl    = hi - lo;
+  num   = nl / size;
+  extra = nl % size;
+
+  if ((nl <= 0) || (rank >= nl)) {
+    /* do nothing */
+    *start = 0;
+    *end = -1;
+  }
+  else {
+    /* do share of work */
+    if (rank < extra){
+      num += 1;
+      *start = lo + rank * num;
+    } else {
+      *start = lo + (extra * (num + 1)) + ((rank - extra) * num);
+    }
+    *end = *start + num;
   }
 
   return (*end != -1);

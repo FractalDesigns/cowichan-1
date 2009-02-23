@@ -25,7 +25,9 @@ void print_vector (real1D vector, int nr);
 void print_vector (pt1D vector, int nr);
 
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
-                         int* start, int* end, int* stride);
+                         int* start, int* end);
+bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
+                         int* start, int* end, int rank);
 int get_block_rank_mpi (mpi::communicator world, int lo, int hi,
                         int row);
 bool get_cyclic_rows_mpi (mpi::communicator world, int lo, int hi,

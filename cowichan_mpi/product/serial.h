@@ -22,7 +22,7 @@
 
 void
 product(
-  real2D	matrix,			/* to multiply by */
+  real1DX	matrix,			/* to multiply by */
   real1D	vector,			/* to be multiplied */
   real1D	result,			/* result of multiply */
   int		nr,			/* row size */
