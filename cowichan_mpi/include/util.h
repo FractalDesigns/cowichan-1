@@ -45,3 +45,9 @@ void redPt1DPos (pt1D*		vec,			/* vector of points */
                  int		n,			/* number of points */
                  pt	      * ptMin,			/* minimum location */
                  pt	      * ptMax);			/* maximum location */
+
+void ptSort(pt	      * ptVec,			/* points to sort */
+            int		len);			/* length of vectors */
+
+int ptCmp(pt	      * left,			/* left point */
+          pt	      * right);			/* right point */

@@ -8,6 +8,14 @@
 
 #include "../include/main.h"
 
+
+#define SWAP_PT_2(p_, l_, h_, t_)				\
+t_ = p_[l_], p_[l_] = p_[h_], p_[h_] = t_
+
+#define SWAP_PT_3(p_, a_, b_, c_, t_)				\
+t_ = p_[a_], p_[a_] = p_[b_], p_[b_] = p_[c_], p_[c_] = t_ 
+
+
 /*
  * @ fail : generic failure handler
  * > none (never returns)
@@ -448,4 +456,86 @@ redPt1DPos(
   ptMin->w = 0; ptMax->w = 0;
 
   /* return */
+}
+
+/*
+ @ ptSort : sort points by weight
+ > none
+ + sort points
+ */
+
+void
+ptSort(
+  pt	      * ptVec,			/* points to sort */
+  int		len			/* length of vectors */
+){
+  int		i, j;			/* indices into vectors */
+  int		loop;			/* partitioning control */
+  pt		pivot;			/* partitioning value (can't be pointer!) */
+  pt		tmp;			/* swapping temporary */
+
+  if (len <= 1){
+    /* skip */
+  } else if (len == 2){
+    if (ptCmp(&(ptVec[1]), &(ptVec[0])) < 0){
+      SWAP_PT_2(ptVec, 0, 1, tmp);
+    }
+  } else if (len == 3){
+    if (ptCmp(&(ptVec[1]), &(ptVec[0])) < 0){
+      if (ptCmp(&(ptVec[0]), &(ptVec[2])) < 0){
+	SWAP_PT_2(ptVec, 0, 1, tmp);
+      } else if (ptCmp(&(ptVec[1]), &(ptVec[2])) < 0){
+	SWAP_PT_3(ptVec, 0, 1, 2, tmp);
+      } else {
+	SWAP_PT_2(ptVec, 0, 2, tmp);
+      }
+    } else if (ptCmp(&(ptVec[2]), &(ptVec[0])) < 0){
+      SWAP_PT_3(ptVec, 2, 1, 0, tmp);
+    } else if (ptCmp(&(ptVec[2]), &(ptVec[1])) < 0){
+      SWAP_PT_2(ptVec, 1, 2, tmp);
+    }
+  } else {
+    i = 0;
+    j = len - 1;
+    pivot = ptVec[(i+j)/2];
+    loop = TRUE;
+    while (loop){
+      while (ptCmp(&(ptVec[i]), &pivot) < 0) i++;
+      while (ptCmp(&pivot, &(ptVec[j])) < 0) j--;
+      if (i <= j){
+	SWAP_PT_2(ptVec, i, j, tmp);
+	i++; j--;
+      }
+      loop = (i <= j);
+    }
+    if (1 <= j){
+      ptSort(ptVec, j+1);
+    }
+    if (i < len-1){
+      ptSort(ptVec+i, len-i);
+    }
+  }
+
+  /* return */
+}
+
+/*
+ * @ ptCmp : compare two points (weight, then x, then y)
+ * > -1, 0, or 1 (a<b, a==b, a>b)
+ */
+
+int
+ptCmp(
+  pt	      * left,			/* left point */
+  pt	      * right			/* right point */
+){
+  ASSERT(left != NULL);
+  ASSERT(right != NULL);
+  if		(left->w < right->w)	return -1;
+  else if	(left->w > right->w)	return  1;
+  else if	(left->x < right->x)	return -1;
+  else if	(left->x > right->x)	return  1;
+  else if	(left->y < right->y)	return -1;
+  else if	(left->y > right->y)	return  1;
+  else					return  0;
 }
