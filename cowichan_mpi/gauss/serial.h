@@ -22,9 +22,9 @@
 
 void
 gauss(
-  real2D	matrix,			/* to solve */
-  real1D	vector,			/* target vector */
-  real1D	answer,			/* solution found */
+  real2D*	matrix,			/* to solve */
+  real1D*	vector,			/* target vector */
+  real1D*	answer,			/* solution found */
   int		n			/* size */
 );
 

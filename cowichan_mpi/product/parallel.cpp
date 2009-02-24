@@ -10,9 +10,9 @@
 #include "parallel.h"
 
 void product_mpi (mpi::communicator world,
-                  real1DX matrix,           /* to multiply by */
-                  real1D	vector,          /* to be multiplied */
-                  real1D	result,          /* result of multiply */
+                  real2D* matrix,           /* to multiply by */
+                  real1D* vector,          /* to be multiplied */
+                  real1D* result,          /* result of multiply */
                   int   nr,                /* row size */
                   int		nc)                /* column size */
 {
@@ -22,12 +22,12 @@ void product_mpi (mpi::communicator world,
 
   // work
   if (get_block_rows_mpi (world, 0, nr, &lo, &hi)) {
-    //printf ("lo is %d, hi is %d\n", lo, hi);
+    printf ("lo is %d, hi is %d\n", lo, hi);
 
     for (r = lo; r < hi; r ++) {
-      result[r] = matrix[r * nc] * vector[0];
+      result[r] = matrix[r][0] * vector[0];
       for (c = 1; c < nc; c++) {
-        result[r] += matrix[r * nc + c] * vector[c];
+        result[r] += matrix[r][c] * vector[c];
       }
     }
 

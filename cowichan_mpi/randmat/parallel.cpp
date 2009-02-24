@@ -11,10 +11,7 @@
 
 // shared data structures
 
-#define MAXPAR 100
-
-// TODO: change to use std::vector
-static unsigned int state[MAXPAR];		/* random state vector */
+static unsigned int* state;		/* random state vector */
 static unsigned int aPrime, cPrime;		/* modified constants */ 
 
 // public
@@ -22,7 +19,7 @@ static unsigned int aPrime, cPrime;		/* modified constants */
 void
 randmat_mpi (
   mpi::communicator world,			/* mpi communicator */
-  int2D		matrix,			/* to fill */
+  int2D*		matrix,			/* to fill */
   int		nr,			/* row size */
   int		nc,			/* column size */
   unsigned int		limit,			/* value limit */
@@ -36,6 +33,8 @@ randmat_mpi (
 
   int rank = world.rank ();
   int size = world.size ();
+
+  state = new unsigned int[size];
 
   // set up
   if (rank == 0) {
@@ -66,7 +65,8 @@ randmat_mpi (
       broadcast (world, matrix[i][j], rank);
     }
   }
-  
+
+  delete [] state;
 
 #if GRAPHICS
   if (MASTER(tid)){

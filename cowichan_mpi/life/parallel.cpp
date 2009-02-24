@@ -18,12 +18,12 @@ EXTERN_ENV
 void
 life_mpi(
   mpi::communicator world,
-  bool2D	matrix,			/* world to evolve */
+  bool2D*	matrix,			/* world to evolve */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		iters			/* number of iterations */
 ){
-  int2D		count;			/* neighborhood counts */
+  int2D*		count;			/* neighborhood counts */
   int		i;			/* iteration index */
   int		r, c;			/* row/column indices */
   int		alive = nr * nc;	/* number alive */
@@ -35,19 +35,21 @@ life_mpi(
   gfx_life(gfxCount++, matrix, nr, nc);
 #endif
 
-  int		lo, hi, str;		/* work controls */
+  int		lo, hi;		/* work controls */
   bool		work;			/* useful work to do? */ 
   int is_alive = 1;
   int rank;
 
+  count = new int2D[MAXEXT];
+
   // work
   printf ("world size is %d\n", world.size());
-  work = get_block_rows_mpi (world, 0, nr, &lo, &hi, &str);
-  printf ("lo is %d, hi is %d, str is %d\n", lo, hi, str);
+  work = get_block_rows_mpi (world, 0, nr, &lo, &hi);
+  printf ("lo is %d, hi is %d\n", lo, hi);
   for (i=0; (i<iters) && is_alive; i++){
     // fill neighborhood counts
     if (work) {
-      for (r = lo; r < hi; r += str) {
+      for (r = lo; r < hi; r++) {
         life_row_mpi(matrix, count, nr, nc, r,
           (nr + r - 1) % nr, (nr + r + 1) % nr);
       }
@@ -60,7 +62,7 @@ life_mpi(
     // update cells
     alive = 0;
     if (work) {
-      for (r = lo; r < hi; r += str) {
+      for (r = lo; r < hi; r++) {
         for (c=0; c<nc; c++) {
           if ((count[r][c] == 3) || ((count[r][c] == 2) && matrix[r][c])){ 
             matrix[r][c] = TRUE;
@@ -92,6 +94,8 @@ life_mpi(
 #endif
   }
 
+  delete [] count;
+
   /* check */
   if (is_alive == 0){
     fail("life", "no cells left alive", "iteration", "%d", i, NULL);
@@ -104,8 +108,8 @@ life_mpi(
 
 static void
 life_one_mpi(
-  bool2D	matrix,			/* world to evolve */
-  int2D		count,			/* neighborhood counts */
+  bool2D*	matrix,			/* world to evolve */
+  int2D*		count,			/* neighborhood counts */
   int		r,			/* this row */
   int		r_lo,			/* lower row */
   int		r_hi,			/* higher row */
@@ -121,8 +125,8 @@ life_one_mpi(
 
 static void
 life_row_mpi(
-  bool2D	matrix,			/* world to evolve */
-  int2D		count,			/* neighborhood counts */
+  bool2D*	matrix,			/* world to evolve */
+  int2D*		count,			/* neighborhood counts */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		r,			/* this row */

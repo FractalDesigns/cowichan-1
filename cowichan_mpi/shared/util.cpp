@@ -79,7 +79,7 @@ fail(
   /* return */
 }
 
-void print_matrix (bool2D matrix, int nr, int nc)
+void print_matrix (bool2D* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -98,7 +98,7 @@ void print_matrix (bool2D matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_matrix (int2D matrix, int nr, int nc)
+void print_matrix (int2D* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -112,7 +112,7 @@ void print_matrix (int2D matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_matrix (real2D matrix, int nr, int nc)
+void print_matrix (real2D* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -126,7 +126,7 @@ void print_matrix (real2D matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_matrix (bool1DX matrix, int nr, int nc)
+void print_matrix (bool1DX* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -145,7 +145,7 @@ void print_matrix (bool1DX matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_matrix (int1DX matrix, int nr, int nc)
+void print_matrix (int1DX* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -159,7 +159,7 @@ void print_matrix (int1DX matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_matrix (real1DX matrix, int nr, int nc)
+void print_matrix (real1DX* matrix, int nr, int nc)
 {
   int i, j;
   for (i = 0; i < nr; i++)
@@ -173,7 +173,7 @@ void print_matrix (real1DX matrix, int nr, int nc)
   printf ("\n");
 }
 
-void print_vector (bool1D vector, int nr)
+void print_vector (bool1D* vector, int nr)
 {
   int i;
   for (i = 0; i < nr; i++)
@@ -187,7 +187,7 @@ void print_vector (bool1D vector, int nr)
   }
 }
 
-void print_vector (int1D vector, int nr)
+void print_vector (int1D* vector, int nr)
 {
   int i;
   for (i = 0; i < nr; i++)
@@ -196,7 +196,7 @@ void print_vector (int1D vector, int nr)
   }
 }
 
-void print_vector (real1D vector, int nr)
+void print_vector (real1D* vector, int nr)
 {
   int i;
   for (i = 0; i < nr; i++)
@@ -205,7 +205,7 @@ void print_vector (real1D vector, int nr)
   }
 }
 
-void print_vector (pt1D vector, int nr)
+void print_vector (pt1D* vector, int nr)
 {
   int i;
   for (i = 0; i < nr; i++)
@@ -427,7 +427,7 @@ randStateInit(
 
 void
 redPt1DPos(
-  pt1D		vec,			/* vector of points */
+  pt1D*		vec,			/* vector of points */
   int		n,			/* number of points */
   pt	      * ptMin,			/* minimum location */
   pt	      * ptMax			/* maximum location */

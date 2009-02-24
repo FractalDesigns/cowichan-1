@@ -10,13 +10,13 @@
 #include "parallel.h"
 
 void gauss_mpi (mpi::communicator world,
-                real2D	matrix,			/* to solve */
-                real1D	vector,			/* target vector */
-                real1D	answer,			/* solution found */
+                real2D*	matrix,			/* to solve */
+                real1D*	vector,			/* target vector */
+                real1D*	answer,			/* solution found */
                 int		n)
 {
   bool		work;			/* work control */
-  int		lo, hi, str;		/* work controls */
+  int		lo, hi;		/* work controls */
   int		r, c, k;		/* indices */
 #if GRAPHICS
   int		gfxCount = 0;
@@ -33,21 +33,21 @@ void gauss_mpi (mpi::communicator world,
 #endif
 
     // calculate pivots in k'th column
-    if ((work = get_block_rows_mpi (world, k + 1, n, &lo, &hi, &str))) {
-      for (r = lo; r < hi; r += str) {
+    if ((work = get_block_rows_mpi (world, k + 1, n, &lo, &hi))) {
+      for (r = lo; r < hi; r++) {
         matrix[r][k] = matrix[r][k] / matrix[k][k];
       }
     }
     // broadcast rows
     for (r = k + 1; r < n; r++) {
       rank = get_block_rank_mpi (world, k + 1, n, r);
-      //printf ("k is %d, n is %d, lo is %d, hi is %d, str is %d, r is %d, rank is %d\n", k, n, lo, hi, str, r, rank);
+      //printf ("k is %d, n is %d, lo is %d, hi is %d, r is %d, rank is %d\n", k, n, lo, hi, r, rank);
       broadcast (world, matrix[r], n, rank);
     }
 
     // update elements below k'th row
     if (work) {
-      for (r = lo; r < hi; r += str) {
+      for (r = lo; r < hi; r++) {
         for (c = k + 1; c < n; c++) {
           matrix[r][c] = matrix[r][c] - (matrix[r][k] * matrix[k][c]);
         }
@@ -61,7 +61,7 @@ void gauss_mpi (mpi::communicator world,
 
     // update element of solution vector
     if (work) {
-      for (r = lo; r < hi; r += str) {
+      for (r = lo; r < hi; r++) {
         vector[r] = vector[r] - (matrix[r][k] * vector[k]);
       }
     }
@@ -78,8 +78,8 @@ void gauss_mpi (mpi::communicator world,
     answer[k] = vector[k] / matrix[k][k];
     
     // update other elements
-    if (get_block_rows_mpi (world, 0, k, &lo, &hi, &str)) {
-      for (r = lo; r < hi; r += str) {
+    if (get_block_rows_mpi (world, 0, k, &lo, &hi)) {
+      for (r = lo; r < hi; r++) {
 	    vector[r] = vector[r] - (matrix[r][k] * answer[k]);
       }
     }

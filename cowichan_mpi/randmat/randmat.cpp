@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
-  int2D matrix; /* to fill */
+  int2D* matrix; /* to fill */
   int   nr;     /* row size */
   int   nc;     /* column size */
   unsigned int   limit;  /* value limit */
@@ -32,11 +32,15 @@ int main(int argc, char* argv[])
   limit = 10;
   seed = 222;
 
+  matrix = new int2D[MAXEXT];
+
   randmat_mpi (world, matrix, nr, nc, limit, seed);
 
   print_matrix (matrix, nr, nc);
+
+  delete [] matrix;
 #else
-  int2D matrix; /* to fill */
+  int2D* matrix; /* to fill */
   int   nr;     /* row size */
   int   nc;     /* column size */
   int   limit;  /* value limit */
@@ -47,9 +51,13 @@ int main(int argc, char* argv[])
   limit = 10;
   seed = 222;
 
+  matrix = new int2D[MAXEXT];
+
   randmat (matrix, nr, nc, limit, seed);
 
   print_matrix (matrix, nr, nc);
+
+  delete [] matrix;
 #endif
 
 	return 0;

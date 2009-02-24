@@ -22,7 +22,7 @@
 
 void
 life(
-  bool2D	world,			/* world to evolve */
+  bool2D*	world,			/* world to evolve */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		iters			/* number of iterations */
@@ -40,8 +40,8 @@ life(
 
 static void
 life_one(
-  bool2D	world,			/* world to evolve */
-  int2D		count,			/* neighborhood counts */
+  bool2D*	world,			/* world to evolve */
+  int2D*		count,			/* neighborhood counts */
   int		r,			/* this row */
   int		r_lo,			/* lower row */
   int		r_hi,			/* higher row */
@@ -58,8 +58,8 @@ life_one(
 
 static void
 life_row(
-  bool2D	world,			/* world to evolve */
-  int2D		count,			/* neighborhood counts */
+  bool2D*	world,			/* world to evolve */
+  int2D*		count,			/* neighborhood counts */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		r,			/* this row */

@@ -21,7 +21,7 @@
  */
 
 void mandel_mpi (mpi::communicator world,
-                 int2D		matrix,			/* to fill */
+                 int2D*		matrix,			/* to fill */
                  int		nr,			/* row size */
                  int		nc,			/* column size */
                  real		base_x,			/* lower left corner */

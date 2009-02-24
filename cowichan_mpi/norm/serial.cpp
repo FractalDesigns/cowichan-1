@@ -11,7 +11,7 @@
 
 void
 norm(
-  pt1D		vec,			/* points to normalize */
+  pt1D*		vec,			/* points to normalize */
   int		n			/* length of vector */
 ){
   pt		ptMin, ptMax;		/* pseudo-points */

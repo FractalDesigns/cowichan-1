@@ -22,7 +22,7 @@
 
 void
 randmat(
-  int2D		matrix,			/* to fill */
+  int2D*		matrix,			/* to fill */
   int		nr,			/* row size */
   int		nc,			/* column size */
   int		limit,			/* value limit */

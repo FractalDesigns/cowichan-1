@@ -13,9 +13,9 @@
 
 void
 product(
-  real1DX	matrix,			/* to multiply by */
-  real1D	vector,			/* to be multiplied */
-  real1D	result,			/* result of multiply */
+  real2D*	matrix,			/* to multiply by */
+  real1D*	vector,			/* to be multiplied */
+  real1D*	result,			/* result of multiply */
   int		nr,			/* row size */
   int		nc			/* column size */
 ){
@@ -25,9 +25,9 @@ product(
 #endif
 
   for (r=0; r<nr; r++){
-    result[r] = matrix[r * nc] * vector[0];
+    result[r] = matrix[r][0] * vector[0];
     for (c=1; c<nc; c++){
-      result[r] += matrix[r *nc + c] * vector[c];
+      result[r] += matrix[r][c] * vector[c];
     }
   }
 #if GRAPHICS

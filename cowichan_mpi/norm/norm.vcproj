@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="product"
-	ProjectGUID="{E27E040C-36F6-4C75-8C44-A38C56DF8B0A}"
-	RootNamespace="product"
+	Name="norm"
+	ProjectGUID="{FE75C8C5-F98E-4F67-8A82-DF0CBF7B53F6}"
+	RootNamespace="norm"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -66,8 +66,6 @@
 				AdditionalLibraryDirectories="C:\Andrew\boost\lib;&quot;C:\Program Files (x86)\MPICH\SDK\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				StackReserveSize="0"
-				StackCommitSize="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -96,7 +94,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ReleaseMPICH2|Win32"
+			Name="ReleaseMPICH1|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
@@ -120,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;C:\Andrew\boost2\include\boost-1_37&quot;;&quot;C:\Program Files (x86)\MPICH2\Include&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Andrew\boost\include\boost-1_37&quot;;&quot;C:\Program Files (x86)\MPICH\SDK\Include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -139,13 +137,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mpi.lib cxx.lib"
+				AdditionalDependencies="mpich.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Andrew\boost2\lib;&quot;C:\Program Files (x86)\MPICH2\Lib&quot;"
+				AdditionalLibraryDirectories="C:\Andrew\boost\lib;&quot;C:\Program Files (x86)\MPICH\SDK\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				StackReserveSize="0"
-				StackCommitSize="0"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -226,8 +222,6 @@
 				AdditionalLibraryDirectories="C:\Andrew\boost2\lib;&quot;C:\Program Files (x86)\MPICH2\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				StackReserveSize="0"
-				StackCommitSize="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -256,7 +250,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ReleaseMPICH1|Win32"
+			Name="ReleaseMPICH2|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
@@ -280,7 +274,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;C:\Andrew\boost\include\boost-1_37&quot;;&quot;C:\Program Files (x86)\MPICH\SDK\Include&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Andrew\boost2\include\boost-1_37&quot;;&quot;C:\Program Files (x86)\MPICH2\Include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -299,13 +293,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mpich.lib"
+				AdditionalDependencies="mpi.lib cxx.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Andrew\boost\lib;&quot;C:\Program Files (x86)\MPICH\SDK\Lib&quot;"
+				AdditionalLibraryDirectories="C:\Andrew\boost2\lib;&quot;C:\Program Files (x86)\MPICH2\Lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				StackReserveSize="0"
-				StackCommitSize="0"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -345,11 +337,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\parallel.cpp"
+				RelativePath=".\norm.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\product.cpp"
+				RelativePath=".\parallel.cpp"
 				>
 			</File>
 			<File

@@ -21,9 +21,9 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
-  real2D	matrix;			/* matrix x */
-  real1D	answer;			/* answer */
-  real1D	vector;			/* = vector */
+  real2D*	matrix;			/* matrix x */
+  real1D*	answer;			/* answer */
+  real1D*	vector;			/* = vector */
   int		n;			/* matrix size */
   int limit;
   int i, j;
@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
   n = MAXEXT;
   limit = 10;
 
+  matrix = new real2D[MAXEXT];
   for (i = 0; i < n; i++)
   {
     for (j = 0; j < n; j++)
@@ -42,9 +43,12 @@ int main(int argc, char* argv[])
     }
   }
 
+  vector = new real1D[MAXEXT];
   for (i = 0; i < n; i++) {
     vector[i] = rand () % limit;
   }
+
+  answer = new real1D[MAXEXT];
 
   printf ("\n");
 
@@ -58,10 +62,14 @@ int main(int argc, char* argv[])
 
   printf ("Answer\n");
   print_vector (answer, n);
+
+  delete [] matrix;
+  delete [] vector;
+  delete [] answer;
 #else
-  real2D	matrix;			/* matrix x */
-  real1D	answer;			/* answer */
-  real1D	vector;			/* = vector */
+  real2D*	matrix;			/* matrix x */
+  real1D*	answer;			/* answer */
+  real1D*	vector;			/* = vector */
   int		n;			/* matrix size */
   int limit;
   int i, j;
@@ -72,6 +80,7 @@ int main(int argc, char* argv[])
   n = MAXEXT;
   limit = 10;
 
+  matrix = new real2D[MAXEXT];
   for (i = 0; i < n; i++)
   {
     for (j = 0; j < n; j++)
@@ -80,9 +89,12 @@ int main(int argc, char* argv[])
     }
   }
 
+  vector = new real1D[MAXEXT];
   for (i = 0; i < n; i++) {
     vector[i] = rand () % limit;
   }
+
+  answer = new real1D[MAXEXT];
 
   printf ("\n");
 
@@ -97,6 +109,9 @@ int main(int argc, char* argv[])
   printf ("Answer\n");
   print_vector (answer, n);
 
+  delete [] matrix;
+  delete [] vector;
+  delete [] answer;
 #endif
 
 	return 0;

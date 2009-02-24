@@ -19,16 +19,15 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
-  //printf ("I am process %d\n", world.rank ());
+  printf ("I am process %d\n", world.rank ());
 
-  real1DX	matrix;			/* to multiply by */
-  real1D	vector;			/* to be multiplied */
-  real1D	result;			/* result of multiply */
+  real2D*	matrix;			/* to multiply by */
+  real1D*	vector;			/* to be multiplied */
+  real1D*	result;			/* result of multiply */
   int		nr;			/* row size */
   int		nc;			/* column size */
   int limit;
   int i, j;
-  int iters;
 
   //srand ((unsigned int) time (NULL));
   srand (222);
@@ -36,53 +35,53 @@ int main(int argc, char* argv[])
   nr = MAXEXT;
   nc = MAXEXT;
   limit = 10;
-  iters = 10000;
 
-  matrix = new real[MAXEXT * MAXEXT];
+  matrix = new real2D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     for (j = 0; j < nc; j++)
     {
-      matrix[i * nc + j] = (real) (rand () % limit);
+      matrix[i][j] = (real) (rand () % limit);
     }
   }
 
-  vector = new real[MAXEXT];
+  vector = new real1D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     vector[i] = (real) (rand () % limit);
   }
 
-  result = new real[MAXEXT];
+  result = new real1D[MAXEXT];
 
-  //printf ("Matrix\n");
-  //print_matrix (matrix, nr, nc);
-  //printf ("x Vector\n");
-  //print_vector (vector, nr);
+  printf ("Matrix\n");
+  print_matrix (matrix, nr, nc);
+  printf ("x Vector\n");
+  print_vector (vector, nr);
 
   DWORD startTime,endTime;
 
   startTime = GetTickCount ();
 
-  for (i = 0; i < iters; i++) {
-    product_mpi (world, matrix, vector, result, nr, nc);
-  }
+  product_mpi (world, matrix, vector, result, nr, nc);
 
   endTime = GetTickCount ();
 
   printf ("Done in %ums\n\n", endTime - startTime);
 
-  //printf ("=\n");
-  //print_vector (result, nr);
+  printf ("=\n");
+  print_vector (result, nr);
+
+  delete [] matrix;
+  delete [] vector;
+  delete [] result;
 #else
-  real1DX	matrix;			/* to multiply by */
-  real1D	vector;			/* to be multiplied */
-  real1D	result;			/* result of multiply */
+  real2D*	matrix;			/* to multiply by */
+  real1D*	vector;			/* to be multiplied */
+  real1D*	result;			/* result of multiply */
   int		nr;			/* row size */
   int		nc;			/* column size */
   int limit;
   int i, j;
-  int iters;
 
   //srand ((unsigned int) time (NULL));
   srand (222);
@@ -90,44 +89,45 @@ int main(int argc, char* argv[])
   nr = MAXEXT;
   nc = MAXEXT;
   limit = 10;
-  iters = 10000;
 
-  matrix = new real[MAXEXT * MAXEXT];
+  matrix = new real2D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     for (j = 0; j < nc; j++)
     {
-      matrix[i * nc + j] = (real) (rand () % limit);
+      matrix[i][j] = (real) (rand () % limit);
     }
   }
 
-  vector = new real[MAXEXT];
+  vector = new real1D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     vector[i] = (real) (rand () % limit);
   }
 
-  result = new real[MAXEXT];
+  result = new real1D[MAXEXT];
 
-//  printf ("Matrix\n");
-//  print_matrix (matrix, nr, nc);
-//  printf ("x Vector\n");
-//  print_vector (vector, nr);
+  printf ("Matrix\n");
+  print_matrix (matrix, nr, nc);
+  printf ("x Vector\n");
+  print_vector (vector, nr);
 
   DWORD startTime,endTime;
 
   startTime = GetTickCount ();
 
-  for (i = 0; i < iters; i++) {
-    product (matrix, vector, result, nr, nc);
-  }
+  product (matrix, vector, result, nr, nc);
 
   endTime = GetTickCount ();
 
   printf ("Done in %ums\n\n", endTime - startTime);
 
-//  printf ("=\n");
-//  print_vector (result, nr);
+  printf ("=\n");
+  print_vector (result, nr);
+
+  delete [] matrix;
+  delete [] vector;
+  delete [] result;
 #endif
 
 	return 0;

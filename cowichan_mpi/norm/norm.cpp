@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
-  pt1D vec;
+  pt1D* vec;
   int n;
   int limit;
   int i;
@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
   //srand ((unsigned int) time (NULL));
   srand (333);
 
+  vec = new pt1D[MAXEXT];
   for (i = 0; i < n; i++) {
     vec[i].x = rand () % limit;
     vec[i].y = rand () % limit;
@@ -45,8 +46,10 @@ int main(int argc, char* argv[])
 
   printf ("Norm:\n");
   print_vector (vec, n);
+
+  delete [] vec;
 #else
-  pt1D vec;
+  pt1D* vec;
   int n;
   int limit;
   int i;
@@ -57,6 +60,7 @@ int main(int argc, char* argv[])
   //srand ((unsigned int) time (NULL));
   srand (333);
 
+  vec = new pt1D[MAXEXT];
   for (i = 0; i < n; i++) {
     vec[i].x = rand () % limit;
     vec[i].y = rand () % limit;
@@ -70,6 +74,8 @@ int main(int argc, char* argv[])
 
   printf ("Norm:\n");
   print_vector (vec, n);
+
+  delete [] vec;
 #endif
 
   return 0;

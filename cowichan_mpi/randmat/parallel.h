@@ -23,7 +23,7 @@
 void
 randmat_mpi(
   mpi::communicator world,			/* own ID */
-  int2D		matrix,			/* to fill */
+  int2D*		matrix,			/* to fill */
   int		nr,			/* row size */
   int		nc,			/* column size */
   unsigned int		limit,			/* value limit */

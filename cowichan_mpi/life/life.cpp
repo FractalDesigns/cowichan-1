@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
   printf ("I am process %d\n", world.rank ());
 
-  bool2D matrix; /* world to evolve */
+  bool2D* matrix; /* world to evolve */
   int    nr;    /* row size */
   int    nc;    /* column size */
   int    iters; /* number of iterations */
@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
   nc = MAXEXT;
   iters = 10;
 
+  matrix = new bool2D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     for (j = 0; j < nc; j++)
@@ -48,8 +49,10 @@ int main(int argc, char* argv[])
   life_mpi (world, matrix, nr, nc, iters);
 
   print_matrix (matrix, nr, nc);
+
+  delete [] matrix;
 #else
-  bool2D matrix; /* world to evolve */
+  bool2D* matrix; /* world to evolve */
   int    nr;    /* row size */
   int    nc;    /* column size */
   int    iters; /* number of iterations */
@@ -65,6 +68,7 @@ int main(int argc, char* argv[])
   nc = MAXEXT;
   iters = 10;
 
+  matrix = new bool2D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     for (j = 0; j < nc; j++)
@@ -76,6 +80,8 @@ int main(int argc, char* argv[])
   life (matrix, nr, nc, iters);
 
   print_matrix (matrix, nr, nc);
+
+  delete [] matrix;
 #endif
 
   return 0;
