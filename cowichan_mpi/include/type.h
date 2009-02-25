@@ -10,22 +10,29 @@ typedef double real;			/* double-precision reals */
 #define FMT_REAL_RD "%le"
 #define FMT_REAL_WR "%24.16e\n"
 
-#define MAXEXT 10
+#define MAXEXT 100
 
 struct pt {
-  friend class boost::serialization::access;
-
+public:
   real x, y; /* point location */
   int  w;    /* weight */
-
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    ar & x;
-    ar & y;
-    ar & w;
-  }
 };
+
+namespace boost {
+namespace serialization {
+
+template<class Archive>
+void serialize(Archive & ar, pt & p, const unsigned int version)
+{
+    ar & p.x;
+    ar & p.y;
+    ar & p.w;
+}
+
+} // namespace serialization
+} // namespace boost
+
+BOOST_IS_MPI_DATATYPE(pt)
 
 #define FMT_PT_RD "%le%le%d"
 #define FMT_PT_WR "%e\t%e\t%d\n"

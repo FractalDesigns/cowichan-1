@@ -299,10 +299,14 @@ winnow_psrs_1(mpi::communicator world
       Pivots[(rank * ParWidth_1)+i] = TmpPt[hi-1].w;
     }
   }
-  // broadcast Pivots
+  // broadcast Pivots, TmpPt
   for (i = 0; i < size; i++) {
     winnow_sched (i, &lo, &hi);
     broadcast (world, &Pivots[lo], hi - lo, i);
+  }
+  for (i = 0; i < size; i++) {
+    winnow_sched (i, &lo, &hi);
+    broadcast (world, &TmpPt[lo], hi - lo, i);
   }
 
   /* return */

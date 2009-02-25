@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
   int npt;
   int i,j;
 
-  Sleep (30000);
+  //Sleep (30000);
 
   //srand ((unsigned int) time (NULL));
   srand (222);
