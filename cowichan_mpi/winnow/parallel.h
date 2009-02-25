@@ -14,20 +14,20 @@
 /* private function prototypes					*/
 /*--------------------------------------------------------------*/
 
-static void
+void
 winnow_copy(mpi::communicator world,
   int2D*		matrix,			/* matrix of values */
   bool2D*	mask,			/* mask on values */
   int		nr,			/* row size */
   int		nc			/* column size */
 );
-static void
+void
 winnow_count(mpi::communicator world,
   bool2D*	mask,			/* mask on points */
   int		nr,			/* row size */
   int		nc			/* column size */
 );
-static void
+void
 winnow_pack(
   pt1D*		ptDst,			/* to pack into */
   int		nDst,			/* number of points */
@@ -36,23 +36,23 @@ winnow_pack(
   int		nt,			/* number of threads */
   int		rank
 );
-static void
+void
 winnow_psrs_1(
   mpi::communicator world
 );
-static void
+void
 winnow_psrs_2(
   mpi::communicator world
 );
-static void
+void
 winnow_psrs_3(
   mpi::communicator world
 );
-static void
+void
 winnow_psrs_4(
   mpi::communicator world
 );
-static void
+void
 winnow_sched(
   int		rank,			/* caller thread ID */
   int	      * start,			/* start of own interval */

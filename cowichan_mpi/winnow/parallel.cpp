@@ -12,8 +12,8 @@
 // private
 
 static int1D*	Totals;		/* row totals */
-static pt1DX*	TmpPt;		/* temporary storage vector */
-static pt1DX*	TmpPt2;		/* another temporary storage vector */
+static pt*	TmpPt;		/* temporary storage vector */
+static pt*	TmpPt2;		/* another temporary storage vector */
 static int*	Pivots;	/* pivot elements */
 static int*	Counts;	/* number of elements in each interval */
 static int*	Starts;	/* starts of sub-sections */
@@ -34,7 +34,7 @@ winnow_mpi(mpi::communicator world,
   bool2D*	mask,			/* suitable points */
   int		nr,			/* row size */
   int		nc,			/* column size */
-  pt1D*		pt,			/* points to create */
+  pt1D*		pts,			/* points to create */
   int		npt			/* number of points */
 ){
   int		i, j;			/* loop indices */
@@ -49,8 +49,8 @@ winnow_mpi(mpi::communicator world,
   ParWidth_1 = size - 1;
 
   Totals = new int1D[MAXEXT];
-  TmpPt = new pt1DX[MAXEXT * MAXEXT];
-  TmpPt2 = new pt1DX[MAXEXT * MAXEXT];
+  TmpPt = new pt[MAXEXT * MAXEXT];
+  TmpPt2 = new pt[MAXEXT * MAXEXT];
 
   Pivots = new int[size * size];
   Counts = new int[size * size];
@@ -60,14 +60,16 @@ winnow_mpi(mpi::communicator world,
 
 #if GRAPHICS
   if (MASTER(tid)){
-    gfx_winnow(gfxCount++, matrix, mask, pt, nr, nc, npt);
+    gfx_winnow(gfxCount++, matrix, mask, pts, nr, nc, npt);
   }
   thr_bar(tid);
 #endif
 
   /* pack points into temporary storage */
+
   winnow_count(world, mask, nr, nc);
   i = scanIntSum(world, Totals, nr);
+
   Len = i;
 
   /* set slice sizes */
@@ -82,12 +84,14 @@ winnow_mpi(mpi::communicator world,
   if ((size == 1) || (Len < NumSamples)){
     if (rank == 0) {
       ptSort(TmpPt, Len);
-      winnow_pack(pt, npt, TmpPt, Len, 1, 0);
+      winnow_pack(pts, npt, TmpPt, Len, 1, 0);
     }
-    // broadcast pt
-    broadcast (world, pt, npt, 0);
+    // broadcast pts
+    broadcast (world, pts, npt, 0);
   } else {
     /* sort sections and select P-1 pivot values */
+    printf ("Started stage 1\n");
+    fflush (stdout);
     winnow_psrs_1 (world);
     if (rank == 0) {
       intSort(Pivots, NumSamples);
@@ -106,6 +110,8 @@ winnow_mpi(mpi::communicator world,
     broadcast (world, Pivots, ParWidth_1, 0);
 
     /* count elements in processor intervals that belong in pivot intervals */
+    printf ("Started stage 2\n");
+    fflush (stdout);
     winnow_psrs_2(world);
     /* scan number of elements in pivot intervals */
     if (rank == 0) {
@@ -122,25 +128,29 @@ winnow_mpi(mpi::communicator world,
     broadcast (world, Starts, size * size, 0);
 
     /* copy values into pivot intervals */
+    printf ("Started stage 3\n");
+    fflush (stdout);
     winnow_psrs_3(world);
     /* sort pivot intervals */
+    printf ("Started stage 4\n");
+    fflush (stdout);
     winnow_psrs_4(world);
     /* copy selected points */
-    winnow_pack(pt, npt, TmpPt2, Len, size, rank);
+    winnow_pack(pts, npt, TmpPt2, Len, size, rank);
 
-    // broadcast pt
+    // broadcast pts
     int		stride;			/* stride in source */
     stride = Len / npt;
     for (rank = 0; rank < size; rank++) {
       for (i = (npt - 1) - rank; i >= 0; i -= size) {
-        broadcast (world, pt[i], rank);
+        broadcast (world, pts[i], rank);
       }
     }
   }
 
 #if GRAPHICS
   if (MASTER(tid)){
-    gfx_winnow(gfxCount++, matrix, mask, pt, nr, nc, npt);
+    gfx_winnow(gfxCount++, matrix, mask, pts, nr, nc, npt);
   }
 #endif
 
@@ -165,7 +175,7 @@ winnow_mpi(mpi::communicator world,
  * + fill tmpPt
  */
 
-static void
+void
 winnow_copy(mpi::communicator world,
   int2D*		matrix,			/* matrix of values */
   bool2D*	mask,			/* mask on values */
@@ -192,10 +202,14 @@ winnow_copy(mpi::communicator world,
   // broadcast TmpPt
   for (r = 0; r < nr - 1; r++) {
     i = get_block_rank_mpi (world, 0, nr, r);
-    broadcast (world, &TmpPt[Totals[r]], Totals[r + 1] - Totals[r], i);
+    if (Totals[r + 1] - Totals[r] > 0) {
+      broadcast (world, &TmpPt[Totals[r]], Totals[r + 1] - Totals[r], i);
+    }
   }
   i = get_block_rank_mpi (world, 0, nr, r);
-  broadcast (world, &TmpPt[Totals[r]], nr * nc - Totals[r], i);
+  if (nr * nc - Totals[r] > 0) {
+    broadcast (world, &TmpPt[Totals[r]], nr * nc - Totals[r], i);
+  }
 
   /* return */
 }
@@ -206,7 +220,7 @@ winnow_copy(mpi::communicator world,
  * + fill totals
  */
 
-static void
+void
 winnow_count(mpi::communicator world,
   bool2D*	mask,			/* mask on points */
   int		nr,			/* row size */
@@ -243,7 +257,7 @@ winnow_count(mpi::communicator world,
  * + pack points
  */
 
-static void
+void
 winnow_pack(
   pt1D*		ptDst,			/* to pack into */
   int		nDst,			/* number of points */
@@ -271,7 +285,7 @@ winnow_pack(
  * + sort subsections, choose pivot elements
  */
 
-static void
+void
 winnow_psrs_1(mpi::communicator world
 ){
   int		lo, hi;			/* work descriptors */
@@ -290,6 +304,13 @@ winnow_psrs_1(mpi::communicator world
 
   /* sort */
   ptSort(TmpPt + lo, hi - lo);
+
+  // broadcast TmpPt
+  for (i = 0; i < size; i++) {
+    winnow_sched (i, &lo, &hi);
+    broadcast (world, &TmpPt[lo], hi - lo, i);
+  }
+
   /* pack pivots */
   for (i = 0; i < ParWidth_1; i++) {
     dex = lo + offset + (i*IntervalSize);
@@ -299,14 +320,13 @@ winnow_psrs_1(mpi::communicator world
       Pivots[(rank * ParWidth_1)+i] = TmpPt[hi-1].w;
     }
   }
-  // broadcast Pivots, TmpPt
-  for (i = 0; i < size; i++) {
-    winnow_sched (i, &lo, &hi);
-    broadcast (world, &Pivots[lo], hi - lo, i);
-  }
-  for (i = 0; i < size; i++) {
-    winnow_sched (i, &lo, &hi);
-    broadcast (world, &TmpPt[lo], hi - lo, i);
+
+  // broadcast Pivots
+  for (rank = 0; rank < size; rank++) {
+    for (i = 0; i < ParWidth_1; i++) {
+      winnow_sched (i, &lo, &hi);
+      broadcast (world, Pivots[(rank * ParWidth_1)+i], rank);
+    }
   }
 
   /* return */
@@ -318,7 +338,7 @@ winnow_psrs_1(mpi::communicator world
  * + count elements in each subsection
  */
 
-static void
+void
 winnow_psrs_2(mpi::communicator world
 ){
   int		lo, hi;			/* own interval */
@@ -380,7 +400,7 @@ winnow_psrs_2(mpi::communicator world
  * + copy elements into correct section
  */
 
-static void
+void
 winnow_psrs_3(mpi::communicator world
 ){
   int		lo, hi;			/* own source section boundaries */
@@ -425,7 +445,7 @@ winnow_psrs_3(mpi::communicator world
  * + sort elements in subsections
  */
 
-static void
+void
 winnow_psrs_4(mpi::communicator world
 ){
   int		secBase, secLen;	/* base of own section and its length */
@@ -464,7 +484,7 @@ winnow_psrs_4(mpi::communicator world
  * + set limit parameters
  */
 
-static void
+void
 winnow_sched(int rank,
   int	      * start,			/* start of own interval */
   int	      * end			/* end of own interval */
@@ -541,7 +561,7 @@ scanIntSum(mpi::communicator world,
   }
   // broadcast vec
   for (i = 1; i < size; i++) {
-    if(get_block_rows_mpi (world, 0, len, &blo, &bhi, i)) {
+    if (get_block_rows_mpi (world, 0, len, &blo, &bhi, i)) {
       broadcast (world, &vec[blo], bhi - blo, i);
     }
   }

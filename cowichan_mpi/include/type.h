@@ -10,7 +10,7 @@ typedef double real;			/* double-precision reals */
 #define FMT_REAL_RD "%le"
 #define FMT_REAL_WR "%24.16e\n"
 
-#define MAXEXT 100
+#define MAXEXT 500
 
 struct pt {
 public:
@@ -31,8 +31,6 @@ void serialize(Archive & ar, pt & p, const unsigned int version)
 
 } // namespace serialization
 } // namespace boost
-
-BOOST_IS_MPI_DATATYPE(pt)
 
 #define FMT_PT_RD "%le%le%d"
 #define FMT_PT_WR "%e\t%e\t%d\n"

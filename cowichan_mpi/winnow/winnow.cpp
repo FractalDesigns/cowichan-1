@@ -60,11 +60,11 @@ int main(int argc, char* argv[])
 
   pt = new pt1D[npt];
 
-  printf ("Matrix:\n");
-  print_matrix (matrix, nr, nc);
+  //printf ("Matrix:\n");
+  //print_matrix (matrix, nr, nc);
 
-  printf ("Mask:\n");
-  print_matrix (mask, nr, nc);
+  //printf ("Mask:\n");
+  //print_matrix (mask, nr, nc);
 
   winnow_mpi (world, matrix, mask, nr, nc, pt, npt); 
 
