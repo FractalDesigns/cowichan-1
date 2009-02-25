@@ -51,3 +51,7 @@ void ptSort(pt	      * ptVec,			/* points to sort */
 
 int ptCmp(pt	      * left,			/* left point */
           pt	      * right);			/* right point */
+
+void intSort(int  * vec,			/* to sort */
+             int		len			/* length */
+);

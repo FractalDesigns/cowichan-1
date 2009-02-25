@@ -30,6 +30,8 @@ int main(int argc, char* argv[])
   int npt;
   int i,j;
 
+  Sleep (30000);
+
   //srand ((unsigned int) time (NULL));
   srand (222);
 
@@ -116,7 +118,7 @@ int main(int argc, char* argv[])
   printf ("Mask:\n");
   print_matrix (mask, nr, nc);
 
-  winnow_mpi (world, matrix, mask, nr, nc, pt, npt); 
+  winnow (matrix, mask, nr, nc, pt, npt); 
 
   printf ("Points:\n");
   print_vector (pt, nr);

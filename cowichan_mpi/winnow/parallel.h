@@ -14,11 +14,55 @@
 /* private function prototypes					*/
 /*--------------------------------------------------------------*/
 
-static int
-winnow_redBool2DCount_mpi(
-  bool2D*	mask,			/* to reduce */
+static void
+winnow_copy(mpi::communicator world,
+  int2D*		matrix,			/* matrix of values */
+  bool2D*	mask,			/* mask on values */
   int		nr,			/* row size */
   int		nc			/* column size */
+);
+static void
+winnow_count(mpi::communicator world,
+  bool2D*	mask,			/* mask on points */
+  int		nr,			/* row size */
+  int		nc			/* column size */
+);
+static void
+winnow_pack(
+  pt1D*		ptDst,			/* to pack into */
+  int		nDst,			/* number of points */
+  pt1D*		ptSrc,			/* to pull from */
+  int		nSrc,			/* number of tmps */
+  int		nt,			/* number of threads */
+  int		rank
+);
+static void
+winnow_psrs_1(
+  mpi::communicator world
+);
+static void
+winnow_psrs_2(
+  mpi::communicator world
+);
+static void
+winnow_psrs_3(
+  mpi::communicator world
+);
+static void
+winnow_psrs_4(
+  mpi::communicator world
+);
+static void
+winnow_sched(
+  int		rank,			/* caller thread ID */
+  int	      * start,			/* start of own interval */
+  int	      * end			/* end of own interval */
+); 
+
+int
+scanIntSum(mpi::communicator world,
+  int	      * vec,			/* to sum */
+  int		len			/* vector length */
 );
 
 /*--------------------------------------------------------------*/

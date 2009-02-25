@@ -12,10 +12,20 @@ typedef double real;			/* double-precision reals */
 
 #define MAXEXT 10
 
-typedef struct {
+struct pt {
+  friend class boost::serialization::access;
+
   real x, y; /* point location */
   int  w;    /* weight */
-} pt;
+
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & x;
+    ar & y;
+    ar & w;
+  }
+};
 
 #define FMT_PT_RD "%le%le%d"
 #define FMT_PT_WR "%e\t%e\t%d\n"

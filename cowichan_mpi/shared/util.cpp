@@ -9,6 +9,12 @@
 #include "../include/main.h"
 
 
+#define SWAP_I_2(w_, l_, h_, t_)				\
+t_ = w_[l_], w_[l_] = w_[h_], w_[h_] = t_
+
+#define SWAP_I_3(w_, a_, b_, c_, t_)				\
+t_ = w_[a_], w_[a_] = w_[b_], w_[b_] = w_[c_], w_[c_] = t_ 
+
 #define SWAP_PT_2(p_, l_, h_, t_)				\
 t_ = p_[l_], p_[l_] = p_[h_], p_[h_] = t_
 
@@ -538,4 +544,65 @@ ptCmp(
   else if	(left->y < right->y)	return -1;
   else if	(left->y > right->y)	return  1;
   else					return  0;
+}
+
+/*
+ * @ intSort : sort integers
+ * > none
+ * + sort vector of integers
+ */
+
+void
+intSort(
+  int	      * vec,			/* to sort */
+  int		len			/* length */
+){
+  int		tmp;			/* for swapping */
+  int		pivot;			/* pivot value */
+  int		i, j;			/* indices */
+  int		loop;			/* loop control */
+
+  if (len <= 1){
+    /* skip */
+  } else if (len == 2){
+    if (vec[1] < vec[0]){
+      SWAP_I_2(vec, 0, 1, tmp);
+    }
+  } else if (len == 3){
+    if (vec[1] < vec[0]){
+      if (vec[0] < vec[2]){
+	SWAP_I_2(vec, 0, 1, tmp);
+      } else if (vec[1] < vec[2]){
+	SWAP_I_3(vec, 0, 1, 2, tmp);
+      } else {
+	SWAP_I_2(vec, 0, 2, tmp);
+      }
+    } else if (vec[2] < vec[0]){
+      SWAP_I_3(vec, 2, 1, 0, tmp);
+    } else if (vec[2] < vec[1]){
+      SWAP_I_2(vec, 1, 2, tmp);
+    }
+  } else {
+    i = 0;
+    j = len - 1;
+    pivot = vec[(i+j)/2];
+    loop = TRUE;
+    while (loop){
+      while (vec[i] < pivot) i++;
+      while (vec[j] > pivot) j--;
+      if (i <= j){
+	SWAP_I_2(vec, i, j, tmp);
+	i++; j--;
+      }
+      loop = (i <= j);
+    }
+    if (1 <= j){
+      intSort(vec, j+1);
+    }
+    if (i < len-1){
+      intSort(vec+i, len-i);
+    }
+  }
+
+  /* return */
 }
