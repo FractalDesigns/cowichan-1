@@ -154,15 +154,15 @@ winnow_mpi(mpi::communicator world,
   }
 #endif
 
-  //delete [] Totals;
-  //delete [] TmpPt;
-  //delete [] TmpPt2;
+  delete [] Totals;
+  delete [] TmpPt;
+  delete [] TmpPt2;
 
-  //delete [] Pivots;
-  //delete [] Counts;
-  //delete [] Starts;
+  delete [] Pivots;
+  delete [] Counts;
+  delete [] Starts;
 
-  //delete [] SumProc;
+  delete [] SumProc;
 
   /* return */
 }
