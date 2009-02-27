@@ -72,7 +72,7 @@ life(
 
 // private
 
-static void
+void
 life_one(
   bool2D*	world,			/* world to evolve */
   int2D*		count,			/* neighborhood counts */
@@ -89,7 +89,7 @@ life_one(
   /* return */
 }
 
-static void
+void
 life_row(
   bool2D*	world,			/* world to evolve */
   int2D*		count,			/* neighborhood counts */

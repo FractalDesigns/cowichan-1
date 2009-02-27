@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
   mpi::communicator world;
 
   printf ("I am process %d\n", world.rank ());
+#endif
 
   int2D* matrix; /* to fill */
   int   nr;     /* row size */
@@ -34,31 +35,15 @@ int main(int argc, char* argv[])
 
   matrix = new int2D[MAXEXT];
 
+#ifdef IS_PARALLEL
   randmat_mpi (world, matrix, nr, nc, limit, seed);
-
-  print_matrix (matrix, nr, nc);
-
-  delete [] matrix;
 #else
-  int2D* matrix; /* to fill */
-  int   nr;     /* row size */
-  int   nc;     /* column size */
-  int   limit;  /* value limit */
-  int   seed;   /* RNG seed */
-
-  nr = MAXEXT;
-  nc = MAXEXT;
-  limit = 10;
-  seed = 222;
-
-  matrix = new int2D[MAXEXT];
-
   randmat (matrix, nr, nc, limit, seed);
-
-  print_matrix (matrix, nr, nc);
-
-  delete [] matrix;
 #endif
 
-	return 0;
+  print_matrix (matrix, nr, nc);
+
+  delete [] matrix;
+
+  return 0;
 }

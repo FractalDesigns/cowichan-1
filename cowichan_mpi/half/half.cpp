@@ -1,9 +1,9 @@
 /**
- * Conway's game of life
+ * Halving shuffle
  *
- * \file life.cpp
+ * \file half.cpp
  * \author Andrew Borzenko
- * \date 01-26-09
+ * \date 02-27-09
  */
 
 #include "../include/main.h"
@@ -22,36 +22,37 @@ int main(int argc, char* argv[])
   printf ("I am process %d\n", world.rank ());
 #endif
 
-  bool2D* matrix; /* world to evolve */
+  int2D* matrix;
   int    nr;    /* row size */
   int    nc;    /* column size */
-  int    iters; /* number of iterations */
-
+  int limit;
   int i, j;
 
   srand (222);
 
   nr = MAXEXT;
   nc = MAXEXT;
-  iters = 10;
+  limit = 10;
 
-  matrix = new bool2D[MAXEXT];
+  matrix = new int2D[MAXEXT];
   for (i = 0; i < nr; i++)
   {
     for (j = 0; j < nc; j++)
     {
-      matrix[i][j] = rand () % 2;
+      matrix[i][j] = rand () % limit;
     }
   }
 
+  printf ("matrix before shuffle:\n");
   print_matrix (matrix, nr, nc);
 
 #ifdef IS_PARALLEL
-  life_mpi (world, matrix, nr, nc, iters);
+  half_mpi (world, matrix, nr, nc);
 #else
-  life (matrix, nr, nc, iters);
+  half (matrix, nr, nc);
 #endif
 
+  printf ("matrix after shuffle:\n");
   print_matrix (matrix, nr, nc);
 
   delete [] matrix;

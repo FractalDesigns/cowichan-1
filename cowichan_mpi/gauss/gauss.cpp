@@ -20,99 +20,56 @@ int main(int argc, char* argv[])
   mpi::communicator world;
 
   printf ("I am process %d\n", world.rank ());
-
-  real2D*	matrix;			/* matrix x */
-  real1D*	answer;			/* answer */
-  real1D*	vector;			/* = vector */
-  int		n;			/* matrix size */
-  int limit;
-  int i, j;
-
-  //srand ((unsigned int) time (NULL));
-  srand (333);
-
-  n = MAXEXT;
-  limit = 10;
-
-  matrix = new real2D[MAXEXT];
-  for (i = 0; i < n; i++)
-  {
-    for (j = 0; j < n; j++)
-    {
-      matrix[i][j] = rand () % limit;
-    }
-  }
-
-  vector = new real1D[MAXEXT];
-  for (i = 0; i < n; i++) {
-    vector[i] = rand () % limit;
-  }
-
-  answer = new real1D[MAXEXT];
-
-  printf ("\n");
-
-  printf ("Matrix\n");
-  print_matrix (matrix, n, n);
-
-  printf ("Target\n");
-  print_vector (vector, n);
-
-  gauss_mpi (world, matrix, vector, answer, n);
-
-  printf ("Answer\n");
-  print_vector (answer, n);
-
-  delete [] matrix;
-  delete [] vector;
-  delete [] answer;
-#else
-  real2D*	matrix;			/* matrix x */
-  real1D*	answer;			/* answer */
-  real1D*	vector;			/* = vector */
-  int		n;			/* matrix size */
-  int limit;
-  int i, j;
-
-  //srand ((unsigned int) time (NULL));
-  srand (333);
-
-  n = MAXEXT;
-  limit = 10;
-
-  matrix = new real2D[MAXEXT];
-  for (i = 0; i < n; i++)
-  {
-    for (j = 0; j < n; j++)
-    {
-      matrix[i][j] = rand () % limit;
-    }
-  }
-
-  vector = new real1D[MAXEXT];
-  for (i = 0; i < n; i++) {
-    vector[i] = rand () % limit;
-  }
-
-  answer = new real1D[MAXEXT];
-
-  printf ("\n");
-
-  printf ("Matrix\n");
-  print_matrix (matrix, n, n);
-
-  printf ("Target\n");
-  print_vector (vector, n);
-
-  gauss (matrix, vector, answer, n);
-
-  printf ("Answer\n");
-  print_vector (answer, n);
-
-  delete [] matrix;
-  delete [] vector;
-  delete [] answer;
 #endif
 
-	return 0;
+  real2D*	matrix;			/* matrix x */
+  real1D*	answer;			/* answer */
+  real1D*	vector;			/* = vector */
+  int		n;			/* matrix size */
+  int limit;
+  int i, j;
+
+  srand (333);
+
+  n = MAXEXT;
+  limit = 10;
+
+  matrix = new real2D[MAXEXT];
+  for (i = 0; i < n; i++)
+  {
+    for (j = 0; j < n; j++)
+    {
+      matrix[i][j] = rand () % limit;
+    }
+  }
+
+  vector = new real1D[MAXEXT];
+  for (i = 0; i < n; i++) {
+    vector[i] = rand () % limit;
+  }
+
+  answer = new real1D[MAXEXT];
+
+  printf ("\n");
+
+  printf ("Matrix\n");
+  print_matrix (matrix, n, n);
+
+  printf ("Target\n");
+  print_vector (vector, n);
+
+#ifdef IS_PARALLEL
+  gauss_mpi (world, matrix, vector, answer, n);
+#else
+  gauss (matrix, vector, answer, n);
+#endif
+
+  printf ("Answer\n");
+  print_vector (answer, n);
+
+  delete [] matrix;
+  delete [] vector;
+  delete [] answer;
+
+  return 0;
 }

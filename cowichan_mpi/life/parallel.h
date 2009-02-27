@@ -39,7 +39,7 @@ life_mpi(
  * + update count (using fact that TRUE==1 and FALSE==0)
  */
 
-static void
+void
 life_one_mpi(
   bool2D*	matrix,			/* world to evolve */
   int2D*		count,			/* neighborhood counts */
@@ -58,7 +58,7 @@ life_one_mpi(
  * + update counts
  */
 
-static void
+void
 life_row_mpi(
   bool2D*	matrix,			/* world to evolve */
   int2D*		count,			/* neighborhood counts */
