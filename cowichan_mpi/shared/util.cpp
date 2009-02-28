@@ -109,7 +109,6 @@ void print_matrix (bool2D* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_matrix (int2D* matrix, int nr, int nc)
@@ -123,7 +122,6 @@ void print_matrix (int2D* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_matrix (real2D* matrix, int nr, int nc)
@@ -137,7 +135,6 @@ void print_matrix (real2D* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_matrix (bool1DX* matrix, int nr, int nc)
@@ -156,7 +153,6 @@ void print_matrix (bool1DX* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_matrix (int1DX* matrix, int nr, int nc)
@@ -170,7 +166,6 @@ void print_matrix (int1DX* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_matrix (real1DX* matrix, int nr, int nc)
@@ -184,7 +179,6 @@ void print_matrix (real1DX* matrix, int nr, int nc)
     }
     printf ("\n");
   }
-  printf ("\n");
 }
 
 void print_vector (bool1D* vector, int nr)
@@ -605,4 +599,37 @@ intSort(
   }
 
   /* return */
+}
+
+/*
+ * @ ptDist : Euclidean distance between two points
+ * > distance
+ */
+
+real
+ptDist(
+  pt	      * left,			/* left point */
+  pt	      * right			/* right point */
+){
+  double	dx, dy;			/* components */
+
+  ASSERT(left != NULL);
+  ASSERT(right != NULL);
+
+  dx = (double)(left->x - right->x);
+  dy = (double)(left->y - right->y);
+
+  return (real)sqrt(dx*dx + dy*dy);
+}
+
+/*
+ * @ ptMag : distance of point from origin
+ * > distance
+ */
+
+real
+ptMag(
+  pt	      * p			/* point */
+){
+  return (real)sqrt((double)((p->x*p->x) + (p->y*p->y)));
 }

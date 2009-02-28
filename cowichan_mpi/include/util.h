@@ -55,3 +55,8 @@ int ptCmp(pt	      * left,			/* left point */
 void intSort(int  * vec,			/* to sort */
              int		len			/* length */
 );
+
+real ptDist(pt	      * left,			/* left point */
+            pt	      * right);			/* right point */
+
+real ptMag(pt	      * p);			/* point */
