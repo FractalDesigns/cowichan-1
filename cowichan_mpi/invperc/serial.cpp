@@ -86,7 +86,6 @@ node_p inv_enq(
 ){
   node_p	ptr;			/* for list traversal */
   node_p	result;			/* queue returned */
-  int chain; // chain size (assessing performance)
 
   node->next = NULL;
   if (queue == NULL){
@@ -97,10 +96,8 @@ node_p inv_enq(
   } else {
     result = queue;
     ptr = queue;
-    chain = 1;
     while ((ptr->next != NULL) && (node->val > ptr->next->val)){
       ptr = ptr->next;
-      chain++;
     }
     node->next = ptr->next;
     ptr->next = node;
