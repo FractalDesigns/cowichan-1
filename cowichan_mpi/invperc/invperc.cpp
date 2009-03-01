@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   start = get_ticks ();
 
 #ifdef IS_PARALLEL
-  //invperc_mpi (world, matrix, mask, nr, nc, fraction);
+  invperc_mpi (world, matrix, mask, nr, nc, fraction);
 #else
   invperc (matrix, mask, nr, nc, fraction);
 #endif

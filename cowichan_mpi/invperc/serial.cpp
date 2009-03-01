@@ -11,8 +11,6 @@
 
 // public
 
-static int MaxChain;
-
 /*
  * @ invperc : do invasion percolation
  * > none
@@ -37,7 +35,6 @@ invperc(
   /* initialize */
   num = (int)(fraction * nr * nc);
   queue = inv_node(matrix[nr/2][nc/2], nr/2, nc/2);
-  MaxChain = 0;
 
   /* fill */
   for (i=0; i<num; i++){
@@ -48,8 +45,6 @@ invperc(
     gfx_invperc(gfxCount++, matrix, mask, nr, nc, r, c);
 #endif
   }
-
-  printf ("MaxChain is %d\n", MaxChain);
 
   /* return */
 }
@@ -74,7 +69,6 @@ node_p inv_deq(
   *r = node->r;
   *c = node->c;
   result = queue->next;
-  //FREE(node);
   delete node;
 
   return result;
@@ -108,9 +102,6 @@ node_p inv_enq(
       ptr = ptr->next;
       chain++;
     }
-    if (chain > MaxChain) {
-      MaxChain = chain;
-    }
     node->next = ptr->next;
     ptr->next = node;
   }
@@ -130,7 +121,6 @@ node_p inv_node(
 ){
   node_p	result;
 
-  //ALLOC(result, node_t, 1, "inv_node", "new node");
   result = new node_t;
   result->val  = val;
   result->r    = r;
