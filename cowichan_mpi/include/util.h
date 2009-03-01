@@ -60,3 +60,8 @@ real ptDist(pt	      * left,			/* left point */
             pt	      * right);			/* right point */
 
 real ptMag(pt	      * p);			/* point */
+
+INT64 get_ticks (); // tick count
+INT64 get_freq (); // tick frequency
+
+void print_elapsed_time (INT64 start, INT64 end); // print elapsed time

@@ -13,7 +13,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-#define IS_PARALLEL
+//#define IS_PARALLEL
 
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
@@ -21,6 +21,7 @@ namespace mpi = boost::mpi;
 #if defined(WIN32)   // Windows
 #include <windows.h>
 #else                // Linux
+#include <sys/times.h>
 #endif               // end of WIN32/Linux definitions
 
 #include "../include/type.h"

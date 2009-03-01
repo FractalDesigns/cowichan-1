@@ -633,3 +633,37 @@ ptMag(
 ){
   return (real)sqrt((double)((p->x*p->x) + (p->y*p->y)));
 }
+
+INT64 get_ticks ()
+{
+  INT64 count;
+#if defined(WIN32)   // Windows
+  if (! QueryPerformanceCounter((LARGE_INTEGER *) &count)) {
+    count = GetTickCount (); // ms
+  }
+#else                // Linux
+  tms tm;
+  count = times (&tm);
+#endif               // end of WIN32/Linux definitions
+  return count;
+}
+
+INT64 get_freq ()
+{
+  INT64 freq;
+#if defined(WIN32)   // Windows
+  if (! QueryPerformanceFrequency((LARGE_INTEGER *) &freq)) {
+    freq = 1000; // ms
+  }
+#else                // Linux
+  freq = sysconf (_SC_CLK_TCK);
+#endif               // end of WIN32/Linux definitions
+  return freq;
+}
+
+void print_elapsed_time (INT64 start, INT64 end)
+{
+  INT64 freq = get_freq ();
+  printf ("Elapsed time: %lg seconds\n", ((double) (end - start)) /
+                                         ((double) freq));
+}
