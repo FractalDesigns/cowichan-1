@@ -20,52 +20,41 @@ typedef struct node_struct* node_p;
 struct node_struct {
   int		val;			/* matrix value */
   int		r, c;			/* location indices */
-  node_p	next;			/* link */
 };
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
 /*--------------------------------------------------------------*/
 
-void
-invperc_mpi (mpi::communicator world,
-  int2D*		matrix,			/* matrix to invade */
-  bool2D*	mask,			/* mask to fill */
-  int		nr,			/* row size */
-  int		nc,			/* column size */
-  real		fraction		/* how much to fill */
-);
+void invperc_mpi (mpi::communicator world,
+                  int2D*		matrix,			/* matrix to invade */
+                  bool2D*	mask,			/* mask to fill */
+                  int		nr,			/* row size */
+                  int		nc,			/* column size */
+                  real		fraction);		/* how much to fill */
 
 /*--------------------------------------------------------------*/
 /* private functions 					*/
 /*--------------------------------------------------------------*/
 
-node_p
-inv_deq_mpi(
-  node_p	queue,			/* priority queue */
-  int	      * r,			/* row index */
-  int	      * c			/* column index */
-);
-node_p
-inv_enq_mpi(
-  node_p	queue,			/* where to enqueue */
-  node_p	node			/* what to enqueue */
-);
-node_p
-inv_node_mpi(
-  int		val,			/* location value */
-  int		r,			/* row index */
-  int		c			/* column index */
-);
-node_p
-inv_enqPt_mpi(
-  int2D*		matrix,			/* matrix of values */
-  bool2D*	mask,			/* mask to be filled */
-  int		nr,			/* number of rows */
-  int		nc,			/* number of columns */
-  int		r,			/* point row */
-  int		c,			/* point column */
-  node_p	queue			/* priority queue */
-);
+void inv_deq_mpi (mpi::communicator world,
+                  int	      * r,			/* row index */
+                  int	      * c);			/* column index */
+
+void inv_enq_mpi (mpi::communicator world,
+                  node_p	node);			/* what to enqueue */
+
+node_p inv_node_mpi (mpi::communicator world,
+                     int		val,			/* location value */
+                     int		r,			/* row index */
+                     int		c);			/* column index */
+
+void inv_enqPt_mpi (mpi::communicator world,
+                    int2D*		matrix,			/* matrix of values */
+                    bool2D*	mask,			/* mask to be filled */
+                    int		nr,			/* number of rows */
+                    int		nc,			/* number of columns */
+                    int		r,			/* point row */
+                    int		c);			/* point column */
 
 #endif /* PARALLEL_H */

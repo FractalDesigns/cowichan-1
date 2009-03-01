@@ -10,7 +10,7 @@ typedef double real;			/* double-precision reals */
 #define FMT_REAL_RD "%le"
 #define FMT_REAL_WR "%24.16e\n"
 
-#define MAXEXT 200
+#define MAXEXT 2000
 
 struct pt {
 public:
