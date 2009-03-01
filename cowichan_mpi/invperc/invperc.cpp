@@ -46,11 +46,11 @@ int main(int argc, char* argv[])
   mask = new bool2D[MAXEXT];
   memset (mask, 0, sizeof(boolean) * nr * nc);
 
-  printf ("Matrix:\n");
-  print_matrix (matrix, nr, nc);
+  //printf ("Matrix:\n");
+  //print_matrix (matrix, nr, nc);
 
-  printf ("Mask before:\n");
-  print_matrix (mask, nr, nc);
+  //printf ("Mask before:\n");
+  //print_matrix (mask, nr, nc);
 
   INT64 start, end;
   start = get_ticks ();
@@ -65,8 +65,8 @@ int main(int argc, char* argv[])
 
   print_elapsed_time (start, end);
 
-  printf ("Mask after:\n");
-  print_matrix (mask, nr, nc);
+  //printf ("Mask after:\n");
+  //print_matrix (mask, nr, nc);
 
   delete [] matrix;
   delete [] mask;

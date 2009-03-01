@@ -22,6 +22,7 @@ namespace mpi = boost::mpi;
 #include <windows.h>
 #else                // Linux
 #include <sys/times.h>
+typedef uint64_t INT64;
 #endif               // end of WIN32/Linux definitions
 
 #include "../include/type.h"

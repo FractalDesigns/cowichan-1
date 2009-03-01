@@ -21,7 +21,7 @@ struct node_struct {
   int		val;			/* matrix value */
   int		r, c;			/* location indices */
   node_p	next;			/* link */
-}; 
+};
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
