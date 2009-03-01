@@ -9,9 +9,6 @@
 #include "../include/main.h"
 #include "parallel.h"
 
-typedef std::multimap<int, node_p> mapNodesType;
-mapNodesType Nodes;
-
 // public
 
 /*
@@ -20,26 +17,27 @@ mapNodesType Nodes;
  * + fill mask
  */
 
-void
-invperc_mpi (mpi::communicator world,
-  int2D*		matrix,			/* matrix to invade */
-  bool2D*	mask,			/* mask to fill */
-  int		nr,			/* row size */
-  int		nc,			/* column size */
-  real		fraction		/* how much to fill */
-){
+void invperc_mpi (mpi::communicator world,
+                  int2D*		matrix,			/* matrix to invade */
+                  bool2D*	mask,			/* mask to fill */
+                  int		nr,			/* row size */
+                  int		nc,			/* column size */
+                  real		fraction)		/* how much to fill */
+{
   int		r, c;			/* row and column indices */
   int		num, i;			/* filling index */
 
   /* initialize */
   num = (int) (fraction * nr * nc);
-  inv_enq_mpi (world, inv_node_mpi (world, matrix[nr/2][nc/2], nr/2, nc/2));
+  mapNodesType nodes;
+  inv_enq_mpi (world, &nodes,
+    inv_node_mpi (world, matrix[nr/2][nc/2], nr/2, nc/2));
 
   /* fill */
   for (i = 0; i < num; i++) {
-    inv_deq_mpi (world, &r, &c);
+    inv_deq_mpi (world, &nodes, &r, &c);
     mask[r][c] = TRUE;
-    inv_enqPt_mpi (world, matrix, mask, nr, nc, r, c);
+    inv_enqPt_mpi (world, &nodes, matrix, mask, nr, nc, r, c);
   }
 
   /* return */
@@ -54,17 +52,18 @@ invperc_mpi (mpi::communicator world,
  */
 
 void inv_deq_mpi (mpi::communicator world,
+                  mapNodesType* nodes,
                   int	      * r,			/* row index */
                   int	      * c)			/* column index */
 {
   // remove the first element in Nodes
-  mapNodesType::iterator iter = Nodes.begin ();
+  mapNodesType::iterator iter = nodes->begin ();
 
   *r = iter->second->r;
   *c = iter->second->c;
   delete iter->second;
 
-  Nodes.erase (iter);
+  nodes->erase (iter);
 }
 
 /*
@@ -73,10 +72,12 @@ void inv_deq_mpi (mpi::communicator world,
  * + enqueue item in given tree
  */
 
-void inv_enq_mpi (mpi::communicator world, node_p node)
+void inv_enq_mpi (mpi::communicator world,
+                  mapNodesType* nodes,
+                  node_p node)
 {
   // insert new element in Nodes
-  Nodes.insert (std::pair<int, node_p> (node->val, node));
+  nodes->insert (std::pair<int, node_p> (node->val, node));
 }
 
 /*
@@ -84,11 +85,11 @@ void inv_enq_mpi (mpi::communicator world, node_p node)
  * > new node
  */
 
-node_p inv_node_mpi(mpi::communicator world,
-  int		val,			/* location value */
-  int		r,			/* row index */
-  int		c			/* column index */
-){
+node_p inv_node_mpi (mpi::communicator world,
+                     int		val,			/* location value */
+                     int		r,			/* row index */
+                     int		c)			/* column index */
+{
   node_p node;
 
   node = new node_t;
@@ -105,14 +106,15 @@ node_p inv_node_mpi(mpi::communicator world,
  * + possibly add point to priority queue
  */
 
-void inv_enqPt_mpi(mpi::communicator world,
-  int2D*		matrix,			/* matrix of values */
-  bool2D*	mask,			/* mask to be filled */
-  int		nr,			/* number of rows */
-  int		nc,			/* number of columns */
-  int		r,			/* point row */
-  int		c			/* point column */
-){
+void inv_enqPt_mpi (mpi::communicator world,
+                    mapNodesType* nodes,
+                    int2D*		matrix,			/* matrix of values */
+                    bool2D*	mask,			/* mask to be filled */
+                    int		nr,			/* number of rows */
+                    int		nc,			/* number of columns */
+                    int		r,			/* point row */
+                    int		c)			/* point column */
+{
   bool		e[8];			/* empty neighbors */
   bool		r_lo = r > 0,
 		r_hi = r < (nr-1),
@@ -138,16 +140,16 @@ void inv_enqPt_mpi(mpi::communicator world,
   }
 
   if (r_lo && (!mask[r-1][c]) && e[0] && e[1] && e[2]){	/* A */
-    inv_enq_mpi(world, inv_node_mpi(world, matrix[r-1][c], r-1, c));
+    inv_enq_mpi (world, nodes, inv_node_mpi (world, matrix[r-1][c], r-1, c));
   }
   if (c_lo && (!mask[r][c-1]) && e[1] && e[3] && e[5]){	/* B */
-    inv_enq_mpi(world, inv_node_mpi(world, matrix[r][c-1], r, c-1));
+    inv_enq_mpi (world, nodes, inv_node_mpi (world, matrix[r][c-1], r, c-1));
   }
   if (c_hi && (!mask[r][c+1]) && e[2] && e[4] && e[6]){	/* C */
-    inv_enq_mpi(world, inv_node_mpi(world, matrix[r][c+1], r, c+1));
+    inv_enq_mpi (world, nodes, inv_node_mpi (world, matrix[r][c+1], r, c+1));
   }
   if (r_hi && (!mask[r+1][c]) && e[5] && e[6] && e[7]){	/* D */
-    inv_enq_mpi(world, inv_node_mpi(world, matrix[r+1][c], r+1, c));
+    inv_enq_mpi (world, nodes, inv_node_mpi (world, matrix[r+1][c], r+1, c));
   }
 
 }

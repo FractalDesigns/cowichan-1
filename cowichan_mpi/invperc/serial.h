@@ -20,8 +20,9 @@ typedef struct node_struct* node_p;
 struct node_struct {
   int		val;			/* matrix value */
   int		r, c;			/* location indices */
-  node_p	next;			/* link */
 };
+
+typedef std::multimap<int, node_p> mapNodesType;
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -40,15 +41,13 @@ invperc(
 /* private functions 					*/
 /*--------------------------------------------------------------*/
 
-node_p
-inv_deq(
-  node_p	queue,			/* priority queue */
+void
+inv_deq(mapNodesType* nodes,
   int	      * r,			/* row index */
   int	      * c			/* column index */
 );
-node_p
-inv_enq(
-  node_p	queue,			/* where to enqueue */
+void
+inv_enq(mapNodesType* nodes,
   node_p	node			/* what to enqueue */
 );
 node_p
@@ -57,15 +56,14 @@ inv_node(
   int		r,			/* row index */
   int		c			/* column index */
 );
-node_p
-inv_enqPt(
+void
+inv_enqPt(mapNodesType* nodes,
   int2D*		matrix,			/* matrix of values */
   bool2D*	mask,			/* mask to be filled */
   int		nr,			/* number of rows */
   int		nc,			/* number of columns */
   int		r,			/* point row */
-  int		c,			/* point column */
-  node_p	queue			/* priority queue */
+  int		c			/* point column */
 );
 
 #endif /* SERIAL_H */
