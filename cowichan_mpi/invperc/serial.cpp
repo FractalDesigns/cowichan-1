@@ -62,7 +62,7 @@ invperc(
  * + fill row and column indices
  */
 
-static node_p inv_deq(
+node_p inv_deq(
   node_p	queue,			/* priority queue */
   int	      * r,			/* row index */
   int	      * c			/* column index */
@@ -86,7 +86,7 @@ static node_p inv_deq(
  * + enqueue item in given tree
  */
 
-static node_p inv_enq(
+node_p inv_enq(
   node_p	queue,			/* where to enqueue */
   node_p	node			/* what to enqueue */
 ){
@@ -123,7 +123,7 @@ static node_p inv_enq(
  * > new node
  */
 
-static node_p inv_node(
+node_p inv_node(
   int		val,			/* location value */
   int		r,			/* row index */
   int		c			/* column index */
@@ -146,7 +146,7 @@ static node_p inv_node(
  * + possibly add point to priority queue
  */
 
-static node_p inv_enqPt(
+node_p inv_enqPt(
   int2D*		matrix,			/* matrix of values */
   bool2D*	mask,			/* mask to be filled */
   int		nr,			/* number of rows */
