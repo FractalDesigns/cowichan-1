@@ -27,7 +27,11 @@ void split (pt1D* points,    // list of points
            int n,            // number of points
            pt1D* hullPoints, // list of points in convex hull
            int* hn,          // number of points in convex hull
-           pt min_p,         // point with minimum x
-           pt max_p);        // point with maximum x
+           pt p1,            // boundary point #1
+           pt p2);           // boundary point #2
+
+inline real cross (pt l1,    // 
+                   pt l2,
+                   pt p);
 
 #endif /* SERIAL_H */

@@ -1,7 +1,7 @@
 /**
  * Convex hull
  *
- * \file winnow.cpp
+ * \file hull.cpp
  * \author Andrew Borzenko
  * \date 03-06-09
  */
