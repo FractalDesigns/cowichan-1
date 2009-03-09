@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
   int limit;
   int i;
 
-  srand (222);
+  srand (333);
 
   n = MAXEXT;
   limit = 10;
@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
 
   hullPoints = new pt1D[MAXEXT];
 
-  printf ("Points:\n");
-  print_vector (points, n);
+  //printf ("Points:\n");
+  //print_points (points, n, limit);
 
 #ifdef IS_PARALLEL
   hull_mpi (world, points, n, hullPoints, &hn);
@@ -53,13 +53,11 @@ int main(int argc, char* argv[])
   hull (points, n, hullPoints, &hn);
 #endif
 
-  printf ("Convex Hull Points:\n");
-  print_vector (hullPoints, hn);
+  //printf ("Convex Hull Points:\n");
+  //print_points (hullPoints, hn, limit);
 
   delete [] points;
-  if (hullPoints) {
-    delete [] hullPoints;
-  }
+  delete [] hullPoints;
 
   return 0;
 }

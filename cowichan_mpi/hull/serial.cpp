@@ -50,48 +50,29 @@ void split (pt1D* points,     // list of points
 {
   pt* maxPoint = NULL;
   real maxCross = -std::numeric_limits<real>::infinity ();
-	
-	// compute the signed distances from the line for each point
-	for (int i = 0; i < n; i++) {
-		real currentCross = cross(p1, p2, points[i]);
-		if (currentCross > maxCross) {
-			maxPoint = &(points[i]);
-			maxCross = currentCross;
-		}
-	}
-	
-	// is there a point in the positive half-space?
-	// if so, it has maximal distance, and we must recurse based on that point.
-	if (maxCross > 0.0) {
-		
-		// for recusion, remove all points inside of the triangle
-		// defined by (points[p1], points[p2], points[maxIndex])
-//		PointList newPoints;
-		
-		// FIXME this hurts performance by a factor of 20.
-/*		for (PointList::iterator it = points.begin(); it != points.end();) {
-			if (cross(p1, p2, *it) > 0 &&
-				cross(p2, *maxPoint, *it) > 0 &&
-				cross(*maxPoint, p1, *it) > 0)
-			{
-				// point in triangle; remove it.
-				it = points.erase(it);
-			} else {
-				// continue on to next point
-				it++;
-			}
-		}  */
-				
-		// recurse on the new set with the given far point
-		split(points, n, hullPoints, hn, p1, *maxPoint);
-		split(points, n, hullPoints, hn, *maxPoint, p2);
-		return;
-	} 
-	
-	// otherwise, it's not on the right side; we don't need to split anymore.
-	// this is because all points are inside the hull when we use this half-space.
-	// add the first point and return.
-	hullPoints[(*hn)++] = p1;
+
+  // compute the signed distances from the line for each point
+  for (int i = 0; i < n; i++) {
+    real currentCross = cross (p1, p2, points[i]);
+    if (currentCross > maxCross) {
+      maxPoint = &(points[i]);
+      maxCross = currentCross;
+    }
+  }
+
+  // is there a point in the positive half-space?
+  // if so, it has maximal distance, and we must recurse based on that point.
+  if (maxCross > 0.0) {
+    // recurse on the new set with the given far point
+    split (points, n, hullPoints, hn, p1, *maxPoint);
+    split (points, n, hullPoints, hn, *maxPoint, p2);
+    return;
+  } 
+
+  // otherwise, it's not on the right side; we don't need to split anymore.
+  // this is because all points are inside the hull when we use this half-space.
+  // add the first point and return.
+  hullPoints[(*hn)++] = p1;
 }
 
 /**

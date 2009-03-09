@@ -23,6 +23,7 @@ void print_vector (bool1D* vector, int nr);
 void print_vector (int1D* vector, int nr);
 void print_vector (real1D* vector, int nr);
 void print_vector (pt1D* vector, int nr);
+void print_points (pt1D* vector, int nr, int limit);
 
 bool get_block_rows_mpi (mpi::communicator world, int lo, int hi,
                          int* start, int* end);

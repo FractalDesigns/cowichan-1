@@ -24,14 +24,14 @@ void hull (pt1D* points,     // list of points
 /*--------------------------------------------------------------*/
 
 void split (pt1D* points,    // list of points
-           int n,            // number of points
-           pt1D* hullPoints, // list of points in convex hull
-           int* hn,          // number of points in convex hull
-           pt p1,            // boundary point #1
-           pt p2);           // boundary point #2
+            int n,            // number of points
+            pt1D* hullPoints, // list of points in convex hull
+            int* hn,          // number of points in convex hull
+            pt p1,            // boundary point #1
+            pt p2);           // boundary point #2
 
-inline real cross (pt l1,    // 
-                   pt l2,
+inline real cross (pt l1,    // cross product of
+                   pt l2,    // (l1,l2) and (l1,p)
                    pt p);
 
 #endif /* SERIAL_H */

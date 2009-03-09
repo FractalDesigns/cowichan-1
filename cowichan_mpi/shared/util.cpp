@@ -222,6 +222,25 @@ void print_vector (pt1D* vector, int nr)
   }
 }
 
+void print_points (pt1D* vector, int nr, int limit)
+{
+  int x, y, i;
+  for (x = 0; x < limit; x++) {
+    for (y = 0; y < limit; y++) {
+      for (i = 0; i < nr; i++) {
+        if ((vector[i].x == x) && (vector[i].y == y)) {
+          printf ("%d\t", vector[i].w);
+          break;
+        }
+      }
+      if (i == nr) {
+        printf ("-\t");
+      }
+    }
+    printf ("\n");
+  }
+}
+
 /**
  * Assign elements to this process
  *
