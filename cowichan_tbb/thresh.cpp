@@ -9,12 +9,14 @@
 #include "tbb/parallel_reduce.h"
 using namespace tbb;
 
+using std::numeric_limits;
+
 const size_t NROWS = 10000;
 const size_t NCOLS = 10000;
 
 typedef float	real;
-typedef int		IntMatrix[SIZE][SIZE];
-typedef bool	BoolMatrix[SIZE][SIZE];
+typedef int		IntMatrix[NROWS][NCOLS];
+typedef bool	BoolMatrix[NROWS][NCOLS];
 
 #define MINIMUM_INT numeric_limits<int>::min()
 
@@ -35,7 +37,7 @@ public:
 	MaxReducer(IntMatrix* image):
 		_image(image), _max(MINIMUM_INT) { }
 
-	Point getMaximum() const {
+	int getMaximum() const {
 		return _max;
 	}
 
@@ -86,7 +88,7 @@ class Histogram {
 	
 public:
 
-	static int calculate(Matrix* image, real cutoff) {
+	static int calculate(IntMatrix* image, real cutoff) {
 		
 		// get the maximum value in the matrix (need 0-that number of bins)
 		MaxReducer reducer(image);
@@ -96,7 +98,7 @@ public:
 		int max = reducer.getMaximum();
 		
 		// compute the histogram to get a thresholding value
-		Histogram ranker(hist, max);
+		Histogram hist(image, max);
 		parallel_for(
 			blocked_range2d<size_t,size_t>(0, NROWS, 0, NCOLS),
 			hist, auto_partitioner());
@@ -108,15 +110,18 @@ public:
 	
 public:
 
-	Histogram(Matrix* image, int maxValue): _image(image), maxValue(maxValue) {
-		histogram = new int[maxValue + 1]{0};
+	Histogram(IntMatrix* image, int maxValue): _image(image), bins(maxValue) {
+		histogram = new int[maxValue + 1];
+		for (int i = 0; i <= maxValue; ++i) {
+			histogram[i] = 0;
+		}
 	}
 
 	int getValue(real cutoff) const {
 		int i;
 		int retain = (NROWS * NCOLS) * cutoff;
-		for (i = maxValue; (i >= 0) && (retain > 0); --i) {
-			retain -= (*histogram)[i];
+		for (i = bins; (i >= 0) && (retain > 0); --i) {
+			retain -= histogram[i];
 		}
 		return i;
 	}
@@ -124,9 +129,9 @@ public:
 	/**
  	 * Histogram calculation.
  	 */
-	void operator()(const blocked_range2d<size_t,size_t>& range) {
+	void operator()(const blocked_range2d<size_t,size_t>& range) const {
 		IntMatrix& image = *_image;
-		concurrent_vector<int>& hist = *histogram;
+		int* hist = histogram;
 		
 		const blocked_range<size_t>& rows = range.rows();
 		const blocked_range<size_t>& cols = range.cols();
@@ -141,8 +146,11 @@ public:
 	/**
 	 * Splitting (TBB) constructor
 	 */
-	Histogram(Histogram& other, split): _image(other._image), maxValue(other.maxValue) {
-		histogram = new int[maxValue + 1]{0};
+	Histogram(Histogram& other, split): _image(other._image), bins(other.bins) {
+		histogram = new int[bins + 1];
+		for (int i = 0; i <= bins; ++i) {
+			histogram[i] = 0;
+		}		
 	}
 	
 	/**
@@ -150,8 +158,8 @@ public:
 	 */
 	void join(const Histogram& other) {
 		// SERIAL... XXX can we speed up by reducing here, too?
-		for (int i = 0; i < maxValue; ++i) {
-			(*histogram)[i] += (*other.histogram)[i];
+		for (int i = 0; i < bins; ++i) {
+			histogram[i] += other.histogram[i];
 		}
 	}
 	
@@ -168,13 +176,9 @@ class Threshold {
 
 public: 
 
-	static BoolMatrix* exec(IntMatrix* image, int retain) {
-		BoolMatrix* result = new BoolMatrix();
-
+	static void exec(IntMatrix* image, int retain, BoolMatrix* result) {
 		Threshold thresh(image, retain, result);
-		parallel_for(blocked_range<size_t,size_t>(0, NROWS, 0, NCOLS), thresh, auto_partitioner());
-
-		return result;
+		parallel_for(blocked_range2d<size_t,size_t>(0, NROWS, 0, NCOLS), thresh, auto_partitioner());
 	}
 	
 public:
@@ -185,7 +189,7 @@ public:
 		return _sum;
 	}
 	
-	void operator()(const blocked_range2d<size_t,size_t>& range) {
+	void operator()(const blocked_range2d<size_t,size_t>& range) const {
 		IntMatrix& image = *_image;
 		BoolMatrix& result = *_result;
 		
@@ -215,7 +219,8 @@ real uniform(real mean, real range) {
 
 int main(int argc, char** argv) {
 	
-	IntMatrix* matrix = new IntMatrix();
+	IntMatrix matrix;
+	BoolMatrix result;
 	
 	// seed the random number generator.
 	srand(time(0));
@@ -234,8 +239,8 @@ int main(int argc, char** argv) {
 	task_scheduler_init init;
 	
 	// do everything.
-	int retain = Histogram::calculate(matrix, cutoff);
-	BoolMatrix* result = Threshold::exec(matrix, retain);
+	int retain = Histogram::calculate(&matrix, cutoff);
+	Threshold::exec(&matrix, retain, &result);
 
 	// exit the program.
 	return 0;

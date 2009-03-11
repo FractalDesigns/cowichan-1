@@ -1,0 +1,8 @@
+Note! The programs right now use large stack variables.
+
+In order to make them run with large matrix sizes, kindly use the command
+ulimit to set a larger stack size (otherwise you will get segmentation faults), e.g.
+
+	ulimit -s unlimited
+
+Will do nicely.

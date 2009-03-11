@@ -1,0 +1,121 @@
+init. answer vector to ones
+
+#define SOR_OMEGA 0.2
+#define SIZE 5000
+
+/*----------------------------------------------*/
+
+class RowSummer {
+
+	Matrix *_matrix;
+	Vector *_sums;
+
+public:
+
+	void perform((Matrix& matrix, Vector* sums) {
+		RowSummer sum(&matrix, sums);
+		parallel_for(
+			blocked_range<size_t>(0, SIZE),
+			sum,
+			auto_partitioner());
+	}
+	
+public:
+
+	RowSummer(Matrix* matrix, Vector* sums):
+		_matrix(matrix), _sums(sums) { }
+		
+	void operator()(const blocked_range<size_t>& rows) const {
+
+		Matrix& matrix = *_matrix;
+		Vector& sums   = *_sums;
+
+		for (size_t y = rows.begin(); y != rows.end(); ++y) {
+			sums[y] = 0.0;
+			for (size_t x = 0; x < SIZE; ++x) {
+				if (x != y)
+					sums[y] += matrix[y][x] * answer[x];
+			}
+		}
+	
+	}
+
+};
+
+/*----------------------------------------------*/
+
+class Relaxer {
+
+	Matrix *_matrix;
+	Vector *_vector, *_sums, *_answer;
+	real norm;
+
+public:
+
+	/**
+	 * Performs the SOR process. Requires that answer already contains a guess.
+	 */
+	void performSOR(Matrix& matrix, Vector& vector, Vector* answer, real tolerance) {
+				
+		Relaxer* relaxer = NULL;
+		do {
+
+			// gather row sums for the SOR process
+			Vector sums;
+			RowSummer::perform(matrix, &sums);
+			
+			// "relax" the answer vector, while at the same time calculating tolerance
+			if (relaxer) delete relaxer;
+			relaxer = new Relaxer(&matrix, &vector, answer, &sums);
+			parallel_reduce(
+				blocked_range<size_t>(0, SIZE),
+				*relaxer,
+				auto_partitioner());
+
+		} while (relaxer->getNorm() >= tolerance)
+		
+	}
+
+public:
+
+	real getNorm() const {
+		return norm;
+	}
+
+	void operator()(const blocked_range<size_t>& rows) const {
+
+		Matrix& matrix = *_matrix;
+		Vector& vector = *_vector;
+		Vector& answer = *_answer;
+		Vector& sums   = *_sums;
+
+		for (size_t y = rows.begin(); y != rows.end(); ++y) {
+
+			// save the old answer
+			real oldAnswer = answer[y];
+
+			// blend between the old answer and the new answer
+			answer[y] =
+				(1.0 - SOR_OMEGA) * oldAnswer +
+				SOR_OMEGA 		  * (vector[y] - sums[y]) / matrix[y][y];
+
+			// store the magnitude of the quickest change (1-norm)
+			norm = std::max(norm, (real) fabs(oldAnswer - answer[y]));
+
+		}
+		
+	}
+
+	Relaxer(Matrix* matrix, Vector* vector, Vector* answer, Vector* sums):
+		_matrix(matrix), _vector(vector), _sums(sums), _answer(answer), norm(0.0)
+		{ }
+
+	Relaxer(Relaxer& p, split):
+		_matrix(p._matrix), _vector(p._vector), _sums(p._sums), _answer(p._answer), norm(0.0)
+		{ }
+
+	void join(const Relaxer& other) {
+		norm = std::max(norm, other.norm);
+	}
+
+};

@@ -16,7 +16,7 @@ typedef float real;
 
 /**
  * This class performs Gauss-Jordan elimination on a matrix. It computes the
- * perturbed answer vector and the rank of the matrix.
+ * modified answer vector and the rank of the matrix.
  */
 class GaussJordan {
 public:
