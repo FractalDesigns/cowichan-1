@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   bool2D* matrix; /* world to evolve */
@@ -44,7 +46,14 @@ int main(int argc, char* argv[])
     }
   }
 
+#ifdef TEST_OUTPUT
   print_matrix (matrix, nr, nc);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   life_mpi (world, matrix, nr, nc, iters);
@@ -52,7 +61,14 @@ int main(int argc, char* argv[])
   life (matrix, nr, nc, iters);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   print_matrix (matrix, nr, nc);
+#endif
 
   delete [] matrix;
 

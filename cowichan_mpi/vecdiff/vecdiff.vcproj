@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="randmat"
-	ProjectGUID="{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}"
-	RootNamespace="randmat"
+	Name="vecdiff"
+	ProjectGUID="{D9805D22-C336-4961-B6A2-5962947AF2A1}"
+	RootNamespace="vecdiff"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -341,15 +341,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\randmat.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\serial.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\shared\util.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vecdiff.cpp"
 				>
 			</File>
 		</Filter>

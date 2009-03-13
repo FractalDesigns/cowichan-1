@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   pt1D*		ptVec;			/* vector of points */
@@ -46,8 +48,15 @@ int main(int argc, char* argv[])
 
   realVec = new real1D[MAXEXT];
 
+#ifdef TEST_OUTPUT
   printf ("point vector:\n");
   print_vector (ptVec, n);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   outer_mpi (world, ptVec, matrix, realVec, n);
@@ -55,11 +64,18 @@ int main(int argc, char* argv[])
   outer (ptVec, matrix, realVec, n);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("Inter-point distance matrix:\n");
   print_matrix (matrix, n, n);
 
   printf ("Origin-to-point distance vector:\n");
   print_vector (realVec, n);
+#endif
 
   delete [] ptVec;
   delete [] matrix;

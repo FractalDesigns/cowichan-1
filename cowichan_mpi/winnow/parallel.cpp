@@ -46,123 +46,151 @@ winnow_mpi(mpi::communicator world,
 
   rank = world.rank ();
   size = world.size ();
-  ParWidth_1 = size - 1;
+  if (size > 1) {
+    ParWidth_1 = size - 1;
 
-  Totals = new int1D[MAXEXT];
-  TmpPt = new pt[MAXEXT * MAXEXT];
-  TmpPt2 = new pt[MAXEXT * MAXEXT];
+    Totals = new int1D[MAXEXT];
+    TmpPt = new pt[MAXEXT * MAXEXT];
+    TmpPt2 = new pt[MAXEXT * MAXEXT];
 
-  Pivots = new int[size * size];
-  Counts = new int[size * size];
-  Starts = new int[size * size];
+    Pivots = new int[size * size];
+    Counts = new int[size * size];
+    Starts = new int[size * size];
 
-  SumProc = new int[size];
+    SumProc = new int[size];
 
-#if GRAPHICS
-  if (MASTER(tid)){
-    gfx_winnow(gfxCount++, matrix, mask, pts, nr, nc, npt);
-  }
-  thr_bar(tid);
-#endif
+    /* pack points into temporary storage */
 
-  /* pack points into temporary storage */
+    winnow_count(world, mask, nr, nc);
+    i = scanIntSum(world, Totals, nr);
 
-  winnow_count(world, mask, nr, nc);
-  i = scanIntSum(world, Totals, nr);
+    Len = i;
 
-  Len = i;
+    /* set slice sizes */
+    NumSamples   = size * (ParWidth_1);
+    SectionSize  = INT_CEIL(Len, size);
+    IntervalSize = INT_CEIL(SectionSize, ParWidth_1);
 
-  /* set slice sizes */
-  NumSamples   = size * (ParWidth_1);
-  SectionSize  = INT_CEIL(Len, size);
-  IntervalSize = INT_CEIL(SectionSize, ParWidth_1);
+    ASSERT(Len >= npt);
+    winnow_copy(world, matrix, mask, nr, nc);
 
-  ASSERT(Len >= npt);
-  winnow_copy(world, matrix, mask, nr, nc);
-
-  /* sort */
-  if ((size == 1) || (Len < NumSamples)){
-    if (rank == 0) {
-      ptSort(TmpPt, Len);
-      winnow_pack(pts, npt, TmpPt, Len, 1, 0);
-    }
-    // broadcast pts
-    broadcast (world, pts, npt, 0);
-  } else {
-    /* sort sections and select P-1 pivot values */
-    printf ("Started stage 1\n");
-    fflush (stdout);
-    winnow_psrs_1 (world);
-    if (rank == 0) {
-      intSort(Pivots, NumSamples);
-    }
-    // broadcast Pivots
-    broadcast (world, Pivots, NumSamples, 0);
-
-    /* select P-1 pivot values from P*(P-1) pivot values */
-    if (rank == 0) {
-      for (i = 0, j = ParWidth_1 / 2; j < NumSamples; i++, j += size) {
-        Pivots[i] = Pivots[j];
+    /* sort */
+    if ((size == 1) || (Len < NumSamples)){
+      if (rank == 0) {
+        ptSort(TmpPt, Len);
+        winnow_pack(pts, npt, TmpPt, Len, 1, 0);
       }
-      ASSERT(i == ParWidth_1);
-    }
-    // broadcast Pivots
-    broadcast (world, Pivots, ParWidth_1, 0);
+      // broadcast pts
+      broadcast (world, pts, npt, 0);
+    } else {
+      /* sort sections and select P-1 pivot values */
+#if defined(TEST_OUTPUT) || defined(TEST_TIME)
+      printf ("Started stage 1\n");
+#endif
+      fflush (stdout);
+      winnow_psrs_1 (world);
+      if (rank == 0) {
+        intSort(Pivots, NumSamples);
+      }
+      // broadcast Pivots
+      broadcast (world, Pivots, NumSamples, 0);
 
-    /* count elements in processor intervals that belong in pivot intervals */
-    printf ("Started stage 2\n");
-    fflush (stdout);
-    winnow_psrs_2(world);
-    /* scan number of elements in pivot intervals */
-    if (rank == 0) {
-      sum = 0;
-      for (i = 0; i < size; i++) {
-        for (j = 0; j < size * size; j += size) {
-          tmp = Counts[i+j];
-          Starts[i+j] = sum;
-          sum += tmp;
+      /* select P-1 pivot values from P*(P-1) pivot values */
+      if (rank == 0) {
+        for (i = 0, j = ParWidth_1 / 2; j < NumSamples; i++, j += size) {
+          Pivots[i] = Pivots[j];
+        }
+        ASSERT(i == ParWidth_1);
+      }
+      // broadcast Pivots
+      broadcast (world, Pivots, ParWidth_1, 0);
+
+      /* count elements in processor intervals that belong in pivot intervals */
+#if defined(TEST_OUTPUT) || defined(TEST_TIME)
+      printf ("Started stage 2\n");
+#endif
+      fflush (stdout);
+      winnow_psrs_2(world);
+      /* scan number of elements in pivot intervals */
+      if (rank == 0) {
+        sum = 0;
+        for (i = 0; i < size; i++) {
+          for (j = 0; j < size * size; j += size) {
+            tmp = Counts[i+j];
+            Starts[i+j] = sum;
+            sum += tmp;
+          }
+        }
+      }
+      // broadcast Starts
+      broadcast (world, Starts, size * size, 0);
+
+      /* copy values into pivot intervals */
+#if defined(TEST_OUTPUT) || defined(TEST_TIME)
+      printf ("Started stage 3\n");
+#endif
+      fflush (stdout);
+      winnow_psrs_3(world);
+      /* sort pivot intervals */
+#if defined(TEST_OUTPUT) || defined(TEST_TIME)
+      printf ("Started stage 4\n");
+#endif
+      fflush (stdout);
+      winnow_psrs_4(world);
+      /* copy selected points */
+      winnow_pack(pts, npt, TmpPt2, Len, size, rank);
+
+      // broadcast pts
+      int		stride;			/* stride in source */
+      stride = Len / npt;
+      for (rank = 0; rank < size; rank++) {
+        for (i = (npt - 1) - rank; i >= 0; i -= size) {
+          broadcast (world, pts[i], rank);
         }
       }
     }
-    // broadcast Starts
-    broadcast (world, Starts, size * size, 0);
 
-    /* copy values into pivot intervals */
-    printf ("Started stage 3\n");
-    fflush (stdout);
-    winnow_psrs_3(world);
-    /* sort pivot intervals */
-    printf ("Started stage 4\n");
-    fflush (stdout);
-    winnow_psrs_4(world);
-    /* copy selected points */
-    winnow_pack(pts, npt, TmpPt2, Len, size, rank);
+    delete [] Totals;
+    delete [] TmpPt;
+    delete [] TmpPt2;
 
-    // broadcast pts
-    int		stride;			/* stride in source */
-    stride = Len / npt;
-    for (rank = 0; rank < size; rank++) {
-      for (i = (npt - 1) - rank; i >= 0; i -= size) {
-        broadcast (world, pts[i], rank);
+    delete [] Pivots;
+    delete [] Counts;
+    delete [] Starts;
+
+    delete [] SumProc;
+  }
+  else {
+    pt1DX* ptVec;         // temp point vector
+    int r, c, i, j, len;	// indices and number of points
+    int stride;           // selection stride
+
+    ptVec = new pt1DX[MAXEXT * MAXEXT];
+
+    // fill temporary vector
+    len = winnow_redBool2DCount_mpi(mask, nr, nc);
+    ASSERT(len >= npt);
+    i = 0;
+    for (r=0; r<nr; r++){
+      for (c=0; c<nc; c++){
+        if (mask[r][c]){
+          ptVec[i].x = r;
+          ptVec[i].y = c;
+          ptVec[i].w = matrix[r][c];
+          i++;
+        }
       }
     }
+
+    // sort
+    ptSort(ptVec, len);
+
+    // copy over points
+    stride = len / npt;
+    for (i=npt-1, j=len-1; i>=0; i--, j-=stride){
+      pts[i] = ptVec[j];
+    }
   }
-
-#if GRAPHICS
-  if (MASTER(tid)){
-    gfx_winnow(gfxCount++, matrix, mask, pts, nr, nc, npt);
-  }
-#endif
-
-  delete [] Totals;
-  delete [] TmpPt;
-  delete [] TmpPt2;
-
-  delete [] Pivots;
-  delete [] Counts;
-  delete [] Starts;
-
-  delete [] SumProc;
 
   /* return */
 }
@@ -567,4 +595,19 @@ scanIntSum(mpi::communicator world,
   }
 
   return SumShared;
+}
+
+int winnow_redBool2DCount_mpi(bool2D* mask, // to reduce
+                              int nr,       // row size
+                              int nc)       // column size
+{
+  int		r, c, sum = 0;		/* indices and result */
+
+  for (r=0; r<nr; r++){
+    for (c=0; c<nc; c++){
+      if (mask[r][c]) sum++;
+    }
+  }
+
+  return sum;
 }

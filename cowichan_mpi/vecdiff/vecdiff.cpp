@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   real1D*	left;
@@ -46,11 +48,18 @@ int main(int argc, char* argv[])
     right[i] = (real) (rand () % limit);
   }
 
+#ifdef TEST_OUTPUT
   printf ("left is:\n");
   print_vector (left, n);
 
   printf ("right is:\n");
   print_vector (right, n);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   vecdiff_mpi (world, left, right, n, &norm1diff);
@@ -58,8 +67,15 @@ int main(int argc, char* argv[])
   vecdiff (left, right, n, &norm1diff);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("norm1 diff is:\n");
   printf ("%lg\n", norm1diff);
+#endif
 
   delete [] left;
   delete [] right;

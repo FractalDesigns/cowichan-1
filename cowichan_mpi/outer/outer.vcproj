@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="randmat"
-	ProjectGUID="{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}"
-	RootNamespace="randmat"
+	Name="outer"
+	ProjectGUID="{2E3173F3-CDAA-44B9-87D6-6E944EF1F977}"
+	RootNamespace="outer"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -337,11 +337,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\parallel.cpp"
+				RelativePath=".\outer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\randmat.cpp"
+				RelativePath=".\parallel.cpp"
 				>
 			</File>
 			<File

@@ -15,6 +15,10 @@
 
 #define IS_PARALLEL
 
+//#define TEST_OUTPUT
+
+#define TEST_TIME
+
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
 

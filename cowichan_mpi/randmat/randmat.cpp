@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   int2D* matrix; /* to fill */
@@ -35,13 +37,25 @@ int main(int argc, char* argv[])
 
   matrix = new int2D[MAXEXT];
 
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
+
 #ifdef IS_PARALLEL
   randmat_mpi (world, matrix, nr, nc, limit, seed);
 #else
   randmat (matrix, nr, nc, limit, seed);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   print_matrix (matrix, nr, nc);
+#endif
 
   delete [] matrix;
 

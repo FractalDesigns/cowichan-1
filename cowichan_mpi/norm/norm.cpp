@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   pt1D* vec;
@@ -39,8 +41,15 @@ int main(int argc, char* argv[])
     vec[i].w = rand () % limit;
   }
 
+#ifdef TEST_OUTPUT
   printf ("Vector:\n");
   print_vector (vec, n);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   norm_mpi (world, vec, n);
@@ -48,8 +57,15 @@ int main(int argc, char* argv[])
   norm (vec, n);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("Norm:\n");
   print_vector (vec, n);
+#endif
 
   delete [] vec;
 

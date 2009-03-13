@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   real2D* matrix;
@@ -33,7 +35,8 @@ int main(int argc, char* argv[])
 
   n = MAXEXT;
   limit = 10;
-  tolerance = 10e-6;
+  tolerance = 10e-3;
+  max = -1.0;
 
   srand (333);
 
@@ -59,11 +62,18 @@ int main(int argc, char* argv[])
 
   answer = new real1D[MAXEXT];
 
-  //printf ("Matrix is:\n");
-  //print_matrix (matrix, n, n);
+#ifdef TEST_OUTPUT
+  printf ("Matrix is:\n");
+  print_matrix (matrix, n, n);
 
-  //printf ("Vector is:\n");
-  //print_vector (vector, n);
+  printf ("Vector is:\n");
+  print_vector (vector, n);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   sor_mpi (world, matrix, vector, answer, n, tolerance);
@@ -71,8 +81,15 @@ int main(int argc, char* argv[])
   sor (matrix, vector, answer, n, tolerance);
 #endif
 
-  //printf ("Answer is:\n");
-  //print_vector (answer, n);
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
+  printf ("Answer is:\n");
+  print_vector (answer, n);
+#endif
 
   return 0;
 }

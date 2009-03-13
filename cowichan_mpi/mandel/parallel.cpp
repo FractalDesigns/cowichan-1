@@ -79,7 +79,9 @@ void mandel_mpi (mpi::communicator world,
           break;
         }
       }
+#if defined(TEST_OUTPUT) || defined(TEST_TIME)
       printf ("processed rows: %d\n", processed_rows);
+#endif
     }
     // broadcast matrix
     for (r = 0; r < nr; r++) {

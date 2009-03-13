@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   real2D*	matrix;			/* matrix x */
@@ -50,6 +52,7 @@ int main(int argc, char* argv[])
 
   answer = new real1D[MAXEXT];
 
+#ifdef TEST_OUTPUT
   printf ("\n");
 
   printf ("Matrix\n");
@@ -57,6 +60,12 @@ int main(int argc, char* argv[])
 
   printf ("Target\n");
   print_vector (vector, n);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   gauss_mpi (world, matrix, vector, answer, n);
@@ -64,8 +73,15 @@ int main(int argc, char* argv[])
   gauss (matrix, vector, answer, n);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("Answer\n");
   print_vector (answer, n);
+#endif
 
   delete [] matrix;
   delete [] vector;

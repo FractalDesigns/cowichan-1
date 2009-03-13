@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   real2D*	matrix;			/* to multiply by */
@@ -53,10 +55,17 @@ int main(int argc, char* argv[])
 
   result = new real1D[MAXEXT];
 
+#ifdef TEST_OUTPUT
   printf ("Matrix\n");
   print_matrix (matrix, nr, nc);
   printf ("x Vector\n");
   print_vector (vector, nr);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   product_mpi (world, matrix, vector, result, nr, nc);
@@ -64,8 +73,15 @@ int main(int argc, char* argv[])
   product (matrix, vector, result, nr, nc);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("=\n");
   print_vector (result, nr);
+#endif
 
   delete [] matrix;
   delete [] vector;

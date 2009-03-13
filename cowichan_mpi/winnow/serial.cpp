@@ -68,7 +68,7 @@ winnow(
 
 // private
 
-static int
+int
 winnow_redBool2DCount(
   bool2D*	mask,			/* to reduce */
   int		nr,			/* row size */

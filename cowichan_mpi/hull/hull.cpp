@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   pt1D* points;
@@ -44,8 +46,15 @@ int main(int argc, char* argv[])
 
   hullPoints = new pt1D[MAXEXT];
 
-  //printf ("Points:\n");
-  //print_points (points, n, limit);
+#ifdef TEST_OUTPUT
+  printf ("Points:\n");
+  print_points (points, n, limit);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   hull_mpi (world, points, n, hullPoints, &hn);
@@ -53,8 +62,15 @@ int main(int argc, char* argv[])
   hull (points, n, hullPoints, &hn);
 #endif
 
-  //printf ("Convex Hull Points:\n");
-  //print_points (hullPoints, hn, limit);
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
+  printf ("Convex Hull Points:\n");
+  print_points (hullPoints, hn, limit);
+#endif
 
   delete [] points;
   delete [] hullPoints;

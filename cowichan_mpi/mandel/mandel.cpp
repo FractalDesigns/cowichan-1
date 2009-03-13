@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   int2D*	    matrix;			/* matrix to fill */
@@ -36,14 +38,26 @@ int main(int argc, char* argv[])
 
   matrix = new int2D[MAXEXT];
 
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
+
 #ifdef IS_PARALLEL
   mandel_mpi (world, matrix, nr, nc, base_x, base_y, ext_x, ext_y);
 #else
   mandel (matrix, nr, nc, base_x, base_y, ext_x, ext_y);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("Mandelbrot set:\n");
   print_matrix (matrix, nr, nc);
+#endif
 
   delete [] matrix;
 

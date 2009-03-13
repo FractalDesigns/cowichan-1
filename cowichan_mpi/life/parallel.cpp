@@ -43,9 +43,7 @@ life_mpi(
   count = new int2D[MAXEXT];
 
   // work
-  printf ("world size is %d\n", world.size());
   work = get_block_rows_mpi (world, 0, nr, &lo, &hi);
-  printf ("lo is %d, hi is %d\n", lo, hi);
   for (i=0; (i<iters) && is_alive; i++){
     // fill neighborhood counts
     if (work) {

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="randmat"
-	ProjectGUID="{7E09A8E5-A7B4-4C82-B4F1-30014AE6F578}"
-	RootNamespace="randmat"
+	Name="sor"
+	ProjectGUID="{103F10E2-6974-4E12-99FB-0286318317EF}"
+	RootNamespace="sor"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -341,11 +341,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\randmat.cpp"
+				RelativePath=".\serial.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\serial.cpp"
+				RelativePath=".\sor.cpp"
 				>
 			</File>
 			<File

@@ -22,7 +22,6 @@ void product_mpi (mpi::communicator world,
 
   // work
   if (get_block_rows_mpi (world, 0, nr, &lo, &hi)) {
-    printf ("lo is %d, hi is %d\n", lo, hi);
 
     for (r = lo; r < hi; r ++) {
       result[r] = matrix[r][0] * vector[0];
@@ -31,9 +30,6 @@ void product_mpi (mpi::communicator world,
       }
     }
 
-  }
-  else {
-    printf ("no work\n");
   }
 
   // broadcast result

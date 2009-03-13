@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   int2D* matrix;
@@ -46,14 +48,18 @@ int main(int argc, char* argv[])
   mask = new bool2D[MAXEXT];
   memset (mask, 0, sizeof(boolean) * nr * nc);
 
-  //printf ("Matrix:\n");
-  //print_matrix (matrix, nr, nc);
+#ifdef TEST_OUTPUT
+  printf ("Matrix:\n");
+  print_matrix (matrix, nr, nc);
 
-  //printf ("Mask before:\n");
-  //print_matrix (mask, nr, nc);
+  printf ("Mask before:\n");
+  print_matrix (mask, nr, nc);
+#endif
 
+#ifdef TEST_TIME
   INT64 start, end;
   start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   invperc_mpi (world, matrix, mask, nr, nc, fraction);
@@ -61,12 +67,15 @@ int main(int argc, char* argv[])
   invperc (matrix, mask, nr, nc, fraction);
 #endif
 
+#ifdef TEST_TIME
   end = get_ticks ();
-
   print_elapsed_time (start, end);
+#endif
 
-  //printf ("Mask after:\n");
-  //print_matrix (mask, nr, nc);
+#ifdef TEST_OUTPUT
+  printf ("Mask after:\n");
+  print_matrix (mask, nr, nc);
+#endif
 
   delete [] matrix;
   delete [] mask;

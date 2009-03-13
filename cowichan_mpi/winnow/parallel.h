@@ -65,6 +65,10 @@ scanIntSum(mpi::communicator world,
   int		len			/* vector length */
 );
 
+int winnow_redBool2DCount_mpi(bool2D* mask, // to reduce
+                              int nr,       // row size
+                              int nc);      // column size
+
 /*--------------------------------------------------------------*/
 /* public functions						*/
 /*--------------------------------------------------------------*/

@@ -19,7 +19,9 @@ int main(int argc, char* argv[])
   mpi::environment env(argc, argv);
   mpi::communicator world;
 
+#ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+#endif
 #endif
 
   int2D* matrix;
@@ -43,8 +45,15 @@ int main(int argc, char* argv[])
     }
   }
 
+#ifdef TEST_OUTPUT
   printf ("matrix before shuffle:\n");
   print_matrix (matrix, nr, nc);
+#endif
+
+#ifdef TEST_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
 
 #ifdef IS_PARALLEL
   half_mpi (world, matrix, nr, nc);
@@ -52,8 +61,15 @@ int main(int argc, char* argv[])
   half (matrix, nr, nc);
 #endif
 
+#ifdef TEST_TIME
+  end = get_ticks ();
+  print_elapsed_time (start, end);
+#endif
+
+#ifdef TEST_OUTPUT
   printf ("matrix after shuffle:\n");
   print_matrix (matrix, nr, nc);
+#endif
 
   delete [] matrix;
 
