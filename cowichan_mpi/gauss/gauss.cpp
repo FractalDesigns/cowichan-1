@@ -1,7 +1,7 @@
 /**
  * Generic gauss implementation
  *
- * \file randmat.cpp
+ * \file gauss.cpp
  * \author Andrew Borzenko
  * \date 02-03-09
  */
