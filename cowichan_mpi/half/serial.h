@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef HALF_SERIAL_H
+#define HALF_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -21,4 +21,4 @@ half(
   int		nc			/* column size */
 );
 
-#endif /* SERIAL_H */
+#endif /* HALF_SERIAL_H */

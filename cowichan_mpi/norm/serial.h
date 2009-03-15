@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef NORM_SERIAL_H
+#define NORM_SERIAL_H
 
 /*
  * @ norm : do coordinate normalization
@@ -22,4 +22,4 @@ norm(
   int		n			/* length of vector */
 );
 
-#endif /* SERIAL_H */
+#endif /* NORM_SERIAL_H */

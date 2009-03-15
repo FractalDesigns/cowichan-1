@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef WINNOW_PARALLEL_H
+#define WINNOW_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* private function prototypes					*/
@@ -89,4 +89,4 @@ winnow_mpi(mpi::communicator world,
   int		npt			/* number of points */
 );
 
-#endif /* PARALLEL_H */
+#endif /* WINNOW_PARALLEL_H */

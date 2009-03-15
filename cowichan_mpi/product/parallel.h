@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef PRODUCT_PARALLEL_H
+#define PRODUCT_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -22,4 +22,4 @@ void product_mpi(mpi::communicator world,
                  int  nc                 /* column size */
 );
 
-#endif /* PARALLEL_H */
+#endif /* PRODUCT_PARALLEL_H */

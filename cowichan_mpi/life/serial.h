@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef LIFE_SERIAL_H
+#define LIFE_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -67,4 +67,4 @@ life_row(
   int		r_hi			/* higher row */
 );
 
-#endif /* SERIAL_H */
+#endif /* LIFE_SERIAL_H */

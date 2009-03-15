@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef HULL_PARALLEL_H
+#define HULL_PARALLEL_H
 
 struct minimum_x_pt {
   pt operator()(pt a, pt b)
@@ -78,4 +78,4 @@ inline real cross_mpi (pt l1,    // cross product of
                        pt l2,    // (l1,l2) and (l1,p)
                        pt p);
 
-#endif /* PARALLEL_H */
+#endif /* HULL_PARALLEL_H */

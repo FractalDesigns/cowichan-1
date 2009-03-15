@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef GAUSS_SERIAL_H
+#define GAUSS_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -28,4 +28,4 @@ gauss(
   int		n			/* size */
 );
 
-#endif /* SERIAL_H */
+#endif /* GAUSS_SERIAL_H */

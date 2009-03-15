@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef WINNOW_SERIAL_H
+#define WINNOW_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* private function prototypes					*/
@@ -41,4 +41,4 @@ winnow(
   int		npt			/* number of points */
 );
 
-#endif /* SERIAL_H */
+#endif /* WINNOW_SERIAL_H */

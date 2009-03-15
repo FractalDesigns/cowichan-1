@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef RANDMAT_PARALLEL_H
+#define RANDMAT_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -30,4 +30,4 @@ randmat_mpi(
   unsigned int		seed			/* RNG seed */
 );
 
-#endif /* PARALLEL_H */
+#endif /* RANDMAT_PARALLEL_H */

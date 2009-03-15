@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef PRODUCT_SERIAL_H
+#define PRODUCT_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -29,4 +29,4 @@ product(
   int		nc			/* column size */
 );
 
-#endif /* SERIAL_H */
+#endif /* PRODUCT_SERIAL_H */

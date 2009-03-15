@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef INVPERC_SERIAL_H
+#define INVPERC_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* private types						*/
@@ -66,4 +66,4 @@ inv_enqPt(mapNodesType* nodes,
   int		c			/* point column */
 );
 
-#endif /* SERIAL_H */
+#endif /* INVPERC_SERIAL_H */

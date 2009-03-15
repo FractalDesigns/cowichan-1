@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef VECDIFF_PARALLEL_H
+#define VECDIFF_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -22,4 +22,4 @@ vecdiff_mpi(mpi::communicator world,
   real	      * diff			/* norm-1 difference */
 );
 
-#endif /* PARALLEL_H */
+#endif /* VECDIFF_PARALLEL_H */

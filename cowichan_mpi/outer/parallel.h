@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef OUTER_PARALLEL_H
+#define OUTER_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -22,4 +22,4 @@ outer_mpi(mpi::communicator world,
   int		n			/* size */
 );
 
-#endif /* PARALLEL_H */
+#endif /* OUTER_PARALLEL_H */

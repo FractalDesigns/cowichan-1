@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef HULL_SERIAL_H
+#define HULL_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -34,4 +34,4 @@ inline real cross (pt l1,    // cross product of
                    pt l2,    // (l1,l2) and (l1,p)
                    pt p);
 
-#endif /* SERIAL_H */
+#endif /* HULL_SERIAL_H */

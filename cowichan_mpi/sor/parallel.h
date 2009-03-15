@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef SOR_PARALLEL_H
+#define SOR_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -21,4 +21,4 @@ void sor_mpi (mpi::communicator world,
               int		n,			/* size */
               real		tol);			/* tolerance on answer */
 
-#endif /* PARALLEL_H */
+#endif /* SOR_PARALLEL_H */

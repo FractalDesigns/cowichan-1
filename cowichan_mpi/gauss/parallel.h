@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef GAUSS_PARALLEL_H
+#define GAUSS_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -20,4 +20,4 @@ void gauss_mpi (mpi::communicator world,
                 real1D*	answer,			/* solution found */
                 int		n);			/* size */
 
-#endif /* PARALLEL_H */
+#endif /* GAUSS_PARALLEL_H */

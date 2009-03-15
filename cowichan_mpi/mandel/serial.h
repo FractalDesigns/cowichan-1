@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef MANDEL_SERIAL_H
+#define MANDEL_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -41,4 +41,4 @@ int mandel_calc(
   real		y			/* y coordinate */
 );
 
-#endif /* SERIAL_H */
+#endif /* MANDEL_SERIAL_H */

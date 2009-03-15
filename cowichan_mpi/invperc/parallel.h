@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef INVPERC_PARALLEL_H
+#define INVPERC_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* private types						*/
@@ -62,4 +62,4 @@ void inv_enqPt_mpi (mpi::communicator world,
                     int		r,			/* point row */
                     int		c);			/* point column */
 
-#endif /* PARALLEL_H */
+#endif /* INVPERC_PARALLEL_H */

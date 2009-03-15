@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef MANDEL_PARALLEL_H
+#define MANDEL_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -37,4 +37,4 @@ void mandel_mpi (mpi::communicator world,
 int mandel_calc_mpi (real		x,			/* x coordinate */
                      real		y);			/* y coordinate */
 
-#endif /* PARALLEL_H */
+#endif /* MANDEL_PARALLEL_H */

@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef VECDIFF_SERIAL_H
+#define VECDIFF_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -22,4 +22,4 @@ vecdiff(
   real	      * diff			/* norm-1 difference */
 );
 
-#endif /* SERIAL_H */
+#endif /* VECDIFF_SERIAL_H */

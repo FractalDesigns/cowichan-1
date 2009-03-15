@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef OUTER_SERIAL_H
+#define OUTER_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -22,4 +22,4 @@ outer(
   int		n			/* size */
 );
 
-#endif /* SERIAL_H */
+#endif /* OUTER_SERIAL_H */

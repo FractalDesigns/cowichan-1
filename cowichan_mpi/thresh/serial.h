@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef THRESH_SERIAL_H
+#define THRESH_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -23,4 +23,4 @@ thresh(
   real		fraction		/* how much to keep */
 );
 
-#endif /* SERIAL_H */
+#endif /* THRESH_SERIAL_H */

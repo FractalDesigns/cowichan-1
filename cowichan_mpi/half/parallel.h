@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef HALF_PARALLEL_H
+#define HALF_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -21,4 +21,4 @@ half_mpi (mpi::communicator world,
   int		nc			/* column size */
 );
 
-#endif /* PARALLEL_H */
+#endif /* HALF_PARALLEL_H */

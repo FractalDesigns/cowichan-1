@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef SOR_SERIAL_H
+#define SOR_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -23,4 +23,4 @@ sor(
   real		tol			/* tolerance on answer */
 );
 
-#endif /* SERIAL_H */
+#endif /* SOR_SERIAL_H */

@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef RANDMAT_SERIAL_H
+#define RANDMAT_SERIAL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -29,4 +29,4 @@ randmat(
   int		seed			/* RNG seed */
 );
 
-#endif /* SERIAL_H */
+#endif /* RANDMAT_SERIAL_H */

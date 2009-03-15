@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef LIFE_PARALLEL_H
+#define LIFE_PARALLEL_H
 
 /*--------------------------------------------------------------*/
 /* public functions						*/
@@ -69,4 +69,4 @@ life_row_mpi(
   int		r_hi			/* higher row */
 );
 
-#endif /* PARALLEL_H */
+#endif /* LIFE_PARALLEL_H */

@@ -7,8 +7,8 @@
  */
 
 #pragma once
-#ifndef PARALLEL_H
-#define PARALLEL_H
+#ifndef THRESH_PARALLEL_H
+#define THRESH_PARALLEL_H
 
 template<typename T>
 struct sum {
@@ -31,4 +31,4 @@ void thresh_mpi (mpi::communicator world,
                  int		nc,			/* column size */
                  real		fraction);		/* how much to keep */
 
-#endif /* PARALLEL_H */
+#endif /* THRESH_PARALLEL_H */
