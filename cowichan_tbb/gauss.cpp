@@ -177,13 +177,6 @@ private:
 /*****************************************************************************/
 
 /**
- * Returns a pseudorandom number ~ U[mean - range, mean + range].
- */
-real uniform(real mean, real range) {
-	return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
-}
-
-/**
  * Entry point of the program.
  */
 int main(int argc, char** argv) {
