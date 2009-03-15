@@ -67,7 +67,7 @@ public:
 // default values for the toys.
 int Cowichan::NROWS = 200;
 int Cowichan::NCOLS = 200;
-int Cowichan::NELTS = 6;
+int Cowichan::NELTS = 200;
 int Cowichan::NUMGEN = 200;
 real Cowichan::x0 = -0.1;
 real Cowichan::y0 = -0.1;
@@ -111,8 +111,8 @@ typedef std::vector<Point> PointList;
 
 // UTILITY FUNCTIONS ========================================================//
 
-#define MATRIX_RECT(mtrx,row,col)	mtrx[row*Cowichan::NCOLS + col]
-#define MATRIX_SQUARE(mtrx,row,col)	mtrx[row*Cowichan::NELTS + col]
+#define MATRIX_RECT(mtrx,row,col)	mtrx[(row)*Cowichan::NCOLS + col]
+#define MATRIX_SQUARE(mtrx,row,col)	mtrx[(row)*Cowichan::NELTS + col]
 #define MATRIX						MATRIX_SQUARE
 #define VECTOR(vect,row)			vect[row]
 #define DIAG(mtrx,v)				mtrx[v*Cowichan::NELTS + v]
