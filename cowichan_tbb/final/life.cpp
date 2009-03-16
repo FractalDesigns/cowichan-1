@@ -77,22 +77,23 @@ public:
 
 /*****************************************************************************/
 
-void print_array(BoolMatrix board) {
-	for (int y = 0; y < Cowichan::NELTS; ++y) {
-		for (int x = 0; x < Cowichan::NELTS; ++x) {
-			if (MATRIX(board, y,x)) {
-				std::cout << "x ";
-			} else {
-				std::cout << ". ";
-			}
-		}
-		std::cout << "\n";
+void life(BoolMatrix input, BoolMatrix& output) {
+	BoolMatrix other = NEW_MATRIX_SQUARE(bool);
+	GameOfLife game(input, other);
+	for (int i = 0; i < Cowichan::NUMGEN; ++i) {
+
+		// update CA simulation
+		parallel_for(
+			Range2D(0, Cowichan::NELTS, 0, Cowichan::NELTS),
+			game, auto_partitioner());
+
+		// swap arrays (ping-pong approach)
+		game.swap();		
+
 	}
-	for (int i = 0; i < Cowichan::NELTS; ++i) {
-		std::cout << "--";
-	}
-	std::cout << "\nPress enter.";
+	output = game._first;
 }
+
 
 int main(int argc, char** argv) {
 	
@@ -121,9 +122,6 @@ int main(int argc, char** argv) {
 	GameOfLife game(board1, board2);
 	for (int i = 0; i < Cowichan::NUMGEN; ++i) {
 
-		// clear the screen
-		//system("clear");
-	
 		// update CA simulation
 		parallel_for(
 			Range2D(0, Cowichan::NELTS, 0, Cowichan::NELTS),
@@ -134,10 +132,6 @@ int main(int argc, char** argv) {
 			Graphics::draw(game._second);
 			Graphics::delay(20);
 		#endif
-		
-		// show the current game state and wait for user interaction
-		//print_array(game._second);
-		//std::cin.get();
 		
 		// swap arrays (ping-pong approach)
 		game.swap();		
@@ -151,4 +145,6 @@ int main(int argc, char** argv) {
 	return 0;
 
 }
+
+
 
