@@ -28,7 +28,7 @@ outer_mpi(mpi::communicator world,
   real d_max_local = -1.0; // maximum distance
   real d_max; // maximum distance
   bool		work;			/* do useful work? */
-  int i;
+  int i, j;
 
   /* all elements except matrix diagonal */
   work = get_block_rows_mpi (world, 0, n, &lo, &hi);
@@ -61,7 +61,10 @@ outer_mpi(mpi::communicator world,
   for (i = 0; i < world.size (); i++) {
     if (get_block_rows_mpi (world, 0, n, &lo, &hi, i)) {
       broadcast (world, &realVec[lo], hi - lo, i);
-      broadcast (world, matrix[lo], (hi - lo) * n, i);
+      // broadcast row by row since n may be smaller than MAXEXT
+      for (j = lo; j < hi; j++) {
+        broadcast (world, matrix[j], n, i);
+      }
     }
   }
 

@@ -61,7 +61,7 @@ thresh
 - fraction       no
 
 life
-- matrix         yes
+- mask           yes
 - nr             yes
 - nc             yes
 - iters          no
@@ -104,7 +104,7 @@ sor
 - tolerance      no
 
 product
-- matrix         yes
+- matrix         yes/no
 - vector         yes
 - result         no
 - nr             yes
