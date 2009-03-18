@@ -138,9 +138,27 @@ public:
 
 /*****************************************************************************/
 
+void Cowichan::sor(Matrix matrix, Vector target, Vector* solution) {
+
+	// create a vector to hold the solution; start a guess
+	// for the answer (a vector with all ones).
+	*solution = NEW_VECTOR(real);
+	for (int row = 0; row < Cowichan::NELTS; ++row) {
+		VECTOR(*solution, row) = 1.0;
+	}
+	
+	// N.B. in the chain, outer generates matrix,
+	// and ensures that it is diagonally dominant. therefore we need
+	// not do anything here to ensure this condition.
+
+	// perform Successive Over Relaxation.
+	Relaxer::performSOR(matrix, target, *solution, SOR_TOLERANCE);
+	
+}
+
 /**
  * Entry point of the program.
- */
+ */ /*
 int main(int argc, char** argv) {
 
 	Matrix matrix		= NEW_MATRIX_SQUARE(real);
@@ -178,5 +196,5 @@ int main(int argc, char** argv) {
 	// we've got the answer, now, in answer. Print it out.
 	printAxb(savedmatrix, answer, vector);
 
-}
+} */
 

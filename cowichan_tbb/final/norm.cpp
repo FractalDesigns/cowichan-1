@@ -125,7 +125,7 @@ public:
 	/**
 	 * In-place normalizes the incoming co-ordinates onto the unit square.
 	 */
-	static void perform(PointList points) {
+	static void perform(PointList& points) {
 		
 		Normalizer norm(points);
 				

@@ -10,8 +10,9 @@ public:
 	Point point;
 	PercPoint(Point point): point(point) { }
 
+	// we want to extract lowest values.
 	bool operator<(const PercPoint &other) const {
-		return value() < other.value();
+		return value() > other.value();
 	}
 
 	uint value() const {
@@ -45,6 +46,7 @@ void Cowichan::invperc(IntMatrix matrix, BoolMatrix* mask) {
 	std::make_heap(points.begin(), points.end());
 
 	// perform invasion percolation NFILL times.
+	int r, c;
 	for (int it = 0; it < NFILL; ++it) {
 
 		// get the highest-priority point that hasn't already
@@ -53,36 +55,36 @@ void Cowichan::invperc(IntMatrix matrix, BoolMatrix* mask) {
 			std::pop_heap(points.begin(), points.end());
 			pp = points.back();
 			points.pop_back();
-		} while (!MATRIX(*mask, (int)pp.point.y, (int)pp.point.x));
+			r = pp.point.y;
+			c = pp.point.x;			
+		} while (MATRIX_RECT(*mask, r, c)); // find a free one
 
 		// fill it.
-		MATRIX(*mask, (int)pp.point.y, (int)pp.point.x) = true;
+		MATRIX_RECT(*mask, r, c) = true;
 
 		// add all of its neighbours to the party...
-		int r = pp.point.y;
-		int c = pp.point.x;
 		
 		// top neighbour
 		if (r > 0) {
-			points.push_back(Point(r-1, c));
+			points.push_back(Point(c, r-1));
 			push_heap(points.begin(), points.end());
 		}
 		
 		// bottom neighbour
 		if (r < (NROWS - 1)) {
-			points.push_back(Point(r+1, c));
+			points.push_back(Point(c, r+1));
 			push_heap(points.begin(), points.end());
 		}
 		
 		// left neighbour
 		if (c > 0) {
-			points.push_back(Point(r, c-1));
+			points.push_back(Point(c-1, r));
 			push_heap(points.begin(), points.end());
 		}
 		
 		// right neighbour
 		if (c < (NCOLS - 1)) {
-			points.push_back(Point(r, c+1));
+			points.push_back(Point(c+1, r));
 			push_heap(points.begin(), points.end());
 		}
 		

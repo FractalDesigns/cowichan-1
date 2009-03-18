@@ -109,7 +109,7 @@ private:
 			if (i == values.end() && j == other.end()) return;
 			if (i == values.end()) {
 				replacement.push_back(*j); ++j;
-			} else if (j == values.end()) {
+			} else if (j == other.end()) {
 				replacement.push_back(*i); ++i;
 			} else {
 				if (*i < *j) {
@@ -142,7 +142,7 @@ public:
 	 * Perform weighted point selection.
 	 * @return a list of numPoints points.
 	 */
-	static void perform(int numPoints, IntMatrix candidates, BoolMatrix mask, PointList& points) {
+	static void perform(int numPoints, IntMatrix candidates, BoolMatrix mask, PointList* points) {
 	
 		// extract candidates from the matrix
 		ValueSelector vc(candidates, mask);
@@ -157,10 +157,13 @@ public:
 		// pair them together to create points
 		PointCreator pc(vc.getValues());
 		parallel_reduce(Range(0, numPoints), pc, auto_partitioner());
-			
-		// return those gathered points
-		points.insert(points.begin(), pc.getPoints().begin(), pc.getPoints().end());
 		
+		// return those gathered points
+		points->reserve(pc.getPoints().size());
+		for (PointList::const_iterator it = pc.getPoints().begin(); it != pc.getPoints().end(); ++it) {
+			points->push_back(*it);
+		}
+
 	}
 
 public:
@@ -194,7 +197,8 @@ public:
 	 * Joiner (TBB).
 	 */	
 	void join(const PointCreator& other) {
-		points.insert(points.end(), other.points.begin(), other.points.end());
+		std::copy(other.points.begin(), other.points.end(), std::back_inserter(points));	
+//		points.insert(points.end(), other.points.begin(), other.points.end());
 	}
 	
 	/**
@@ -212,7 +216,7 @@ void Cowichan::winnow(IntMatrix matrix, BoolMatrix mask, PointList** points) {
 
 	// get a list of points!
 	*points = new PointList();
-	PointCreator::perform(NELTS, matrix, mask, **points);
+	PointCreator::perform(NELTS, matrix, mask, *points);
 	
 }
 

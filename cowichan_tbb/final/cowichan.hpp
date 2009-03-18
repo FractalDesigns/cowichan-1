@@ -85,10 +85,6 @@ public:
 
 };
 
-Point Point::minimum = Point(MINIMUM_REAL, MINIMUM_REAL);
-Point Point::maximum = Point(MAXIMUM_REAL, MAXIMUM_REAL);
-Point Point::origin  = Point(0.0, 0.0);
-
 typedef std::vector<Point>	PointList;
 typedef Point*				PointVector;
  
@@ -141,19 +137,6 @@ public:
 	
 };
 
-// default values for the toys.
-int Cowichan::NROWS = 200;
-int Cowichan::NCOLS = 200;
-int Cowichan::NELTS = 200;
-int Cowichan::NUMGEN = 200;
-real Cowichan::x0 = -0.1;
-real Cowichan::y0 = -0.1;
-real Cowichan::dx = 0.2;
-real Cowichan::dy = 0.2;
-real Cowichan::PERCENT = 0.25;
-int Cowichan::NFILL = 500;
-uint Cowichan::SEED = 681304;
-
 // UTILITY FUNCTIONS ========================================================//
 
 #define MATRIX_RECT(mtrx,row,col)	(mtrx)[(row)*Cowichan::NCOLS + col]
@@ -174,9 +157,7 @@ uint Cowichan::SEED = 681304;
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
  */
-real uniform(real mean, real range) {
-	return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
-}
+real uniform(real mean, real range);
 
 // DEBUGGING FUNCTIONS ======================================================//
 
@@ -184,41 +165,12 @@ real uniform(real mean, real range) {
  * "pretty-print" a list of points.
  */
 #define PRINT_BREAK 4
-void print(PointList& points) {
-	int b = 0;
-	for (PointList::const_iterator it = points.begin(); it != points.end(); ++it) {
-		if (b == 0) std::cout << std::endl << "\t";
-		std::cout << "(" << it->x << "," << it->y << ")\t";
-		b = (b + 1) % PRINT_BREAK;
-	}
-}
+void print(PointList& points);
 
 /**
  * show a matrix result
  */
-void printAxb(Matrix matrix, Vector answer, Vector vector) {
-	std::cout.precision(5);
-	for (int row = 0; row < Cowichan::NELTS; ++row) {
-
-		// print out the matrix
-		std::cout << " [ ";
-		for (int col = 0; col < Cowichan::NELTS; ++col) {
-			std::cout << MATRIX(matrix, row,col) << "\t";
-		}
-		
-		// print out the answer
-		std::cout << "] [ " << VECTOR(answer, row) << " ]\t";
-
-		// print out the vector
-		if (row == int(Cowichan::NELTS / 2)) {
-			std::cout << "= [ ";
-		} else {
-			std::cout << "  [ ";
-		}
-		std::cout << VECTOR(vector, row) << " ]" << std::endl;
-		
-	}
-}
+void printAxb(Matrix matrix, Vector answer, Vector vector);
  
 #endif
 
