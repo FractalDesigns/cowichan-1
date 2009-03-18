@@ -77,21 +77,22 @@ public:
 
 /*****************************************************************************/
 
-void life(BoolMatrix input, BoolMatrix& output) {
+void Cowichan::life(BoolMatrix input, BoolMatrix* output) {
 	BoolMatrix other = NEW_MATRIX_SQUARE(bool);
 	GameOfLife game(input, other);
-	for (int i = 0; i < Cowichan::NUMGEN; ++i) {
+	for (int i = 0; i < NUMGEN; ++i) {
 
 		// update CA simulation
 		parallel_for(
-			Range2D(0, Cowichan::NELTS, 0, Cowichan::NELTS),
+			Range2D(0, NELTS, 0, NELTS),
 			game, auto_partitioner());
 
 		// swap arrays (ping-pong approach)
 		game.swap();		
 
 	}
-	output = game._first;
+	*output = game._first;
+	delete[] game._second;
 }
 
 

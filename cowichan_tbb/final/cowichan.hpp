@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <vector>
+#include <climits>
 #include <limits>
 using std::numeric_limits;
 
@@ -33,19 +34,66 @@ typedef blocked_range2d<size_t,size_t> Range2D;
 typedef REAL_TYPE	real;
 typedef unsigned int uint;
 
-typedef int*		IntMatrix;
+typedef uint*		IntMatrix;
 typedef bool*		BoolMatrix;
 typedef real*		RealMatrix;
 
-typedef int*		IntVector;
+typedef uint*		IntVector;
 typedef bool*		BoolVector;
 typedef real*		RealVector;
 
 typedef RealMatrix	Matrix;
 typedef RealVector	Vector;
 
+typedef std::vector<real>	RealList;
+/*
+ * It is worth explicitly pointing out that IntMatrix/IntVector use uint.
+ */
+// STATIC AND USEFUL DEFINITIONS ============================================//
+// as well as values needed for the toys that are not "inputs"
+#define MAXIMUM_INT		numeric_limits<int>::max()
+#define MINIMUM_INT		numeric_limits<int>::min()
+#define MAXIMUM_REAL	numeric_limits<real>::min()
+#define MINIMUM_REAL	numeric_limits<real>::min()
+#define INFINITY_REAL	numeric_limits<real>::infinity()
+
+#define MANDEL_INFINITY	2.0
+#define MANDEL_MAX_ITER	150
+#define SOR_OMEGA		0.9
+#define SOR_TOLERANCE	10e-6
+ 
+// POINT TYPE ===============================================================//
+class Point {
+public:
+
+	real x, y;
+	Point(real x, real y): x(x), y(y) { }
+	Point(): x(0.0), y(0.0) { }
+	Point(const Point& other): x(other.x), y(other.y) {}
+	
+	static Point minimum;
+	static Point maximum;
+	static Point origin;
+
+	/**
+	 * Calculates euclidean distance between two points.
+	 * @return the distance between p1 and p2
+	 */
+	static inline real distance(const Point& p1, const Point& p2) {
+		return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+	}
+
+};
+
+Point Point::minimum = Point(MINIMUM_REAL, MINIMUM_REAL);
+Point Point::maximum = Point(MAXIMUM_REAL, MAXIMUM_REAL);
+Point Point::origin  = Point(0.0, 0.0);
+
+typedef std::vector<Point>	PointList;
+typedef Point*				PointVector;
+ 
 // COWICHAN DEFINITIONS =====================================================//
-// aka. "inputs" to the toys
+// aka. "inputs" to the toys, and chaining functions.
 class Cowichan {
 public:
 	// common
@@ -62,6 +110,35 @@ public:
 	static int NFILL;
 	// seed value for simple random number generator
 	static uint SEED;
+
+public: // chaining functions
+
+	static void mandel(IntMatrix* matrix);
+	static void randmat(IntMatrix* matrix);
+	static void half(IntMatrix matrixIn, IntMatrix* matrixOut);
+	static void invperc(IntMatrix matrix, BoolMatrix* mask);
+	static void thresh(IntMatrix matrix, BoolMatrix* mask);
+	static void life(BoolMatrix matrixIn, BoolMatrix* matrixOut);
+	static void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points);
+	static void norm(PointList* pointsIn, PointList** pointsOut);
+	static void hull(PointList* pointsIn, PointList** pointsOut);
+	static void outer(PointList* points, Matrix* matrix, Vector* vector);
+	static void gauss(Matrix matrix, Vector target, Vector* solution);
+	static void sor(Matrix matrix, Vector target, Vector* solution);
+	static void product(Matrix matrix, Vector actual, Vector candidate, real* e);
+
+public:
+
+	/**
+	 * Runs the cowichan problem set, chained together.
+	 * @param numThreads	the number of threads to spawn using TBB.
+	 * @param use_randmat	true: generate a random matrix.
+	 * 						false: use a window of the mandelbrot set.
+	 * @param use_thresh	true: use image thresholding for int->bool.
+	 *						false: use invasion percolation for int->bool.
+	 */
+	static void run(int numThreads, bool use_randmat, bool use_thresh);
+	
 };
 
 // default values for the toys.
@@ -77,45 +154,13 @@ real Cowichan::PERCENT = 0.25;
 int Cowichan::NFILL = 500;
 uint Cowichan::SEED = 681304;
 
-// STATIC AND USEFUL DEFINITIONS ============================================//
-// as well as values needed for the toys that are not "inputs"
-#define MAXIMUM_INT		numeric_limits<int>::max()
-#define MINIMUM_INT		numeric_limits<int>::min()
-#define MAXIMUM_REAL	numeric_limits<real>::min()
-#define MINIMUM_REAL	numeric_limits<real>::min()
-#define INFINITY_REAL	numeric_limits<real>::infinity()
-
-#define MANDEL_INFINITY	2.0
-#define MANDEL_MAX_ITER	150
-#define SOR_OMEGA		0.9
-#define SOR_TOLERANCE	10e-6
-
-// POINT TYPE ===============================================================//
-class Point {
-public:
-
-	real x, y;
-	Point(real x, real y): x(x), y(y) { }
-	Point(): x(0.0), y(0.0) { }
-	Point(const Point& other): x(other.x), y(other.y) {}
-	
-	static Point minimum;
-	static Point maximum;
-
-};
-
-Point Point::minimum = Point(MINIMUM_REAL, MINIMUM_REAL);
-Point Point::maximum = Point(MAXIMUM_REAL, MAXIMUM_REAL);
-
-typedef std::vector<Point> PointList;
-
 // UTILITY FUNCTIONS ========================================================//
 
-#define MATRIX_RECT(mtrx,row,col)	mtrx[(row)*Cowichan::NCOLS + col]
-#define MATRIX_SQUARE(mtrx,row,col)	mtrx[(row)*Cowichan::NELTS + col]
+#define MATRIX_RECT(mtrx,row,col)	(mtrx)[(row)*Cowichan::NCOLS + col]
+#define MATRIX_SQUARE(mtrx,row,col)	(mtrx)[(row)*Cowichan::NELTS + col]
 #define MATRIX						MATRIX_SQUARE
-#define VECTOR(vect,row)			vect[row]
-#define DIAG(mtrx,v)				mtrx[v*Cowichan::NELTS + v]
+#define VECTOR(vect,row)			(vect)[row]
+#define DIAG(mtrx,v)				(mtrx)[v*Cowichan::NELTS + v]
 
 #define NEW_MATRIX_SQUARE(__type)	(new __type[Cowichan::NELTS * Cowichan::NELTS])
 #define NEW_MATRIX_RECT(__type)		(new __type[Cowichan::NROWS * Cowichan::NCOLS])
@@ -123,6 +168,8 @@ typedef std::vector<Point> PointList;
 
 #define COWICHAN_PARALLEL	srand(time(0)); task_scheduler_init init;
 #define COWICHAN_SINGLE		srand(time(0)); task_scheduler_init init(1);
+
+#define COWICHAN(threads)	srand(time(0)); task_scheduler_init init(threads);
 
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
