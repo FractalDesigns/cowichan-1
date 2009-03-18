@@ -7,7 +7,7 @@
 class Normalizer {
 public:
 	
-	PointList points;
+	PointList& points;
 
 public:
 	
@@ -112,7 +112,7 @@ public:
 
 public:
 
-	Normalizer(PointList points):
+	Normalizer(PointList& points):
 		minmax(this), computer(NULL), points(points)
 		{ }
 
@@ -125,13 +125,13 @@ public:
 	/**
 	 * In-place normalizes the incoming co-ordinates onto the unit square.
 	 */
-	static void perform(PointList& points) {
+	static void perform(PointList* points) {
 		
-		Normalizer norm(points);
+		Normalizer norm(*points);
 				
 		// first compute the statistics, and then use the min/max to compute the new points.
-		norm.computeStats(points.size());
-		parallel_for(Range(0, points.size()), (*norm.computer), auto_partitioner());
+		norm.computeStats(points->size());
+		parallel_for(Range(0, points->size()), (*norm.computer), auto_partitioner());
 		
 		// the points and transformed in-place, so don't return anything.
 		return;
@@ -157,7 +157,7 @@ private:
 void Cowichan::norm(PointList* pointsIn, PointList** pointsOut) {
 
 	*pointsOut = pointsIn;
-	Normalizer::perform(*pointsIn);
+	Normalizer::perform(pointsIn);
 
 }
 
