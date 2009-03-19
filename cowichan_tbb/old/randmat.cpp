@@ -33,7 +33,7 @@ class RandomGenerator {
 
 	const static uint a = 1103515245; // these two constants are values for the
 	const static uint c = 12345;	  // linear congruential RNG algorithm
-	const static uint m = UINT_MAX;	  // the modulus to use
+	const static uint m = 1024;		  // generate values 0-1023
 	uint s;							  // the initial, seed value.
 
 private:

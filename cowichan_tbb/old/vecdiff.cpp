@@ -53,7 +53,7 @@ real uniform(real mean, real range) {
 	return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
 }
 
-int main(int argc, char** argv) bb{
+int main(int argc, char** argv) {
 
 	Vector v1, v2;
 	Vector result;
