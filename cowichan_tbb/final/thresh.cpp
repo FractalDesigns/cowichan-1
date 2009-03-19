@@ -27,20 +27,17 @@ public:
 	void operator()(const Range2D& range) {
 
 		IntMatrix image = _image;
-		int max = _max;
-		
+
 		const Range& rows = range.rows();
 		const Range& cols = range.cols();
 		
 		for (size_t y = rows.begin(); y != rows.end(); ++y) {
 			for (size_t x = cols.begin(); x != cols.end(); ++x) {
-				if (max < MATRIX_RECT(image, y, x)) {
-					max = MATRIX_RECT(image, y, x);
+				if (_max < MATRIX_RECT(image, y, x)) {
+					_max = MATRIX_RECT(image, y, x);
 				}
 			}
 		}
-		
-		_max = max;
 		
 	}
 	
@@ -100,7 +97,7 @@ public:
 	}
 	
 	~Histogram() {
-		delete histogram;
+		delete[] histogram;
 	}
 
 	int getValue(real cutoff) const {
