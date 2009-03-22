@@ -17,7 +17,9 @@
 
 #define TEST_OUTPUT
 
-#define CHAIN_OUTPUT
+#define CHAIN_STAGE
+
+//#define CHAIN_OUTPUT
 
 #define TEST_TIME
 

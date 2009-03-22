@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 
 #ifdef TEST_OUTPUT
   printf ("I am process %d\n", world.rank ());
+  fflush (stdout);
 #endif
 #endif
 
@@ -155,8 +156,8 @@ int main(int argc, char* argv[])
   real    vecdiff_norm1_diff;
 
   // initialize inputs
-  run_mandel = false;
-  run_invperc = true;
+  run_mandel = true;
+  run_invperc = false;
   if (run_mandel) {
     mandel_matrix = new int2D[MAXEXT];
     mandel_nr = MAXEXT;
@@ -247,18 +248,21 @@ int main(int argc, char* argv[])
   //       the row sizes might be smaller than MAXEXT, need to fix
   //       implementations to work for any nr, nc < MAXEXT.
 
-#ifdef CHAIN_OUTPUT
-  printf ("Random Number Generation or Fractal Generation:\n");
-  fflush (stdout);
-#endif
-
 #ifdef IS_PARALLEL
   // run in parallel
   if (run_mandel) {
+#ifdef CHAIN_STAGE
+    printf ("Fractal Generation:\n");
+    fflush (stdout);
+#endif
     mandel_mpi (world, mandel_matrix, mandel_nr, mandel_nc,
                 mandel_base_x, mandel_base_y, mandel_ext_x, mandel_ext_y);
   }
   else {
+#ifdef CHAIN_STAGE
+    printf ("Random Number Generation:\n");
+    fflush (stdout);
+#endif
     randmat_mpi (world, randmat_matrix, randmat_nr, randmat_nc,
                  randmat_limit, randmat_seed);
   }
@@ -276,6 +280,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_matrix (half_matrix, half_nr, half_nc);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Two-Dimensional Shuffle:\n");
   fflush (stdout);
 #endif
@@ -290,17 +297,24 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_matrix (half_matrix, half_nr, half_nc);
-  printf ("Invasion Percolation or Histogram Thresholding:\n");
   fflush (stdout);
 #endif
 
 #ifdef IS_PARALLEL
   // run in parallel
   if (run_invperc) {
+#ifdef CHAIN_STAGE
+    printf ("Invasion Percolation:\n");
+    fflush (stdout);
+#endif
     invperc_mpi (world, invperc_matrix, invperc_mask, invperc_nr, invperc_nc,
                  invperc_fraction);
   }
   else {
+#ifdef CHAIN_STAGE
+    printf ("Histogram Thresholding:\n");
+    fflush (stdout);
+#endif
     thresh_mpi (world, thresh_matrix, thresh_mask, thresh_nr, thresh_nc,
                 thresh_fraction);
   }
@@ -318,6 +332,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_matrix (life_mask, life_nr, life_nc);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Game of Life:\n");
   fflush (stdout);
 #endif
@@ -332,6 +349,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_matrix (life_mask, life_nr, life_nc);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Weighted Point Selection:\n");
   fflush (stdout);
 #endif
@@ -348,6 +368,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_vector (winnow_pts, winnow_n);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Coordinate Normalization:\n");
   fflush (stdout);
 #endif
@@ -362,6 +385,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_vector (norm_vec, norm_n);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Convex Hull:\n");
   fflush (stdout);
 #endif
@@ -376,6 +402,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_vector (hull_result_pts, hull_result_n);
+  fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
   printf ("Outer Product:\n");
   fflush (stdout);
 #endif
@@ -418,14 +447,14 @@ int main(int argc, char* argv[])
     bool is_gauss = ((world.rank () % 2) == 0);
     mpi::communicator local = world.split (is_gauss? 0 : 1);
     if (is_gauss) {
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
       printf ("Gaussian Elimination:\n");
       fflush (stdout);
 #endif
       gauss_mpi (local, gauss_matrix, gauss_vector, gauss_answer, gauss_n);
     }
     else {
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
       printf ("Successive Over-Relaxation:\n");
       fflush (stdout);
 #endif
@@ -443,7 +472,7 @@ int main(int argc, char* argv[])
 #endif
 
     if (is_gauss) {
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
       printf ("Matrix-Vector Product for Gauss:\n");
       fflush (stdout);
 #endif
@@ -451,7 +480,7 @@ int main(int argc, char* argv[])
                    product_nr, product_nc);
     }
     else {
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
       printf ("Matrix-Vector Product for Sor:\n");
       fflush (stdout);
 #endif
@@ -470,7 +499,7 @@ int main(int argc, char* argv[])
 #endif
   }
   else {
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
     printf ("Gaussian Elimination:\n");
     fflush (stdout);
 #endif
@@ -479,6 +508,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (gauss_answer, gauss_n);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Matrix-Vector Product for Gauss:\n");
     fflush (stdout);
 #endif
@@ -488,6 +520,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (product_result1, product_nr);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Successive Over-Relaxation:\n");
     fflush (stdout);
 #endif
@@ -496,6 +531,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (sor_answer, sor_n);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Matrix-Vector Product for Sor:\n");
     fflush (stdout);
 #endif
@@ -510,7 +548,7 @@ int main(int argc, char* argv[])
   }
 #else
   // run serially
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
     printf ("Gaussian Elimination:\n");
     fflush (stdout);
 #endif
@@ -519,6 +557,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (gauss_answer, gauss_n);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Matrix-Vector Product for Gauss:\n");
     fflush (stdout);
 #endif
@@ -528,6 +569,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (product_result1, product_nr);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Successive Over-Relaxation:\n");
     fflush (stdout);
 #endif
@@ -536,6 +580,9 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
     print_vector (sor_answer, sor_n);
+    fflush (stdout);
+#endif
+#ifdef CHAIN_STAGE
     printf ("Matrix-Vector Product for Sor:\n");
     fflush (stdout);
 #endif
@@ -549,7 +596,7 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-#ifdef CHAIN_OUTPUT
+#ifdef CHAIN_STAGE
     printf ("Vector Difference:\n");
     fflush (stdout);
 #endif
