@@ -243,13 +243,17 @@ int main(int argc, char* argv[])
   start = get_ticks ();
 #endif
 
-#ifdef IS_PARALLEL
-  // run chain in parallel
-
   // TODO: some implementations are using broadcasts of multiple rows at once;
   //       the row sizes might be smaller than MAXEXT, need to fix
   //       implementations to work for any nr, nc < MAXEXT.
 
+#ifdef CHAIN_OUTPUT
+  printf ("Random Number Generation or Fractal Generation:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
   if (run_mandel) {
     mandel_mpi (world, mandel_matrix, mandel_nr, mandel_nc,
                 mandel_base_x, mandel_base_y, mandel_ext_x, mandel_ext_y);
@@ -258,69 +262,8 @@ int main(int argc, char* argv[])
     randmat_mpi (world, randmat_matrix, randmat_nr, randmat_nc,
                  randmat_limit, randmat_seed);
   }
-  half_mpi (world, half_matrix, half_nr, half_nc);
-  if (run_invperc) {
-    invperc_mpi (world, invperc_matrix, invperc_mask, invperc_nr, invperc_nc,
-                 invperc_fraction);
-  }
-  else {
-    thresh_mpi (world, thresh_matrix, thresh_mask, thresh_nr, thresh_nc,
-                thresh_fraction);
-  }
-  life_mpi (world, life_mask, life_nr, life_nc, life_iters);
-  winnow_mpi (world, winnow_matrix, winnow_mask, winnow_nr, winnow_nc,
-              winnow_pts, winnow_n);
-  norm_mpi (world, norm_vec, norm_n);
-  hull_mpi (world, hull_pts, hull_n, hull_result_pts, &hull_result_n);
-  // use the number of points in convex hull
-  outer_n = hull_result_n;
-  outer_mpi (world, outer_pts, outer_result_matrix, outer_result_vector,
-             outer_n);
-  gauss_n = outer_n;
-  sor_n = outer_n;
-  product_nr = outer_n;
-  product_nc = outer_n;
-  // make a copy of outer result for gauss
-  for (i = 0; i < gauss_n; i++) {
-    // copy row by row since gauss_n may be smaller than MAXEXT
-    memcpy (gauss_matrix[i], outer_result_matrix[i],
-            sizeof (real) * gauss_n);
-  }
-  memcpy (gauss_vector, outer_result_vector,
-          sizeof (real) * gauss_n);
-  if (world.size () > 1) {
-    // run gauss and sor at the same time
-    // split the world into two communicators
-    bool is_gauss = ((world.rank () % 2) == 0);
-    mpi::communicator local = world.split (is_gauss? 0 : 1);
-    gauss_mpi (local, gauss_matrix, gauss_vector, gauss_answer, gauss_n);
-    sor_mpi (local, sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
-    // broadcast gauss answer
-    broadcast (world, gauss_answer, gauss_n, world.rank () % 2);
-    // broadcast sor answer
-    broadcast (world, sor_answer, sor_n, (world.rank () + 1) % 2);
-    product_mpi (local, product_matrix1, product_vector1, product_result1,
-                 product_nr, product_nc);
-    product_mpi (local, product_matrix2, product_vector2, product_result2,
-                 product_nr, product_nc);
-    // broadcast product_result1
-    broadcast (world, product_result1, product_nr, world.rank () % 2);
-    // broadcast product_result2
-    broadcast (world, product_result2, product_nr, (world.rank () + 1) % 2);
-  }
-  else {
-    gauss_mpi (world, gauss_matrix, gauss_vector, gauss_answer, gauss_n);
-    sor_mpi (world, sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
-    product_mpi (world, product_matrix1, product_vector1, product_result1,
-                 product_nr, product_nc);
-    product_mpi (world, product_matrix2, product_vector2, product_result2,
-                 product_nr, product_nc);
-  }
-  vecdiff_n = product_nr;
-  vecdiff_mpi (world, vecdiff_left, vecdiff_right, vecdiff_n,
-               &vecdiff_norm1_diff);
 #else
-  // run chain serially
+  // run serially
   if (run_mandel) {
     mandel (mandel_matrix, mandel_nr, mandel_nc,
             mandel_base_x, mandel_base_y, mandel_ext_x, mandel_ext_y);
@@ -329,7 +272,40 @@ int main(int argc, char* argv[])
     randmat (randmat_matrix, randmat_nr, randmat_nc,
              randmat_limit, randmat_seed);
   }
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_matrix (half_matrix, half_nr, half_nc);
+  printf ("Two-Dimensional Shuffle:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  half_mpi (world, half_matrix, half_nr, half_nc);
+#else
+  // run serially
   half (half_matrix, half_nr, half_nc);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_matrix (half_matrix, half_nr, half_nc);
+  printf ("Invasion Percolation or Histogram Thresholding:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  if (run_invperc) {
+    invperc_mpi (world, invperc_matrix, invperc_mask, invperc_nr, invperc_nc,
+                 invperc_fraction);
+  }
+  else {
+    thresh_mpi (world, thresh_matrix, thresh_mask, thresh_nr, thresh_nc,
+                thresh_fraction);
+  }
+#else
+  // run serially
   if (run_invperc) {
     invperc (invperc_matrix, invperc_mask, invperc_nr, invperc_nc,
              invperc_fraction);
@@ -338,15 +314,90 @@ int main(int argc, char* argv[])
     thresh (thresh_matrix, thresh_mask, thresh_nr, thresh_nc,
             thresh_fraction);
   }
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_matrix (life_mask, life_nr, life_nc);
+  printf ("Game of Life:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  life_mpi (world, life_mask, life_nr, life_nc, life_iters);
+#else
+  // run serially
   life (life_mask, life_nr, life_nc, life_iters);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_matrix (life_mask, life_nr, life_nc);
+  printf ("Weighted Point Selection:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  winnow_mpi (world, winnow_matrix, winnow_mask, winnow_nr, winnow_nc,
+              winnow_pts, winnow_n);
+#else
+  // run serially
   winnow (winnow_matrix, winnow_mask, winnow_nr, winnow_nc,
           winnow_pts, winnow_n);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_vector (winnow_pts, winnow_n);
+  printf ("Coordinate Normalization:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  norm_mpi (world, norm_vec, norm_n);
+#else
+  // run serially
   norm (norm_vec, norm_n);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_vector (norm_vec, norm_n);
+  printf ("Convex Hull:\n");
+  fflush (stdout);
+#endif
+
+#ifdef IS_PARALLEL
+  // run in parallel
+  hull_mpi (world, hull_pts, hull_n, hull_result_pts, &hull_result_n);
+#else
+  // run serially
   hull (hull_pts, hull_n, hull_result_pts, &hull_result_n);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_vector (hull_result_pts, hull_result_n);
+  printf ("Outer Product:\n");
+  fflush (stdout);
+#endif
+
   // use the number of points in convex hull
   outer_n = hull_result_n;
+#ifdef IS_PARALLEL
+  // run in parallel
+  outer_mpi (world, outer_pts, outer_result_matrix, outer_result_vector,
+             outer_n);
+#else
+  // run serially
   outer (outer_pts, outer_result_matrix, outer_result_vector,
          outer_n);
+#endif
+
+#ifdef CHAIN_OUTPUT
+  print_matrix (outer_result_matrix, outer_n, outer_n);
+  print_vector (outer_result_vector, outer_n);
+  fflush (stdout);
+#endif
+
   gauss_n = outer_n;
   sor_n = outer_n;
   product_nr = outer_n;
@@ -359,18 +410,164 @@ int main(int argc, char* argv[])
   }
   memcpy (gauss_vector, outer_result_vector,
           sizeof (real) * gauss_n);
+#ifdef IS_PARALLEL
+  // run in parallel
+  if (world.size () > 1) {
+    // run gauss and sor at the same time
+    // split the world into two communicators
+    bool is_gauss = ((world.rank () % 2) == 0);
+    mpi::communicator local = world.split (is_gauss? 0 : 1);
+    if (is_gauss) {
+#ifdef CHAIN_OUTPUT
+      printf ("Gaussian Elimination:\n");
+      fflush (stdout);
+#endif
+      gauss_mpi (local, gauss_matrix, gauss_vector, gauss_answer, gauss_n);
+    }
+    else {
+#ifdef CHAIN_OUTPUT
+      printf ("Successive Over-Relaxation:\n");
+      fflush (stdout);
+#endif
+      sor_mpi (local, sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
+    }
+    // broadcast gauss answer
+    broadcast (world, gauss_answer, gauss_n, 0);
+    // broadcast sor answer
+    broadcast (world, sor_answer, sor_n, 1);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (gauss_answer, gauss_n);
+    print_vector (sor_answer, sor_n);
+    fflush (stdout);
+#endif
+
+    if (is_gauss) {
+#ifdef CHAIN_OUTPUT
+      printf ("Matrix-Vector Product for Gauss:\n");
+      fflush (stdout);
+#endif
+      product_mpi (local, product_matrix1, product_vector1, product_result1,
+                   product_nr, product_nc);
+    }
+    else {
+#ifdef CHAIN_OUTPUT
+      printf ("Matrix-Vector Product for Sor:\n");
+      fflush (stdout);
+#endif
+      product_mpi (local, product_matrix2, product_vector2, product_result2,
+                   product_nr, product_nc);
+    }
+    // broadcast product_result1
+    broadcast (world, product_result1, product_nr, 0);
+    // broadcast product_result2
+    broadcast (world, product_result2, product_nr, 1);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (product_result1, product_nr);
+    print_vector (product_result2, product_nr);
+    fflush (stdout);
+#endif
+  }
+  else {
+#ifdef CHAIN_OUTPUT
+    printf ("Gaussian Elimination:\n");
+    fflush (stdout);
+#endif
+
+    gauss_mpi (world, gauss_matrix, gauss_vector, gauss_answer, gauss_n);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (gauss_answer, gauss_n);
+    printf ("Matrix-Vector Product for Gauss:\n");
+    fflush (stdout);
+#endif
+
+    product_mpi (world, product_matrix1, product_vector1, product_result1,
+                 product_nr, product_nc);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (product_result1, product_nr);
+    printf ("Successive Over-Relaxation:\n");
+    fflush (stdout);
+#endif
+
+    sor_mpi (world, sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (sor_answer, sor_n);
+    printf ("Matrix-Vector Product for Sor:\n");
+    fflush (stdout);
+#endif
+
+    product_mpi (world, product_matrix2, product_vector2, product_result2,
+                 product_nr, product_nc);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (product_result2, product_nr);
+    fflush (stdout);
+#endif
+  }
+#else
+  // run serially
+#ifdef CHAIN_OUTPUT
+    printf ("Gaussian Elimination:\n");
+    fflush (stdout);
+#endif
+
   gauss (gauss_matrix, gauss_vector, gauss_answer, gauss_n);
-  sor (sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (gauss_answer, gauss_n);
+    printf ("Matrix-Vector Product for Gauss:\n");
+    fflush (stdout);
+#endif
+
   product (product_matrix1, product_vector1, product_result1,
            product_nr, product_nc);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (product_result1, product_nr);
+    printf ("Successive Over-Relaxation:\n");
+    fflush (stdout);
+#endif
+
+  sor (sor_matrix, sor_vector, sor_answer, sor_n, sor_tolerance);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (sor_answer, sor_n);
+    printf ("Matrix-Vector Product for Sor:\n");
+    fflush (stdout);
+#endif
+
   product (product_matrix2, product_vector2, product_result2,
            product_nr, product_nc);
+
+#ifdef CHAIN_OUTPUT
+    print_vector (product_result2, product_nr);
+    fflush (stdout);
+#endif
+#endif
+
+#ifdef CHAIN_OUTPUT
+    printf ("Vector Difference:\n");
+    fflush (stdout);
+#endif
+
   vecdiff_n = product_nr;
+#ifdef IS_PARALLEL
+  // run in parallel
+  vecdiff_mpi (world, vecdiff_left, vecdiff_right, vecdiff_n,
+               &vecdiff_norm1_diff);
+#else
+  // run serially
   vecdiff (vecdiff_left, vecdiff_right, vecdiff_n,
            &vecdiff_norm1_diff);
 #endif
 
+#ifdef CHAIN_OUTPUT
   printf ("vecdiff_norm1_diff is %lg\n", vecdiff_norm1_diff);
+#endif
 
 #ifdef TEST_TIME
   end = get_ticks ();

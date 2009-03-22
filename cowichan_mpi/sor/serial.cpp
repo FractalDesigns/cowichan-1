@@ -47,10 +47,10 @@ sor(
       /* compute sum */
       sum = 0.0;
       for (c=0; c<r; c++){
-	sum += matrix[r][c]*answer[c];
+        sum += matrix[r][c]*answer[c];
       }
       for (c=r+1; c<n; c++){
-	sum += matrix[r][c]*answer[c];
+        sum += matrix[r][c]*answer[c];
       }
     
       /* compute difference */
@@ -58,7 +58,7 @@ sor(
       answer[r] = (1.0-SOR_OMEGA)*old + SOR_OMEGA*(vector[r]-sum)/matrix[r][r];
       d = (real)fabs((double)(old - answer[r]));
       if (d > dMax){
-	dMax = d;
+        dMax = d;
       }
     }
 #if GRAPHICS
