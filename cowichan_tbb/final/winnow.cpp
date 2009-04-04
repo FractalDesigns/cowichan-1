@@ -25,9 +25,16 @@ private:
 	IntMatrix _candidates;
 	BoolMatrix _mask;
 	
-	RealList values;
+	WeightedPointList values;
 
 public:
+
+	/**
+	 * Accessor for the weighted point list.
+	 */
+	WeightedPointList& getValues() {
+		return values;
+	}
 
 	/**
 	 * Standard constructor
@@ -51,7 +58,7 @@ public:
 			for (size_t x = cols.begin(); x != cols.end(); ++x) {
 				
 				if (MATRIX_RECT(mask, y, x)) {
-					add(MATRIX_RECT(candidates, y, x));
+					add(WeightedPoint(x, y, MATRIX_RECT(candidates, y, x)));
 				}
 				
 			}
@@ -72,31 +79,24 @@ public:
 		add(other.values);
 	}
 	
-	/**
-	 * Gets the list of selected values.
-	 */
-	RealList getValues() const {
-		return values;
-	}
-		
 private:
 
 	/**
 	 * Inserts a value into the values list, in correct order (given that the
 	 * list is already sorted). It's O(log n)!
 	 */
-	void add(const real& newValue) {
-		RealList::iterator pos = std::lower_bound(values.begin(), values.end(), newValue);
+	void add(const WeightedPoint& newValue) {
+		WeightedPointList::iterator pos = std::lower_bound(values.begin(), values.end(), newValue);
 		values.insert(pos, newValue);
 	}
 	
 	/**
 	 * Merges another already-sorted list with this ValueSelector's list.
 	 */
-	void add(const RealList& other) {
+	void add(const WeightedPointList& other) {
 
-		RealList replacement;
-		RealList::const_iterator i, j;		
+		WeightedPointList replacement;
+		WeightedPointList::const_iterator i, j;		
 
 		// reserve space in the replacement vector for the current and new values		
 		replacement.reserve(values.size() + other.size());
@@ -130,82 +130,23 @@ private:
 
 /*****************************************************************************/
 
-class PointCreator {
-private:
-
-	RealList* values;
-	PointList points;
-
+class ExtractPoints {
 public:
 
-	/**
-	 * Perform weighted point selection.
-	 * @return a list of numPoints points.
-	 */
-	static void perform(int numPoints, IntMatrix candidates, BoolMatrix mask, PointList* points) {
-	
-		// extract candidates from the matrix
-		ValueSelector vc(candidates, mask);
-		parallel_reduce(Range2D(0, Cowichan::NROWS, 0, Cowichan::NCOLS), vc,
-			auto_partitioner());
+	static void exec(IntMatrix matrix, BoolMatrix mask, PointList* points) {
 		
-		// we can only create as many points as we have pairs of values.
-		if (numPoints < vc.getValues().size()) {
-			numPoints = vc.getValues().size();
+		// extract points from the matrix
+		ValueSelector vs(matrix, mask);
+		parallel_reduce(
+			Range2D(0, Cowichan::NROWS, 0, Cowichan::NCOLS),
+			vs, auto_partitioner());
+			
+		// copy over points until we have NELTS points.
+		size_t stride = vs.getValues().size() / Cowichan::NELTS; // implicit floor
+		for (size_t idx = 0; points->size() < Cowichan::NELTS; idx += stride) {
+			points->push_back(vs.getValues()[idx].point);
 		}
 		
-		// pair them together to create points
-		PointCreator pc(vc.getValues());
-		parallel_reduce(Range(0, numPoints), pc, auto_partitioner());
-		
-		// return those gathered points
-		points->reserve(pc.getPoints().size());
-		for (PointList::const_iterator it = pc.getPoints().begin(); it != pc.getPoints().end(); ++it) {
-			points->push_back(*it);
-		}
-
-	}
-
-public:
-
-	/**
-	 * Standard constructor.
-	 */
-	PointCreator(RealList sv) {
-		values = new RealList(sv);
-	}
-
-	/**
-	 * Combine values pairwise to create a list of points (TBB).
-	 */
-	void operator()(const blocked_range<size_t>& range) {
-
-		const RealList& v = *values;
-		for (size_t i = range.begin(); i != range.end(); ++i) {
-			points.push_back(Point(v[i*2], v[(i*2)+1]));
-		}
-
-	}
-
-	/**
-	 * Splitting (TBB) constructor.
-	 */
-	PointCreator(PointCreator& other, split):
-		values(other.values) { }
-	
-	/**
-	 * Joiner (TBB).
-	 */	
-	void join(const PointCreator& other) {
-		std::copy(other.points.begin(), other.points.end(), std::back_inserter(points));	
-//		points.insert(points.end(), other.points.begin(), other.points.end());
-	}
-	
-	/**
-	 * Gets the list of points.
-	 */
-	PointList getPoints() const {
-		return points;
 	}
 
 };
@@ -216,7 +157,7 @@ void Cowichan::winnow(IntMatrix matrix, BoolMatrix mask, PointList** points) {
 
 	// get a list of points!
 	*points = new PointList();
-	PointCreator::perform(NELTS, matrix, mask, *points);
+	ExtractPoints::exec(matrix, mask, *points);
 	
 }
 

@@ -26,6 +26,26 @@ using namespace tbb;
 typedef blocked_range<size_t> Range;
 typedef blocked_range2d<size_t,size_t> Range2D;
 
+// TIMING ===================================================================//
+
+#define TEST_TIME
+
+#if defined(WIN32)   // Windows
+	#include <windows.h>
+#else                // Linux
+	#include <sys/times.h>
+	typedef uint64_t INT64;
+#endif
+
+INT64 get_ticks ();
+INT64 get_freq ();
+void print_elapsed_time (INT64 start, INT64 end);
+
+/**
+ * Does a sort of swap-out, printing progress.
+ */
+INT64 timeInfo(INT64 *start, INT64 *end, std::string message);
+
 // BASIC TYPES ==============================================================//
 #ifndef REAL_TYPE
 	// use IEEE single floating-point by default
@@ -88,6 +108,23 @@ public:
 typedef std::vector<Point>	PointList;
 typedef Point*				PointVector;
  
+// WEIGHTED POINT TYPE (FOR WINNOW) =========================================//
+struct WeightedPoint {
+
+	Point point;
+	uint weight;
+	
+	WeightedPoint(Point point, uint weight): point(point), weight(weight) { }
+	WeightedPoint(real x, real y, uint weight): point(x, y), weight(weight) { }	
+
+	inline bool operator<(const WeightedPoint& rhs) const {
+		return (weight < rhs.weight);
+	}
+
+};
+
+typedef std::vector<WeightedPoint>	WeightedPointList;
+
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
 class Cowichan {

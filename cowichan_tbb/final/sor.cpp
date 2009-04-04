@@ -85,7 +85,9 @@ public:
 		} while (relaxer->getNorm() >= tolerance);
 		
 		// DEBUG: print the number of iterations.
-		std::cout << "SOR in " << numIterations << " iterations." << std::endl;
+		#ifdef DEBUG
+			std::cout << "SOR in " << numIterations << " iterations." << std::endl;
+		#endif
 		
 		// make sure we get rid of the final Relaxer instance.
 		delete relaxer;

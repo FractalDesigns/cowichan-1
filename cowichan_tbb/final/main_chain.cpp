@@ -1,70 +1,98 @@
 #include "cowichan.hpp"
 
 // default values for the toys.
-int Cowichan::NROWS = 40;
-int Cowichan::NCOLS = 40;
-int Cowichan::NELTS = 40;
-int Cowichan::NUMGEN = 20;
+int Cowichan::NROWS = 8000;
+int Cowichan::NCOLS = 8000;
+int Cowichan::NELTS = 800;
+int Cowichan::NUMGEN = 200;
 real Cowichan::x0 = -2.0;
 real Cowichan::y0 = -1.0;
 real Cowichan::dx = 3.0;
 real Cowichan::dy = 2.0;
-real Cowichan::PERCENT = 0.25;
+real Cowichan::PERCENT = 0.75;
 int Cowichan::NFILL = 200;
 uint Cowichan::SEED = 681304;
 
-	/**
-	 * Runs all problems in the cowichan problem set, chained together.
-	 * @param numThreads	the number of threads to spawn using TBB.
-	 * @param use_randmat	true: generate a random matrix.
-	 * 						false: use a window of the mandelbrot set.
-	 * @param use_thresh	true: use image thresholding for int->bool.
-	 *						false: use invasion percolation for int->bool.
-	 */
-	void Cowichan::run(int numThreads, bool use_randmat, bool use_thresh) {
-		IntMatrix matrix;
-		Matrix realmx;
-		Vector vector, x_sor, x_gauss;
-		BoolMatrix bm;
-		PointList* points;
-		real e_gauss, e_sor;
+/**
+ * Runs all problems in the cowichan problem set, chained together.
+ * @param numThreads	the number of threads to spawn using TBB.
+ * @param use_randmat	true: generate a random matrix.
+ * 						false: use a window of the mandelbrot set.
+ * @param use_thresh	true: use image thresholding for int->bool.
+ *						false: use invasion percolation for int->bool.
+ */
+void Cowichan::run(int numThreads, bool use_randmat, bool use_thresh) {
+	IntMatrix matrix;
+	IntMatrix newMatrix;
+	Matrix realmx;
+	Vector vector, x_sor, x_gauss;
+	BoolMatrix bm;
+	PointList* points;
+	real e_gauss, e_sor;
+
+	INT64 start, end;
+	end = get_ticks();
+
+	// set up for the number of threads we will use
+	COWICHAN(numThreads);		
+	timeInfo(&start, &end, "init");
 		
-		// set up for the number of threads we will use
-		COWICHAN(numThreads);		
-		
-/* 1 */	if (use_randmat) {
-			randmat(&matrix);
-		} else {
-			mandel(&matrix);
-		}
-		
-/* 2 */	half(matrix, &matrix);
-
-/* 3 */	if (use_thresh) {
-			thresh(matrix, &bm);
-		} else {
-			invperc(matrix, &bm);
-		}
-
-/* 4 */	life(bm, &bm);
-/* 5 */	winnow(matrix, bm, &points);
-
-/* 6 */ //hull(points, &points);
-
-/* 7 */	norm(points, &points);
-
-		print(*points);
-
-/* 8 */	outer(points, &realmx, &vector);
-
-/* 9 */	gauss(realmx, vector, &x_gauss);
-		sor(realmx, vector, &x_sor);
-		
-/* 10*/	product(realmx, vector, x_gauss, &e_gauss);
-		product(realmx, vector, x_sor, &e_sor);
-		
+	// Cowichan step #1
+	if (use_randmat) {
+		randmat(&matrix);
+		timeInfo(&start, &end, "random matrix");
+	} else {
+		mandel(&matrix);
+		timeInfo(&start, &end, "mandelbrot set");
 	}
 	
+	// Cowichan step #2		
+	half(matrix, &newMatrix);
+	timeInfo(&start, &end, "halving shuffle");
+
+	// Cowichan step #3
+	if (use_thresh) {
+		thresh(newMatrix, &bm);
+		timeInfo(&start, &end, "image thresholding");
+	} else {
+		invperc(newMatrix, &bm);
+		timeInfo(&start, &end, "invasion percolation");
+	}
+
+	// Cowichan step #4
+	life(bm, &bm);
+	timeInfo(&start, &end, "game of life");
+	
+	// Cowichan step #5
+	winnow(newMatrix, bm, &points);
+	timeInfo(&start, &end, "weighted point selection");
+
+	// Cowichan step #6
+	hull(points, &points);
+	timeInfo(&start, &end, "convex hull");
+
+	// Cowichan step #7
+	norm(points, &points);
+	timeInfo(&start, &end, "point normalization");
+//	print(*points);
+
+	// Cowichan step #8
+	outer(points, &realmx, &vector);
+	timeInfo(&start, &end, "outer product");
+
+	// Cowichan step #9
+	gauss(realmx, vector, &x_gauss);
+	timeInfo(&start, &end, "gaussian elimination");
+	sor(realmx, vector, &x_sor);
+	timeInfo(&start, &end, "successive over-relaxation");
+	
+	// Cowichan step #10
+	product(realmx, vector, x_gauss, &e_gauss);
+	product(realmx, vector, x_sor, &e_sor);
+	timeInfo(&start, &end, "two matrix-vector product");	
+	
+}
+
 Point Point::minimum = Point(MINIMUM_REAL, MINIMUM_REAL);
 Point Point::maximum = Point(MAXIMUM_REAL, MAXIMUM_REAL);
 Point Point::origin  = Point(0.0, 0.0);	
@@ -124,7 +152,57 @@ void printAxb(Matrix matrix, Vector answer, Vector vector) {
  * The entry point of the Cowichan/TBB problem set.
  */
 int main(int argc, char** argv) {
-	Cowichan::run(2, true, false);
+	Cowichan::run(1, true, false);
 	return 0;
+}
+
+/*****************************************************************************/
+
+INT64 get_ticks ()
+{
+  INT64 count;
+#if defined(WIN32)   // Windows
+  if (! QueryPerformanceCounter((LARGE_INTEGER *) &count)) {
+    count = GetTickCount (); // ms
+  }
+#else                // Linux
+  tms tm;
+  count = times (&tm);
+#endif               // end of WIN32/Linux definitions
+  return count;
+}
+
+INT64 get_freq ()
+{
+  INT64 freq;
+#if defined(WIN32)   // Windows
+  if (! QueryPerformanceFrequency((LARGE_INTEGER *) &freq)) {
+    freq = 1000; // ms
+  }
+#else                // Linux
+  freq = sysconf (_SC_CLK_TCK);
+#endif               // end of WIN32/Linux definitions
+  return freq;
+}
+
+/**
+ * Does a sort of swap-out, printing progress.
+ */
+INT64 timeInfo(INT64 *start, INT64 *end, std::string message) {
+	*start = *end;
+	*end = get_ticks();
+	#ifdef TEST_TIME
+		std::cout << message << ": ";
+		print_elapsed_time(*start, *end);
+		std::cout << std::endl;
+	#endif
+}
+
+void print_elapsed_time (INT64 start, INT64 end)
+{
+  INT64 freq = get_freq ();
+  std::cout.precision(5);
+  std::cout << (((double) (end - start)) / ((double) freq)) << " seconds";
+  std::cout.flush();
 }
 
