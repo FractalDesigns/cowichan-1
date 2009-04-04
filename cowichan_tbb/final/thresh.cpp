@@ -96,10 +96,6 @@ public:
 		}
 	}
 	
-	~Histogram() {
-		delete[] histogram;
-	}
-
 	int getValue(real cutoff) const {
 		int i;
 		int retain = (Cowichan::NROWS * Cowichan::NCOLS) * cutoff;
