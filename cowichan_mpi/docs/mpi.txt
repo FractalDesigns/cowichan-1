@@ -1,0 +1,35 @@
+Boost MPI + MPICH:
+
+
+Practical uses:
+- Running on *supercomputers/clusters*
+- There are better systems for running on a multicore machine (TBB is an example)
+- *Algorithms are restricted* to those that have *very good parallelizable versions* due to communication speeds
+- A good choice for algorithms that work on *enormous datasets* that cannot fit in memory of a single node
+
+Best scaling cowichan problem, matrix-vector product, run on CDF:
+Machines used: 8 (1 process per machine)
+Speedup: 6.4
+
+
+Advantages:
+- Full support for primitive data types and *user-defined data types*
+- Built-in *operations on arrays, vectors, strings*
+- *Boost.Serialization* makes it easy to transfer data between computers/processes
+- Allows *heterogeneous operations* on aggregates
+- Support for *process groups*
+- *Synchronization is hidden* from the user
+- Boost MPI library contains *performance optimizations* (however, these were not used since achieving high performance was not the goal)
+- Boost MPI and MPICH are *well-maintained*
+- Boost MPI and MPICH are *platform-independent* (unlike OpenMPI)
+
+
+Disadvantages:
+- Compilation time (about 5x slower than TBB)
+- *Performance limited* by amount of communication/memory copying since *memory is not shared*
+- *Slow startup/shutdown* when using a lot of nodes
+- *Same executable* must be used
+- Debugging can be tricky without good tools (e.g Visual Studio)
+- *Restructuring large applications* to speed up a small part of them can be too involved (compared to TBB for example)
+- *Memory usage* can be a problem when running multiple processes on the same node
+- Generally, MPI requires *large datasets* to have performance benefits
