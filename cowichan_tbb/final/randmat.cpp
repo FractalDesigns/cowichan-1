@@ -45,7 +45,7 @@ private:
 	 */
 	void initialise() {
 	
-		state = NEW_VECTOR(uint);
+		state = NEW_VECTOR(uint, Cowichan::NROWS);
 	
 		// generate first column values
 		VECTOR(state, 0) = s % m;
@@ -80,7 +80,7 @@ public:
 			// copy over the seed value for this row
 			MATRIX_RECT(matrix, row, 0) = VECTOR(init, row);
 			
-			// for every other column, provide NROWS-spaced random numbers
+			// for each other column, provide NROWS-spaced random numbers
 			// using the specialty method RandomGenerator.nextK(current).
 			for (int col = 1; col < Cowichan::NCOLS; ++col) {
 				MATRIX_RECT(matrix, row, col) = nextK(MATRIX_RECT(matrix, row, col - 1));

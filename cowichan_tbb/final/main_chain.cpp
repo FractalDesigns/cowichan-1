@@ -152,7 +152,7 @@ void printAxb(Matrix matrix, Vector answer, Vector vector) {
  * The entry point of the Cowichan/TBB problem set.
  */
 int main(int argc, char** argv) {
-	Cowichan::run(1, true, false);
+	Cowichan::run(2, true, false);
 	return 0;
 }
 
