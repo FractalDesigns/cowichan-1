@@ -184,8 +184,8 @@ public:
 
 #define NEW_MATRIX_SQUARE(__type)	(new __type[Cowichan::NELTS * Cowichan::NELTS])
 #define NEW_MATRIX_RECT(__type)		(new __type[Cowichan::NROWS * Cowichan::NCOLS])
-#define NEW_VECTOR(__type,__num)	(new __type[__num])
-#define NEW_VECTOR(__type)			NEW_VECTOR(__type, Cowichan::NELTS)
+#define NEW_VECTOR_SZ(__type,__num)	(new __type[__num])
+#define NEW_VECTOR(__type)			NEW_VECTOR_SZ(__type, Cowichan::NELTS)
 
 #define COWICHAN_PARALLEL	srand(time(0)); task_scheduler_init init;
 #define COWICHAN_SINGLE		srand(time(0)); task_scheduler_init init(1);

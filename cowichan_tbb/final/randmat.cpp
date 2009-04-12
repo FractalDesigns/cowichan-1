@@ -45,7 +45,7 @@ private:
 	 */
 	void initialise() {
 	
-		state = NEW_VECTOR(uint, Cowichan::NROWS);
+		state = NEW_VECTOR_SZ(uint, Cowichan::NROWS);
 	
 		// generate first column values
 		VECTOR(state, 0) = s % m;
