@@ -25,16 +25,15 @@ randmat_mpi (
   unsigned int		limit,			/* value limit */
   unsigned int		seed			/* RNG seed */
 ){
-  int		i, j;			/* loop index */
-  int		lo, hi, str;		/* work controls */
+  int rlo, rhi;
+  int r, c;
 
-  int rank = world.rank ();
-  int size = world.size ();
+  int size = nr;
 
   state = new unsigned int[size];
 
   // set up
-  if (rank == 0) {
+  if (world.rank () == 0) {
     randStateInit(seed, size, state, &aPrime, &cPrime);
   }
   // broadcast set up
@@ -42,19 +41,20 @@ randmat_mpi (
   broadcast (world, aPrime, 0);
   broadcast (world, cPrime, 0);
 
-  // special scheduling
-  if (get_cyclic_rows_mpi (world, 0, nr * nc, &lo, &hi, &str)) {
-    for (i = lo; i < hi; i += str) {
-      matrix[i / nr][i % nr] = state[rank] % limit;
-      state[rank] = (aPrime * state[rank] + cPrime) % RAND_M;
+  // assign rows to processes
+  if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi)) {
+    for (r = rlo; r < rhi; r++) {
+      for (c = 0; c < nc; c++) {
+        matrix[r][c] = state[r] % limit;
+        state[r] = (aPrime * state[r] + cPrime) % RAND_M;
+      }
     }
   }
-  // broadcast result
-  for (i = 0; i < nr; i++) {
-    for (j = 0; j < nc; j++) {
-      rank = get_cyclic_rank_mpi (world, 0, nr * nc, i * nc + j);
-      broadcast (world, matrix[i][j], rank);
-    }
+  
+  // broadcast matrix rows
+  for (r = 0; r < world.size (); r++) {
+    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r);
+    broadcast (world, matrix[rlo], (rhi - rlo) * nc, r);
   }
 
   delete [] state;

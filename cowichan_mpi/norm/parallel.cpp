@@ -13,13 +13,19 @@ void norm_mpi (mpi::communicator world,
                pt1D* vec,      /* points to normalize */
                int  n)       /* length of vector */
 {
+  pt		ptMin_local, ptMax_local;		/* pseudo-points */
   pt		ptMin, ptMax;		/* pseudo-points */
   real		sclX, sclY;		/* scaling factors */
   int		i;			/* loop index */
   int		lo, hi;		/* work controls */
-  int rank;
 
-  redPt1DPos(vec, n, &ptMin, &ptMax);
+  if (get_block_rows_mpi (world, 0, n, &lo, &hi)) {
+    redPt1DPos(&vec[lo], hi - lo, &ptMin, &ptMax);
+  }
+
+  all_reduce (world, ptMin_local, ptMin, minimum_pt ());
+  all_reduce (world, ptMax_local, ptMax, maximum_pt ());
+
   if (get_block_rows_mpi (world, 0, n, &lo, &hi)) {
     /* scaling factors */
     sclX = (ptMax.x == ptMin.x) ? 0.0 : 1/(ptMax.x - ptMin.x);
@@ -32,10 +38,9 @@ void norm_mpi (mpi::communicator world,
   }
 
   // broadcast normalized values
-  for (i = 0; i < n; i++) {
-    rank = get_block_rank_mpi (world, 0, n, i);
-    broadcast (world, vec[i].x, rank);
-    broadcast (world, vec[i].y, rank);
+  for (i = 0; i < world.size (); i++) {
+    get_block_rows_mpi (world, 0, n, &lo, &hi, i);
+    broadcast (world, &vec[lo], hi - lo, i);
   }
 
   /* return */

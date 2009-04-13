@@ -21,62 +21,64 @@ half_mpi (mpi::communicator world,
   int		nr,			/* row size */
   int		nc			/* column size */
 ){
+  bool work;
   int		lo, hi;		/* work controls */
+  int		rlo, rhi;		/* work controls */
   int		r, c, i;		/* loop indices */
-  int1D*		tmp;			/* temporary */
 
-  tmp = new int1D[MAXEXT];
+  int middle_r = (nr + 1) / 2;
+  int middle_c = (nc + 1) / 2;
+  int previous_r, previous_c;
+
+  int2D* tmp_matrix = new int2D[MAXEXT];
 
   // work
-  if (get_block_rows_mpi (world, 0, nr, &lo, &hi)) {
-    /* rows */
+  work = get_block_rows_mpi (world, 0, nr, &lo, &hi);
+
+  // shuffle along rows
+  if (work) {
     for (r = lo; r < hi; r++) {
-      for (c = 1, i = 0; c < nc; c += 2, i++) {
-        tmp[i] = matrix[r][c];
-      }
-      for (c = 0, i = 0; c < (nc + 1) / 2; c++, i += 2) {
-        matrix[r][c] = matrix[r][i];
-      }
-      for (c = (nc + 1) / 2, i = 0; c < nc; c++, i++) {
-        matrix[r][c] = tmp[i];
+      for (c = 0; c < nc; c++) {
+        // get original column
+				if (c < middle_c) {
+					previous_c = c * 2;
+				} else {
+					previous_c = (c - middle_c) * 2 + 1;
+        }
+        tmp_matrix[r][c] = matrix[r][previous_c];
       }
     }
   }
   
-  // broadcast matrix
+  // broadcast tmp_matrix rows
   for (i = 0; i < world.size (); i++) {
-    if (get_block_rows_mpi (world, 0, nr, &lo, &hi, i)) {
-      broadcast (world, matrix[lo], (hi - lo) * nc, i);
-    }
+    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i);
+    broadcast (world, tmp_matrix[rlo], (rhi - rlo) * nc, i);
   }
 
-  if (get_block_rows_mpi (world, 0, nc, &lo, &hi)) {
-    /* columns */
-    for (c = lo; c < hi; c++) {
-      for (r = 1, i = 0; r < nr; r += 2, i++) {
-        tmp[i] = matrix[r][c];
-      }
-      for (r = 0, i = 0; r < (nr + 1) / 2; r++, i += 2) {
-        matrix[r][c] = matrix[i][c];
-      }
-      for (r = (nr + 1) / 2, i = 0; r < nr; r++, i++) {
-        matrix[r][c] = tmp[i];
-      }
-    }
-  }
-
-  // broadcast matrix
-  for (i = 0; i < world.size (); i++) {
-    if (get_block_rows_mpi (world, 0, nc, &lo, &hi, i)) {
-      for (c = lo; c < hi; c++) {
-        for (r = 0; r < nr; r++) {
-          broadcast (world, matrix[r][c], i);
+  // shuffle along columns
+  if (work) {
+    for (r = lo; r < hi; r++) {
+      for (c = 0; c < nc; c++) {
+        // get original row
+				if (r < middle_r) {
+					previous_r = r * 2;
+				} else {
+					previous_r = (r - middle_r) * 2 + 1;
         }
+        matrix[r][c] = tmp_matrix[previous_r][c];
       }
     }
   }
 
-  delete [] tmp;
+  // broadcast matrix rows
+  for (i = 0; i < world.size (); i++) {
+    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i);
+    broadcast (world, matrix[rlo], (rhi - rlo) * nc, i);
+  }
+
+  // cleanup
+  delete [] tmp_matrix;
 
   /* return */
 }

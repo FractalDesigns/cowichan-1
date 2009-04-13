@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
   n = MAXEXT;
   limit = 10;
-  tolerance = 10e-3;
+  tolerance = 10e-6;
   max = -1.0;
 
   srand (333);
