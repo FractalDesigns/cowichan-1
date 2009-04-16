@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -l nodes=35:ppn=8,walltime=80:00:00
+
+set -x
+NP=`cat $PBS_NODEFILE |wc -l`
+
+echo starting on `hostname`
+echo nodefile is $PBS_NODEFILE with $NP entries
+echo "These are my assigned nodes --->"
+cat $PBS_NODEFILE
+echo "<---"
+
+mpirun -mca btl ^tcp -np $NP -machinefile $PBS_NODEFILE \
+      ${HOME}/cowichan/cowichan_mpi/chain/chain
