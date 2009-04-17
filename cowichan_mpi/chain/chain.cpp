@@ -244,6 +244,11 @@ int main(int argc, char* argv[])
   start = get_ticks ();
 #endif
 
+#ifdef STAGE_TIME
+  INT64 stage_start, stage_end;
+  stage_start = get_ticks ();
+#endif
+
   // TODO: some implementations are using broadcasts of multiple rows at once;
   //       the row sizes might be smaller than MAXEXT, need to fix
   //       implementations to work for any nr, nc < MAXEXT.
@@ -282,6 +287,13 @@ int main(int argc, char* argv[])
   print_matrix (half_matrix, half_nr, half_nc);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Two-Dimensional Shuffle:\n");
   fflush (stdout);
@@ -298,6 +310,12 @@ int main(int argc, char* argv[])
 #ifdef CHAIN_OUTPUT
   print_matrix (half_matrix, half_nr, half_nc);
   fflush (stdout);
+#endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
 #endif
 
 #ifdef IS_PARALLEL
@@ -334,6 +352,13 @@ int main(int argc, char* argv[])
   print_matrix (life_mask, life_nr, life_nc);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Game of Life:\n");
   fflush (stdout);
@@ -351,6 +376,13 @@ int main(int argc, char* argv[])
   print_matrix (life_mask, life_nr, life_nc);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Weighted Point Selection:\n");
   fflush (stdout);
@@ -370,6 +402,13 @@ int main(int argc, char* argv[])
   print_vector (winnow_pts, winnow_n);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Coordinate Normalization:\n");
   fflush (stdout);
@@ -387,6 +426,13 @@ int main(int argc, char* argv[])
   print_vector (norm_vec, norm_n);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Convex Hull:\n");
   fflush (stdout);
@@ -404,6 +450,13 @@ int main(int argc, char* argv[])
   print_vector (hull_result_pts, hull_result_n);
   fflush (stdout);
 #endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
   printf ("Outer Product:\n");
   fflush (stdout);
@@ -425,6 +478,12 @@ int main(int argc, char* argv[])
   print_matrix (outer_result_matrix, outer_n, outer_n);
   print_vector (outer_result_vector, outer_n);
   fflush (stdout);
+#endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
 #endif
 
   gauss_n = outer_n;
@@ -596,6 +655,12 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
+#endif
+
 #ifdef CHAIN_STAGE
     printf ("Vector Difference:\n");
     fflush (stdout);
@@ -614,6 +679,12 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   printf ("vecdiff_norm1_diff is %lg\n", vecdiff_norm1_diff);
+#endif
+
+#ifdef STAGE_TIME
+  stage_end = get_ticks ();
+  print_elapsed_time (stage_start, stage_end, true);
+  stage_start = get_ticks ();
 #endif
 
 #ifdef TEST_TIME

@@ -680,9 +680,13 @@ INT64 get_freq ()
   return freq;
 }
 
-void print_elapsed_time (INT64 start, INT64 end)
+void print_elapsed_time (INT64 start, INT64 end, bool indent)
 {
   INT64 freq = get_freq ();
+  if (indent) {
+    printf ("> ");
+  }
   printf ("Elapsed time: %lg seconds\n", ((double) (end - start)) /
                                          ((double) freq));
+  fflush (stdout);
 }
