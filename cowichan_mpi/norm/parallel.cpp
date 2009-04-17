@@ -39,8 +39,9 @@ void norm_mpi (mpi::communicator world,
 
   // broadcast normalized values
   for (i = 0; i < world.size (); i++) {
-    get_block_rows_mpi (world, 0, n, &lo, &hi, i);
-    broadcast (world, &vec[lo], hi - lo, i);
+    if (get_block_rows_mpi (world, 0, n, &lo, &hi, i)) {
+      broadcast (world, &vec[lo], hi - lo, i);
+    }
   }
 
   /* return */

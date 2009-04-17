@@ -53,8 +53,9 @@ randmat_mpi (
   
   // broadcast matrix rows
   for (r = 0; r < world.size (); r++) {
-    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r);
-    broadcast (world, matrix[rlo], (rhi - rlo) * nc, r);
+    if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r)) {
+      broadcast (world, matrix[rlo], (rhi - rlo) * nc, r);
+    }
   }
 
   delete [] state;

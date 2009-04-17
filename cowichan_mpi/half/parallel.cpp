@@ -52,8 +52,9 @@ half_mpi (mpi::communicator world,
   
   // broadcast tmp_matrix rows
   for (i = 0; i < world.size (); i++) {
-    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i);
-    broadcast (world, tmp_matrix[rlo], (rhi - rlo) * nc, i);
+    if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i)) {
+      broadcast (world, tmp_matrix[rlo], (rhi - rlo) * nc, i);
+    }
   }
 
   // shuffle along columns
@@ -73,8 +74,9 @@ half_mpi (mpi::communicator world,
 
   // broadcast matrix rows
   for (i = 0; i < world.size (); i++) {
-    get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i);
-    broadcast (world, matrix[rlo], (rhi - rlo) * nc, i);
+    if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, i)) {
+      broadcast (world, matrix[rlo], (rhi - rlo) * nc, i);
+    }
   }
 
   // cleanup

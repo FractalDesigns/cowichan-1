@@ -39,7 +39,6 @@ life_mpi(
   int		rlo, rhi;		// for broadcast
   bool		work;			/* useful work to do? */ 
   int is_alive = 1;
-  //int rank;
 
   count = new int2D[MAXEXT];
 
@@ -55,13 +54,10 @@ life_mpi(
     }
     // broadcast counts
     for (r = 0; r < world.size (); r++) {
-      get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r);
-      broadcast (world, count[rlo], rhi - rlo, r);
+      if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r)) {
+        broadcast (world, count[rlo], rhi - rlo, r);
+      }
     }
-    /*for (r = 0; r < nr; r++) {
-      rank = get_block_rank_mpi (world, 0, nr, r);
-      broadcast (world, count[r], nc, rank);
-    }*/
     // update cells
     alive = 0;
     if (work) {
@@ -79,8 +75,9 @@ life_mpi(
     }
     // broadcast matrix
     for (r = 0; r < world.size (); r++) {
-      get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r);
-      broadcast (world, matrix[rlo], (rhi - rlo) * nc, r);
+      if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r)) {
+        broadcast (world, matrix[rlo], (rhi - rlo) * nc, r);
+      }
     }
     // is_alive is maximum of local alive's
     if (world.rank () == 0) {

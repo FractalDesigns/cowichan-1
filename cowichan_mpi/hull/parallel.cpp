@@ -29,13 +29,14 @@ void hull_mpi (mpi::communicator world,
   *hn = 0;
 
   // figure out the points with minimum and maximum x values
-  get_block_rows_mpi (world, 1, n, &lo, &hi);
-  for (i = lo; i < hi; i++) {
-    if (min_p_local.x > points[i].x) {
-      min_p_local = points[i];
-    }
-    if (max_p_local.x < points[i].x) {
-      max_p_local = points[i];
+  if (get_block_rows_mpi (world, 1, n, &lo, &hi)) {
+    for (i = lo; i < hi; i++) {
+      if (min_p_local.x > points[i].x) {
+        min_p_local = points[i];
+      }
+      if (max_p_local.x < points[i].x) {
+        max_p_local = points[i];
+      }
     }
   }
   // reduce to min_p and max_p
@@ -64,12 +65,13 @@ void split_mpi (mpi::communicator world,
   int i;
 
   // compute the signed distances from the line for each point
-  get_block_rows_mpi (world, 0, n, &lo, &hi);
-  for (i = lo; i < hi; i++) {
-    real currentCross = cross_mpi (p1, p2, points[i]);
-    if (currentCross > max_cp_local.cross) {
-      max_cp_local.p = points[i];
-      max_cp_local.cross = currentCross;
+  if (get_block_rows_mpi (world, 0, n, &lo, &hi)) {
+    for (i = lo; i < hi; i++) {
+      real currentCross = cross_mpi (p1, p2, points[i]);
+      if (currentCross > max_cp_local.cross) {
+        max_cp_local.p = points[i];
+        max_cp_local.cross = currentCross;
+      }
     }
   }
 
