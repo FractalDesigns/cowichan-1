@@ -29,44 +29,33 @@ life_mpi(
   int		iters			/* number of iterations */
 );
 
+#endif /* LIFE_PARALLEL_H */
+
 /*--------------------------------------------------------------*/
 /* private functions						*/
 /*--------------------------------------------------------------*/
 
-/*
- * @ life_one : update count for single cell
- * > none
- * + update count (using fact that TRUE==1 and FALSE==0)
- */
-
 void
 life_one_mpi(
-  bool2D*	matrix,			/* world to evolve */
-  int2D*		count,			/* neighborhood counts */
-  int		r,			/* this row */
-  int		r_lo,			/* lower row */
-  int		r_hi,			/* higher row */
-  int		c,			/* this column */
-  int		c_lo,			/* lower column */
-  int		c_hi,			/* higher column */
-  int   width
+  bool2D*       matrix,                 // old world
+  bool2D*       matrix2,                // new world
+  int*          alive,                  // alive count
+  int           r,                      // this row
+  int           r_lo,                   // lower row
+  int           r_hi,                   // higher row
+  int           c,                      // this column
+  int           c_lo,                   // lower column
+  int           c_hi                    // higher column
 );
-
-/*
- * @ life_row : count entire row
- * > none
- * + update counts
- */
 
 void
 life_row_mpi(
-  bool2D*	matrix,			/* world to evolve */
-  int2D*		count,			/* neighborhood counts */
-  int		nr,			/* row size */
-  int		nc,			/* column size */
-  int		r,			/* this row */
-  int		r_lo,			/* lower row */
-  int		r_hi			/* higher row */
+  bool2D*       matrix,                 // old world
+  bool2D*       matrix2,                // new world
+  int*          alive,                  // alive count
+  int           nr,                     // row size
+  int           nc,                     // column size
+  int           r,                      // this row
+  int           r_lo,                   // lower row
+  int           r_hi                    // higher row
 );
-
-#endif /* LIFE_PARALLEL_H */
