@@ -21,9 +21,6 @@ randmat(
 ){
   int		r, c;			/* loop indices */
   int		v = seed % RAND_M;	/* random value */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   for (r=0; r<nr; r++){
     for (c=0; c<nc; c++){
@@ -31,10 +28,6 @@ randmat(
       v = (RAND_A * v + RAND_C) % RAND_M;
     }
   }
-
-#if GRAPHICS
-  gfx_randmat(gfxCount++, matrix, nr, nc);
-#endif
 
   /* return */
 }

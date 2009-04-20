@@ -29,16 +29,13 @@ thresh(
   int		i, r, c;		/* loop indices */
   int		vMax;			/* max value in matrix */
   int		retain;			/* selection */
-#if GRAPHICS
-  int		gfxCount = 0;		/* number of times graphics called */
-#endif
 
   /* find max value in matrix */
   vMax = 0;
   for (r=0; r<nr; r++){
     for (c=0; c<nc; c++){
       if (vMax < matrix[r][c]){
-	vMax = matrix[r][c];
+        vMax = matrix[r][c];
       }
     }
   }
@@ -48,10 +45,6 @@ thresh(
   for (i=0; i<=vMax; i++){
     hist[i] = 0;
   }
-
-#if GRAPHICS
-  gfx_thresh(gfxCount++, matrix, mask, nr, nc, hist, vMax);
-#endif
 
   /* count */
   for (r=0; r<nr; r++){
@@ -73,10 +66,6 @@ thresh(
       mask[r][c] = matrix[r][c] > retain;
     }
   }
-
-#if GRAPHICS
-  gfx_thresh(gfxCount++, matrix, mask, nr, nc, hist, vMax);
-#endif
 
   delete [] hist;
 

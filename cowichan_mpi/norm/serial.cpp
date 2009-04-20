@@ -17,9 +17,6 @@ norm(
   pt		ptMin, ptMax;		/* pseudo-points */
   real		sclX, sclY;		/* scaling factors */
   int		i;			/* loop index */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   /* scaling factors */
   redPt1DPos(vec, n, &ptMin, &ptMax);
@@ -31,10 +28,6 @@ norm(
     vec[i].x = sclX * (vec[i].x - ptMin.x);
     vec[i].y = sclY * (vec[i].y - ptMin.y);
   }
-
-#if GRAPHICS
-  gfx_norm(gfxCount++, vec, n);
-#endif
 
   /* return */
 }

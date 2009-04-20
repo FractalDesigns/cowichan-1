@@ -19,15 +19,9 @@ gauss(
   int		n			/* size */
 ){
   int		r, c, k;		/* indices */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   /* forward elimination */
   for (k=0; k<n; k++){
-#if GRAPHICS
-    gfx_gauss(gfxCount++, matrix, vector, answer, n);
-#endif
     /* calculate pivots in k'th column */
     for (r=k+1; r<n; r++){
       matrix[r][k] = matrix[r][k]/matrix[k][k];
@@ -35,7 +29,7 @@ gauss(
     /* update elements below k'th row */
     for (r=k+1; r<n; r++){
       for (c=k+1; c<n; c++){
-	matrix[r][c] = matrix[r][c] - (matrix[r][k] * matrix[k][c]);
+        matrix[r][c] = matrix[r][c] - (matrix[r][k] * matrix[k][c]);
       }
     }
     /* update element of solution vector */

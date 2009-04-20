@@ -27,19 +27,12 @@ sor(
 ){
   int		r, c, t;		/* indices */
   real		sum, old, dMax, d;	/* temporaries */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   /* initialize */
   for (r=0; r<n; r++){
     answer[r] = 1.0;
   }
   dMax = 2 * tol;			/* to forestall early exit */
-
-#if GRAPHICS
-  gfx_sor(gfxCount++, matrix, vector, answer, n);
-#endif
 
   for (t=0; (t<SOR_MAX_ITERS) && (dMax >= tol); t++){
     dMax = 0.0;
@@ -61,9 +54,6 @@ sor(
         dMax = d;
       }
     }
-#if GRAPHICS
-    gfx_sor(gfxCount++, matrix, vector, answer, n);
-#endif
   }
   /* return */
 }

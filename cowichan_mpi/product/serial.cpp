@@ -20,9 +20,6 @@ product(
   int		nc			/* column size */
 ){
   int		r, c;			/* row/column indices */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   for (r=0; r<nr; r++){
     result[r] = matrix[r][0] * vector[0];
@@ -30,9 +27,6 @@ product(
       result[r] += matrix[r][c] * vector[c];
     }
   }
-#if GRAPHICS
-  gfx_product(gfxCount++, matrix, vector, result, nr, nc);
-#endif
 
   /* return */
 }

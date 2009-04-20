@@ -10,7 +10,7 @@ typedef float real;			/* single-precision reals */
 #define FMT_REAL_RD "%le"
 #define FMT_REAL_WR "%24.16e\n"
 
-#define MAXEXT 7000
+#define MAXEXT 5000
 
 struct pt {
 private:

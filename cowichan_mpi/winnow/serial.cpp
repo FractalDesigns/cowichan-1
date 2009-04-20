@@ -23,13 +23,6 @@ winnow(
   pt1DX*		ptVec;			/* temp point vector */
   int		r, c, i, j, len;	/* indices and number of points */
   int		stride;			/* selection stride */
-#if GRAPHICS
-  int		gfxCount;
-#endif
-
-#if GRAPHICS
-  gfx_winnow(gfxCount++, matrix, mask, pt, nr, nc, npt);
-#endif
 
   ptVec = new pt1DX[MAXEXT * MAXEXT];
 
@@ -40,10 +33,10 @@ winnow(
   for (r=0; r<nr; r++){
     for (c=0; c<nc; c++){
       if (mask[r][c]){
-	ptVec[i].x = r;
-	ptVec[i].y = c;
-	ptVec[i].w = matrix[r][c];
-	i++;
+        ptVec[i].x = r;
+        ptVec[i].y = c;
+        ptVec[i].w = matrix[r][c];
+        i++;
       }
     }
   }
@@ -56,10 +49,6 @@ winnow(
   for (i=npt-1, j=len-1; i>=0; i--, j-=stride){
     pt[i] = ptVec[j];
   }
-
-#if GRAPHICS
-  gfx_winnow(gfxCount++, matrix, mask, pt, nr, nc, npt);
-#endif
 
   delete [] ptVec;
 

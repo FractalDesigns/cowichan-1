@@ -28,14 +28,6 @@ half(
 
   tmp = new int1D[MAXEXT];
 
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
-
-#if GRAPHICS
-  gfx_half(gfxCount++, matrix, nr, nc);
-#endif
-
   /* rows */
   for (r=0; r<nr; r++){
     for (c=1, i=0; c<nc; c+=2, i++){
@@ -49,10 +41,6 @@ half(
     }
   }
 
-#if GRAPHICS
-  gfx_half(gfxCount++, matrix, nr, nc);
-#endif
-
   /* columns */
   for (c=0; c<nc; c++){
     for (r=1, i=0; r<nr; r+=2, i++){
@@ -65,10 +53,6 @@ half(
       matrix[r][c] = tmp[i];
     }
   }
-
-#if GRAPHICS
-  gfx_half(gfxCount++, matrix, nr, nc);
-#endif
 
   delete [] tmp;
 

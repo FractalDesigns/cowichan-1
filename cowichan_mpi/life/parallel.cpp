@@ -81,9 +81,7 @@ life_mpi(
   delete [] count;
 
   /* check */
-  if (is_alive == 0){
-    fail("life", "no cells left alive", "iteration", "%d", i, NULL);
-  }
+  ASSERT (is_alive != 0);
 
   /* return */
 }

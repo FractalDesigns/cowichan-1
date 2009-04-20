@@ -26,9 +26,6 @@ vecdiff(
 ){
   int		i;			/* loop index */
   real		d;			/* difference */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   *diff = (real)fabs((double)(left[0] - right[0]));
   for (i=1; i<n; i++){
@@ -37,9 +34,6 @@ vecdiff(
       *diff = d;
     }
   }
-#if GRAPHICS
-  gfx_vecdiff(gfxCount++, left, right, n, *diff);
-#endif
 
   /* return */
 }

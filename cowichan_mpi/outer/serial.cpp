@@ -27,9 +27,6 @@ outer(
   real		d;			/* distance between points */
   real		dMax = -1.0;		/* maximum distance */
   int		r, c;			/* loop indices */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
 
   /* all elements except matrix diagonal */
   for (r=0; r<n; r++){
@@ -37,13 +34,10 @@ outer(
     for (c=0; c<r; c++){
       d = ptDist(&(ptVec[r]), &(ptVec[c]));
       if (d > dMax){
-	dMax = d;
+        dMax = d;
       }
       matrix[r][c] = matrix[c][r] = d;
     }
-#if GRAPHICS
-    gfx_outer(gfxCount++, ptVec, matrix, realVec, n);
-#endif
   }
 
   /* matrix diagonal */
@@ -51,9 +45,6 @@ outer(
   for (r=0; r<n; r++){
     matrix[r][r] = dMax;
   }
-#if GRAPHICS
-    gfx_outer(gfxCount++, ptVec, matrix, realVec, n);
-#endif
 
   /* return */
 }

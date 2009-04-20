@@ -6,10 +6,6 @@
  * \date 01-26-09
  */
 
-#if NUMA
-EXTERN_ENV
-#endif
-
 #include "../include/main.h"
 #include "serial.h"
 
@@ -26,13 +22,6 @@ life(
   int		i;			/* iteration index */
   int		r, c;			/* row/column indices */
   int		alive = nr * nc;	/* number alive */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
-
-#if GRAPHICS
-  gfx_life(gfxCount++, world, nr, nc);
-#endif
 
   count = new int2D[MAXEXT];
 
@@ -47,25 +36,20 @@ life(
     alive = 0;
     for (r=0; r<nr; r++){
       for (c=0; c<nc; c++){
-	if ((count[r][c] == 3) || ((count[r][c] == 2) && world[r][c])){
-	  world[r][c] = TRUE;
-	  alive += 1;
-	} else {
-	  world[r][c] = FALSE;
-	}
+        if ((count[r][c] == 3) || ((count[r][c] == 2) && world[r][c])){
+          world[r][c] = TRUE;
+          alive += 1;
+        } else {
+          world[r][c] = FALSE;
+        }
       }
     }
-#if GRAPHICS
-    gfx_life(gfxCount++, world, nr, nc);
-#endif
   }
 
   delete [] count;
 
   /* check */
-  if (alive == 0){
-    fail("life", "no cells left alive", "iteration", "%d", i, NULL);
-  }
+  ASSERT (alive != 0);
 
   /* return */
 }

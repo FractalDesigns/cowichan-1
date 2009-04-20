@@ -23,9 +23,6 @@ mandel(
 ){
   int		r, c;			/* row and column indices */
   real		dx, dy;			/* per-step deltas */
-#if GRAPHICS
-  int		gfxCount = 0;		/* number of times graphics called */
-#endif
 
   dx = ext_x / (nr - 1);
   dy = ext_y / (nc - 1);
@@ -35,9 +32,6 @@ mandel(
       matrix[r][c] = mandel_calc (base_x + (r * dx), base_y + (c * dy));
     }
   }
-#if GRAPHICS
-  gfx_mandel(gfxCount++, matrix, nr, nc);
-#endif
 
   /* return */
 }

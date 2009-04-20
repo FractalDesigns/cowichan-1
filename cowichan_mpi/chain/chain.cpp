@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
   real    vecdiff_norm1_diff;
 
   // initialize inputs
-  run_mandel = true;
+  run_mandel = false;
   run_invperc = false;
   if (run_mandel) {
     mandel_matrix = new int2D[MAXEXT];
