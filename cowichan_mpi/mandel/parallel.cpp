@@ -22,10 +22,6 @@ void mandel_mpi (mpi::communicator world,
 {
   int		r, c;			/* row and column indices */
   real		dx, dy;			/* per-step deltas */
-#if GRAPHICS
-  int		gfxCount = 0;		/* number of times graphics called */
-#endif
-
   int row_count = 0;
   int i;
   mpi::status status;
@@ -95,10 +91,6 @@ void mandel_mpi (mpi::communicator world,
       }
     }
   }
-
-#if GRAPHICS
-  gfx_mandel(gfxCount++, matrix, nr, nc);
-#endif
 
   /* return */
 }

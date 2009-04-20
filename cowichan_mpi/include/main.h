@@ -13,16 +13,22 @@
 #include <stdarg.h>
 #include <time.h>
 
+// run in serial or in parallel
 #define IS_PARALLEL
 
+// print input/output in individual problem tests
 //#define TEST_OUTPUT
 
+// print stage name in chain
 #define CHAIN_STAGE
 
+// print elapsed time for individual stages in chain
 #define STAGE_TIME
 
+// print output of each stage in chain
 //#define CHAIN_OUTPUT
 
+// print elapsed time at the end
 #define TEST_TIME
 
 #include <boost/mpi.hpp>

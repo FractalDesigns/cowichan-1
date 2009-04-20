@@ -274,10 +274,18 @@ int main(int argc, char* argv[])
 #else
   // run serially
   if (run_mandel) {
+#ifdef CHAIN_STAGE
+    printf ("Fractal Generation:\n");
+    fflush (stdout);
+#endif
     mandel (mandel_matrix, mandel_nr, mandel_nc,
             mandel_base_x, mandel_base_y, mandel_ext_x, mandel_ext_y);
   }
   else {
+#ifdef CHAIN_STAGE
+    printf ("Random Number Generation:\n");
+    fflush (stdout);
+#endif
     randmat (randmat_matrix, randmat_nr, randmat_nc,
              randmat_limit, randmat_seed);
   }
@@ -339,10 +347,18 @@ int main(int argc, char* argv[])
 #else
   // run serially
   if (run_invperc) {
+#ifdef CHAIN_STAGE
+    printf ("Invasion Percolation:\n");
+    fflush (stdout);
+#endif
     invperc (invperc_matrix, invperc_mask, invperc_nr, invperc_nc,
              invperc_fraction);
   }
   else {
+#ifdef CHAIN_STAGE
+    printf ("Histogram Thresholding:\n");
+    fflush (stdout);
+#endif
     thresh (thresh_matrix, thresh_mask, thresh_nr, thresh_nc,
             thresh_fraction);
   }
@@ -448,6 +464,13 @@ int main(int argc, char* argv[])
 
 #ifdef CHAIN_OUTPUT
   print_vector (hull_result_pts, hull_result_n);
+  fflush (stdout);
+#endif
+
+#ifdef CHAIN_STAGE
+  // matrices of size hull_result_n are used from here on
+  printf ("Number of hull input points is: %d\n", hull_n);
+  printf ("Number of hull output points is: %d\n", hull_result_n);
   fflush (stdout);
 #endif
 

@@ -6,10 +6,6 @@
  * \date 01-26-09
  */
 
-#if NUMA
-EXTERN_ENV
-#endif
-
 #include "../include/main.h"
 #include "parallel.h"
 
@@ -27,14 +23,6 @@ life_mpi(
   int		i;			/* iteration index */
   int		r, c;			/* row/column indices */
   int		alive = nr * nc;	/* number alive */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
-
-#if GRAPHICS
-  gfx_life(gfxCount++, matrix, nr, nc);
-#endif
-
   int		lo, hi;		/* work controls */
   int		rlo, rhi;		// for broadcast
   bool		work;			/* useful work to do? */ 
@@ -55,7 +43,7 @@ life_mpi(
     // broadcast counts
     for (r = 0; r < world.size (); r++) {
       if (get_block_rows_mpi (world, 0, nr, &rlo, &rhi, r)) {
-        broadcast (world, count[rlo], rhi - rlo, r);
+        broadcast (world, count[rlo], (rhi - rlo) * nc, r);
       }
     }
     // update cells
@@ -88,10 +76,6 @@ life_mpi(
     }
     broadcast (world, is_alive, 0);
     is_alive = 1;
-
-#if GRAPHICS
-    gfx_life(gfxCount++, matrix, nr, nc);
-#endif
   }
 
   delete [] count;

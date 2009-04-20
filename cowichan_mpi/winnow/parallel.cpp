@@ -39,9 +39,6 @@ winnow_mpi(mpi::communicator world,
 ){
   int		i, j;			/* loop indices */
   int		sum, tmp;		/* for scanning */
-#if GRAPHICS
-  int		gfxCount = 0;
-#endif
   int rank, size;
 
   rank = world.rank ();
