@@ -1,9 +1,9 @@
-CFLAGS = -g -Wall
+CFLAGS = -O2 -g -Wall
 
 APP = chain
-CC = mpiCC
-LIBS = -L/h/u4/c8/03/c8borzen/494/boost_mpi/lib -lboost_mpi-gcc41-mt-1_37 -lboost_serialization-gcc41-mt-1_37
-INCLUDES = -I/h/u4/c8/03/c8borzen/494/boost_mpi/include/boost-1_37
+CC = mpic++
+LIBS = -L/home/aborzenko/cowichan/boost/lib -lboost_mpi-gcc41-mt-1_37 -lboost_serialization-gcc41-mt-1_37
+INCLUDES = -I/home/aborzenko/cowichan/boost/include/boost-1_37
 OBJS = ${APP}.o gauss_serial.o gauss_parallel.o half_serial.o half_parallel.o hull_serial.o hull_parallel.o invperc_serial.o invperc_parallel.o life_serial.o life_parallel.o mandel_serial.o mandel_parallel.o norm_serial.o norm_parallel.o outer_serial.o outer_parallel.o product_serial.o product_parallel.o randmat_serial.o randmat_parallel.o sor_serial.o sor_parallel.o thresh_serial.o thresh_parallel.o vecdiff_serial.o vecdiff_parallel.o winnow_serial.o winnow_parallel.o util.o
 SRCS = ${APP}.cpp ../gauss/serial.cpp ../gauss/parallel.cpp ../half/serial.cpp ../half/parallel.cpp ../hull/serial.cpp ../hull/parallel.cpp ../invperc/serial.cpp ../invperc/parallel.cpp ../life/serial.cpp ../life/parallel.cpp ../mandel/serial.cpp ../mandel/parallel.cpp ../norm/serial.cpp ../norm/parallel.cpp ../outer/serial.cpp ../outer/parallel.cpp ../product/serial.cpp ../product/parallel.cpp ../randmat/serial.cpp ../randmat/parallel.cpp ../sor/serial.cpp ../sor/parallel.cpp ../thresh/serial.cpp ../thresh/parallel.cpp ../vecdiff/serial.cpp ../vecdiff/parallel.cpp ../winnow/serial.cpp ../winnow/parallel.cpp ../shared/util.cpp
 HDRS =  ../gauss/serial.h ../gauss/parallel.h ../half/serial.h ../half/parallel.h ../hull/serial.h ../hull/parallel.h ../invperc/serial.h ../invperc/parallel.h ../life/serial.h ../life/parallel.h ../mandel/serial.h ../mandel/parallel.h ../norm/serial.h ../norm/parallel.h ../outer/serial.h ../outer/parallel.h ../product/serial.h ../product/parallel.h ../randmat/serial.h ../randmat/parallel.h ../sor/serial.h ../sor/parallel.h ../thresh/serial.h ../thresh/parallel.h ../vecdiff/serial.h ../vecdiff/parallel.h ../winnow/serial.h ../winnow/parallel.h ../include/main.h ../include/util.h ../include/generic.h ../include/type.h
