@@ -5,8 +5,8 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 10000
-#define ALL_NC 10000
+#define ALL_NR 100000
+#define ALL_NC 100000
 
 // chain
 #define CHAIN_NR ALL_NR

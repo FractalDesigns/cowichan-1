@@ -23,6 +23,14 @@ void print(PointList& points) {
 }
 
 /**
+ * Prints out of memory message and exits.
+ */
+void out_of_memory() {
+  std::cout << "--- Out of memory! ---";
+  exit(1);
+}
+
+/**
  * show a matrix result
  */
 void Cowichan::printAxb(Matrix matrix, Vector answer, Vector vector) {
@@ -135,7 +143,12 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       mandelDy = MANDEL_DY;
 
       // initialize
-      IntMatrix matrix = NEW_MATRIX_RECT(uint);
+      IntMatrix matrix;
+
+      try {
+        matrix = NEW_MATRIX_RECT(uint);
+      }
+      catch (...) {out_of_memory();}
 
       // execute
       end = get_ticks ();
@@ -152,7 +165,11 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       seed = RANDMAT_SEED;
 
       // initialize
-      IntMatrix matrix = NEW_MATRIX_RECT(uint);
+      IntMatrix matrix;
+      try {
+        matrix = NEW_MATRIX_RECT(uint);
+      }
+      catch (...) {out_of_memory();}
 
       // execute
       end = get_ticks ();
@@ -169,8 +186,15 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       srand(RANDMAT_SEED);
 
       // initialize
-      IntMatrix matrixIn = NEW_MATRIX_RECT(uint);
-      IntMatrix matrixOut = NEW_MATRIX_RECT(uint);
+      IntMatrix matrixIn;
+      IntMatrix matrixOut;
+
+      try {
+        matrixIn = NEW_MATRIX_RECT(uint);
+        matrixOut = NEW_MATRIX_RECT(uint);
+      }
+      catch (...) {out_of_memory();}
+
       int r, c;
 
       for (r = 0; r < nc; r++) {

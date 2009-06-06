@@ -2,62 +2,62 @@
 
 void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix* mask)
 {
-  printf(INVPERC);
+  std::cout << INVPERC;
 }
 
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix* mask)
 {
-  printf(THRESH);
+  std::cout << THRESH;
 }
 
 void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix* matrixOut)
 {
-  printf(LIFE);
+  std::cout << LIFE;
 }
 
 void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask, PointList** points)
 {
-  printf(WINNOW);
+  std::cout << WINNOW;
 }
 
 void CowichanSerial::norm(PointList* pointsIn, PointList** pointsOut)
 {
-  printf(NORM);
+  std::cout << NORM;
 }
 
 void CowichanSerial::hull(PointList* pointsIn, PointList** pointsOut)
 {
-  printf(HULL);
+  std::cout << HULL;
 }
 
 void CowichanSerial::outer(PointList* points, Matrix* matrix, Vector* vector)
 {
-  printf(OUTER);
+  std::cout << OUTER;
 }
 
 void CowichanSerial::gauss(Matrix matrix, Vector target, Vector* solution)
 {
-  printf(GAUSS);
+  std::cout << GAUSS;
 }
 
 void CowichanSerial::sor(Matrix matrix, Vector target, Vector* solution)
 {
-  printf(SOR);
+  std::cout << SOR;
 }
 
 void CowichanSerial::product(Matrix matrix, Vector actual, Vector* solution)
 {
-  printf(PRODUCT);
+  std::cout << PRODUCT;
 }
 
 void CowichanSerial::vecdiff(Vector actual, Vector computed, real* e)
 {
-  printf(VECDIFF);
+  std::cout << VECDIFF;
 }
 
 void CowichanSerial::chain(bool use_randmat, bool use_thresh)
 {
-  printf(CHAIN);
+  std::cout << CHAIN;
 }
 
 

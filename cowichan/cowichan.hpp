@@ -234,5 +234,10 @@ real uniform(real mean, real range);
 #define PRINT_BREAK 4
 void print(PointList& points);
 
+/**
+ * Prints out of memory message and exits.
+ */
+void out_of_memory();
+
 #endif
 
