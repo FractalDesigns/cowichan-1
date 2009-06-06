@@ -12,9 +12,9 @@
 class CowichanSerial : public Cowichan {
 protected: // chaining functions
 
-  void mandel(IntMatrix* matrix);
-  void randmat(IntMatrix* matrix);
-  void half(IntMatrix matrixIn, IntMatrix* matrixOut);
+  void mandel(IntMatrix matrix);
+  void randmat(IntMatrix matrix);
+  void half(IntMatrix matrixIn, IntMatrix matrixOut);
   void invperc(IntMatrix matrix, BoolMatrix* mask);
   void thresh(IntMatrix matrix, BoolMatrix* mask);
   void life(BoolMatrix matrixIn, BoolMatrix* matrixOut);

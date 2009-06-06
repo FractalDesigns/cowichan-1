@@ -1,15 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::randmat(IntMatrix* matrix)
-{
-  printf(RANDMAT);
-}
-
-void CowichanSerial::half(IntMatrix matrixIn, IntMatrix* matrixOut)
-{
-  printf(HALF);
-}
-
 void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix* mask)
 {
   printf(INVPERC);

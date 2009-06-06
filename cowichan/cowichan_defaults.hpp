@@ -5,8 +5,8 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 1000
-#define ALL_NC 1000
+#define ALL_NR 10000
+#define ALL_NC 10000
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -21,6 +21,18 @@
 #define MANDEL_DY 1.5;
 #define MANDEL_INFINITY 2.0
 #define MANDEL_MAX_ITER 150
+
+// randmat
+#define RANDMAT_NR ALL_NR
+#define RANDMAT_NC ALL_NC
+#define RANDMAT_SEED 681304
+#define RANDMAT_A  1291
+#define RANDMAT_C   917
+#define RANDMAT_M 56197
+
+// half
+#define HALF_NR ALL_NR
+#define HALF_NC ALL_NC
 
 // sor
 #define SOR_OMEGA 0.9

@@ -123,9 +123,10 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     chain (use_randmat, use_thresh);
   }
   else {
-    if (strcmp (argv[1], MANDEL) == 0) {
-      IntMatrix matrix;
+    INT64 start, end;
 
+    if (strcmp (argv[1], MANDEL) == 0) {
+      // set up
       nr = MANDEL_NR;
       nc = MANDEL_NC;
       mandelX0 = MANDEL_X0;
@@ -133,20 +134,59 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       mandelDx = MANDEL_DX;
       mandelDy = MANDEL_DY;
 
-      INT64 start, end;
+      // initialize
+      IntMatrix matrix = NEW_MATRIX_RECT(uint);
+
+      // execute
       end = get_ticks ();
-
-      mandel (&matrix);
-
+      mandel (matrix);
       timeInfo(&start, &end, MANDEL);
 
+      // clean up
       delete [] matrix;
     }
     else if (strcmp (argv[1], RANDMAT) == 0) {
-      randmat (NULL);
+      // set up
+      nr = RANDMAT_NR;
+      nc = RANDMAT_NC;
+      seed = RANDMAT_SEED;
+
+      // initialize
+      IntMatrix matrix = NEW_MATRIX_RECT(uint);
+
+      // execute
+      end = get_ticks ();
+      randmat (matrix);
+      timeInfo(&start, &end, RANDMAT);
+
+      // clean up
+      delete [] matrix;
     }
     else if (strcmp (argv[1], HALF) == 0) {
-      half (NULL, NULL);
+      // set up
+      nr = HALF_NR;
+      nc = HALF_NC;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      IntMatrix matrixIn = NEW_MATRIX_RECT(uint);
+      IntMatrix matrixOut = NEW_MATRIX_RECT(uint);
+      int r, c;
+
+      for (r = 0; r < nc; r++) {
+        for (c = 0; c < nc; c++) {
+          MATRIX_RECT(matrixIn, r, c) = rand () % RANDMAT_M;
+        }
+      }
+
+      // execute
+      end = get_ticks ();
+      half (matrixIn, matrixOut);
+      timeInfo(&start, &end, HALF);
+
+      // clean up
+      delete [] matrixIn;
+      delete [] matrixOut;
     }
     else if (strcmp (argv[1], INVPERC) == 0) {
       invperc (NULL, NULL);

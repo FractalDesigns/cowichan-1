@@ -2,10 +2,8 @@
 
 uint mandel_calc (real x, real y);
 
-void CowichanSerial::mandel (IntMatrix* matrix)
+void CowichanSerial::mandel (IntMatrix matrix)
 {
-  *matrix = NEW_MATRIX_RECT(uint);
-
   int r, c;
   real dx, dy;
 
@@ -14,7 +12,7 @@ void CowichanSerial::mandel (IntMatrix* matrix)
 
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
-      MATRIX_RECT(*matrix, r, c) = mandel_calc (mandelX0 + (r * dx),
+      MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (r * dx),
           mandelY0 + (c * dy));
     }
   }
@@ -33,7 +31,7 @@ uint mandel_calc (real x, real y)
   uint iter = 0; // number of iterations
 
   do {
-    i = (2.0 * r * i) + x;
+    i = (((real)2.0) * r * i) + x;
     r = (rs - is) + y;
     iter++;
     rs = r * r;

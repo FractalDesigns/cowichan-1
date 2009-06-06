@@ -160,9 +160,9 @@ protected:
 
 protected: // individual problems
 
-  virtual void mandel(IntMatrix* matrix) = 0;
-  virtual void randmat(IntMatrix* matrix) = 0;
-  virtual void half(IntMatrix matrixIn, IntMatrix* matrixOut) = 0;
+  virtual void mandel(IntMatrix matrix) = 0;
+  virtual void randmat(IntMatrix matrix) = 0;
+  virtual void half(IntMatrix matrixIn, IntMatrix matrixOut) = 0;
   virtual void invperc(IntMatrix matrix, BoolMatrix* mask) = 0;
   virtual void thresh(IntMatrix matrix, BoolMatrix* mask) = 0;
   virtual void life(BoolMatrix matrixIn, BoolMatrix* matrixOut) = 0;
