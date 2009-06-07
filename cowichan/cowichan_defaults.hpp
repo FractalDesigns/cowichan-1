@@ -5,8 +5,8 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 100000
-#define ALL_NC 100000
+#define ALL_NR 1000
+#define ALL_NC 1000
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -33,6 +33,11 @@
 // half
 #define HALF_NR ALL_NR
 #define HALF_NC ALL_NC
+
+// invperc
+#define INVPERC_NR ALL_NR
+#define INVPERC_NC ALL_NC
+#define INVPERC_NFILL 200
 
 // sor
 #define SOR_OMEGA 0.9

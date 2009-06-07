@@ -1,10 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix* mask)
-{
-  std::cout << INVPERC;
-}
-
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix* mask)
 {
   std::cout << THRESH;

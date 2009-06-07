@@ -15,7 +15,7 @@ protected: // chaining functions
   void mandel(IntMatrix matrix);
   void randmat(IntMatrix matrix);
   void half(IntMatrix matrixIn, IntMatrix matrixOut);
-  void invperc(IntMatrix matrix, BoolMatrix* mask);
+  void invperc(IntMatrix matrix, BoolMatrix mask);
   void thresh(IntMatrix matrix, BoolMatrix* mask);
   void life(BoolMatrix matrixIn, BoolMatrix* matrixOut);
   void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points);

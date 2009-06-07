@@ -154,7 +154,7 @@ protected:
   // threshold
   real threshPercent;
   // percolation
-  real invpercPercent;
+  int invpercNFill;
   // seed value for simple random number generator
   uint seed;
 
@@ -163,7 +163,7 @@ protected: // individual problems
   virtual void mandel(IntMatrix matrix) = 0;
   virtual void randmat(IntMatrix matrix) = 0;
   virtual void half(IntMatrix matrixIn, IntMatrix matrixOut) = 0;
-  virtual void invperc(IntMatrix matrix, BoolMatrix* mask) = 0;
+  virtual void invperc(IntMatrix matrix, BoolMatrix mask) = 0;
   virtual void thresh(IntMatrix matrix, BoolMatrix* mask) = 0;
   virtual void life(BoolMatrix matrixIn, BoolMatrix* matrixOut) = 0;
   virtual void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points) = 0;

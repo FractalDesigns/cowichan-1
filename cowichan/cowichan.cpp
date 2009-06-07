@@ -143,7 +143,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       mandelDy = MANDEL_DY;
 
       // initialize
-      IntMatrix matrix;
+      IntMatrix matrix = NULL;
 
       try {
         matrix = NEW_MATRIX_RECT(uint);
@@ -165,7 +165,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       seed = RANDMAT_SEED;
 
       // initialize
-      IntMatrix matrix;
+      IntMatrix matrix = NULL;
+
       try {
         matrix = NEW_MATRIX_RECT(uint);
       }
@@ -186,8 +187,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       srand(RANDMAT_SEED);
 
       // initialize
-      IntMatrix matrixIn;
-      IntMatrix matrixOut;
+      IntMatrix matrixIn = NULL;
+      IntMatrix matrixOut = NULL;
 
       try {
         matrixIn = NEW_MATRIX_RECT(uint);
@@ -213,7 +214,38 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] matrixOut;
     }
     else if (strcmp (argv[1], INVPERC) == 0) {
-      invperc (NULL, NULL);
+      // set up
+      nr = INVPERC_NR;
+      nc = INVPERC_NC;
+      invpercNFill = INVPERC_NFILL;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      IntMatrix matrix = NULL;
+      BoolMatrix mask = NULL;
+
+      try {
+        matrix = NEW_MATRIX_RECT(uint);
+        mask = NEW_MATRIX_RECT(bool);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+
+      for (r = 0; r < nc; r++) {
+        for (c = 0; c < nc; c++) {
+          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+        }
+      }
+      
+      // execute
+      end = get_ticks ();
+      invperc (matrix, mask);
+      timeInfo(&start, &end, INVPERC);
+
+      // clean up
+      delete [] matrix;
+      delete [] mask;
     }
     else if (strcmp (argv[1], THRESH) == 0) {
       thresh (NULL, NULL);
