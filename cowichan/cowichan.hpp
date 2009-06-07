@@ -211,7 +211,9 @@ public:
 // UTILITY FUNCTIONS ========================================================//
 
 #define MATRIX_RECT(mtrx,row,col)  (mtrx)[(row)*this->nc + col]
+#define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(row)*(nc) + col]
 #define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(row)*this->n + col]
+#define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(row)*(n) + col]
 #define MATRIX            MATRIX_SQUARE
 #define VECTOR(vect,row)      (vect)[row]
 #define DIAG(mtrx,v)        (mtrx)[v*this->n + v]

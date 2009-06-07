@@ -38,20 +38,6 @@ protected:
    */
   void chain(bool use_randmat, bool use_thresh);
 
-protected:
-
-  // specific to life implementation
-
-  /**
-   * For ping-pong approach.
-   */
-  BoolMatrix first, second;
-
-  /**
-   * Calculate number of neighbours.
-   */
-  int sumNeighbours(int r, int c);
-
 };
 
 #endif

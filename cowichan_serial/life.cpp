@@ -1,9 +1,11 @@
 #include "cowichan_serial.hpp"
 
+int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc);
+
 void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
-  first = matrixIn;
-  second = matrixOut;
+  BoolMatrix first = matrixIn;
+  BoolMatrix second = matrixOut;
 
   int i, r, c;
 
@@ -13,7 +15,7 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
         
-        int peers = sumNeighbours (r, c);
+        int peers = sumNeighbours (first, r, c, nr, nc);
         if (peers < 2 || peers > 3) {
           MATRIX_RECT(second, r, c) = false; // hunger/overcrowding
         } else if (peers == 3) {
@@ -46,7 +48,7 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 /**
  * Calculate number of peers.
  */
-int CowichanSerial::sumNeighbours(int r, int c) {
+int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc) {
 
   int peers = 0;
 
@@ -57,14 +59,14 @@ int CowichanSerial::sumNeighbours(int r, int c) {
   bool dd = (r < (nr - 1));
 
   // calculate no. of neighbours
-  if (ll &&       MATRIX_RECT(first, r,     c - 1)) ++peers;
-  if (ll && uu && MATRIX_RECT(first, r - 1, c - 1)) ++peers;
-  if (uu &&       MATRIX_RECT(first, r - 1, c    )) ++peers;
-  if (rr && uu && MATRIX_RECT(first, r - 1, c + 1)) ++peers;
-  if (rr &&       MATRIX_RECT(first, r,     c + 1)) ++peers;
-  if (rr && dd && MATRIX_RECT(first, r + 1, c + 1)) ++peers;
-  if (dd &&       MATRIX_RECT(first, r + 1, c    )) ++peers;
-  if (ll && dd && MATRIX_RECT(first, r + 1, c - 1)) ++peers;
+  if (ll &&       MATRIX_RECT_NC(first, r    , c - 1, nc)) ++peers;
+  if (ll && uu && MATRIX_RECT_NC(first, r - 1, c - 1, nc)) ++peers;
+  if (uu &&       MATRIX_RECT_NC(first, r - 1, c    , nc)) ++peers;
+  if (rr && uu && MATRIX_RECT_NC(first, r - 1, c + 1, nc)) ++peers;
+  if (rr &&       MATRIX_RECT_NC(first, r    , c + 1, nc)) ++peers;
+  if (rr && dd && MATRIX_RECT_NC(first, r + 1, c + 1, nc)) ++peers;
+  if (dd &&       MATRIX_RECT_NC(first, r + 1, c    , nc)) ++peers;
+  if (ll && dd && MATRIX_RECT_NC(first, r + 1, c - 1, nc)) ++peers;
 
   return peers;
 

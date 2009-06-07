@@ -5,6 +5,8 @@ class PercPoint {
 public:
 
   Point point;
+  IntMatrix matrix;
+  int nc;
 
 public:
 
@@ -19,33 +21,28 @@ public:
     return MATRIX_RECT(matrix, (int)point.y, (int)point.x);
   }
 
-  static IntMatrix matrix;
-  static int nc;
-
 };
-
-IntMatrix PercPoint::matrix = NULL;
-int PercPoint::nc = 0;
 
 /*****************************************************************************/
 
 void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
   
   PercPoint pp(Point(0, 0));
+  pp.matrix = matrix;
+  pp.nc = nc;
   
   // fill mask with false.
   for (int i = 0; i < nr * nc; i++) {
     VECTOR(mask, i) = false;
   }
-  
-  // set the matrix we are working with and number of columns
-	PercPoint::matrix = matrix;
-  PercPoint::nc = nc;
 
   // "seed" with the middle value; start a priority queue.
   std::vector<PercPoint> points;
 
-  points.push_back(Point((real) (nr / 2), (real) (nc / 2))); 
+  PercPoint initialPoint(Point((real) (nr / 2), (real) (nc / 2)));
+  initialPoint.matrix = matrix;
+  initialPoint.nc = nc;
+  points.push_back(initialPoint);
   std::make_heap(points.begin(), points.end());
 
   // perform invasion percolation nfill times.
@@ -69,25 +66,37 @@ void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
     
     // top neighbour
     if (r > 0) {
-      points.push_back(Point((real)c, (real)r - 1));
+      PercPoint topPoint(Point((real)c, (real)r - 1));
+      topPoint.matrix = matrix;
+      topPoint.nc = nc;
+      points.push_back(topPoint);
       push_heap(points.begin(), points.end());
     }
     
     // bottom neighbour
     if (r < (nr - 1)) {
-      points.push_back(Point((real)c, (real)r + 1));
+      PercPoint bottomPoint(Point((real)c, (real)r + 1));
+      bottomPoint.matrix = matrix;
+      bottomPoint.nc = nc;
+      points.push_back(bottomPoint);
       push_heap(points.begin(), points.end());
     }
     
     // left neighbour
     if (c > 0) {
-      points.push_back(Point((real)c - 1, (real)r));
+      PercPoint leftPoint(Point((real)c - 1, (real)r));
+      leftPoint.matrix = matrix;
+      leftPoint.nc = nc;
+      points.push_back(leftPoint);
       push_heap(points.begin(), points.end());
     }
     
     // right neighbour
     if (c < (nc - 1)) {
-      points.push_back(Point((real)c + 1, (real)r));
+      PercPoint rightPoint(Point((real)c + 1, (real)r));
+      rightPoint.matrix = matrix;
+      rightPoint.nc = nc;
+      points.push_back(rightPoint);
       push_heap(points.begin(), points.end());
     }
     
