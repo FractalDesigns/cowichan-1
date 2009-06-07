@@ -248,10 +248,72 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] mask;
     }
     else if (strcmp (argv[1], THRESH) == 0) {
-      thresh (NULL, NULL);
+      // set up
+      nr = THRESH_NR;
+      nc = THRESH_NC;
+      threshPercent = THRESH_PERCENT;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      IntMatrix matrix = NULL;
+      BoolMatrix mask = NULL;
+
+      try {
+        matrix = NEW_MATRIX_RECT(uint);
+        mask = NEW_MATRIX_RECT(bool);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+
+      for (r = 0; r < nc; r++) {
+        for (c = 0; c < nc; c++) {
+          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+        }
+      }
+      
+      // execute
+      end = get_ticks ();
+      thresh (matrix, mask);
+      timeInfo(&start, &end, THRESH);
+
+      // clean up
+      delete [] matrix;
+      delete [] mask;
     }
     else if (strcmp (argv[1], LIFE) == 0) {
-      life (NULL, NULL);
+      // set up
+      nr = LIFE_NR;
+      nc = LIFE_NC;
+      lifeIterations = LIFE_ITERATIONS;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      BoolMatrix matrixIn = NULL;
+      BoolMatrix matrixOut = NULL;
+
+      try {
+        matrixIn = NEW_MATRIX_RECT(bool);
+        matrixOut = NEW_MATRIX_RECT(bool);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+
+      for (r = 0; r < nc; r++) {
+        for (c = 0; c < nc; c++) {
+          MATRIX_RECT(matrixIn, r, c) = (rand () % 2) == 0;
+        }
+      }
+      
+      // execute
+      end = get_ticks ();
+      life (matrixIn, matrixOut);
+      timeInfo(&start, &end, LIFE);
+
+      // clean up
+      delete [] matrixIn;
+      delete [] matrixOut;
     }
     else if (strcmp (argv[1], WINNOW) == 0) {
       winnow (NULL, NULL, NULL);

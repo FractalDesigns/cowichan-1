@@ -39,6 +39,16 @@
 #define INVPERC_NC ALL_NC
 #define INVPERC_NFILL 200
 
+// thresh
+#define THRESH_NR ALL_NR
+#define THRESH_NC ALL_NC
+#define THRESH_PERCENT 0.5
+
+// life
+#define LIFE_NR ALL_NR
+#define LIFE_NC ALL_NC
+#define LIFE_ITERATIONS 200
+
 // sor
 #define SOR_OMEGA 0.9
 #define SOR_TOLERANCE 10e-6

@@ -16,8 +16,8 @@ protected: // chaining functions
   void randmat(IntMatrix matrix);
   void half(IntMatrix matrixIn, IntMatrix matrixOut);
   void invperc(IntMatrix matrix, BoolMatrix mask);
-  void thresh(IntMatrix matrix, BoolMatrix* mask);
-  void life(BoolMatrix matrixIn, BoolMatrix* matrixOut);
+  void thresh(IntMatrix matrix, BoolMatrix mask);
+  void life(BoolMatrix matrixIn, BoolMatrix matrixOut);
   void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points);
   void norm(PointList* pointsIn, PointList** pointsOut);
   void hull(PointList* pointsIn, PointList** pointsOut);
@@ -37,6 +37,20 @@ protected:
    *            false: use invasion percolation for int->bool.
    */
   void chain(bool use_randmat, bool use_thresh);
+
+protected:
+
+  // specific to life implementation
+
+  /**
+   * For ping-pong approach.
+   */
+  BoolMatrix first, second;
+
+  /**
+   * Calculate number of neighbours.
+   */
+  int sumNeighbours(int r, int c);
 
 };
 

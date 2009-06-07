@@ -164,8 +164,8 @@ protected: // individual problems
   virtual void randmat(IntMatrix matrix) = 0;
   virtual void half(IntMatrix matrixIn, IntMatrix matrixOut) = 0;
   virtual void invperc(IntMatrix matrix, BoolMatrix mask) = 0;
-  virtual void thresh(IntMatrix matrix, BoolMatrix* mask) = 0;
-  virtual void life(BoolMatrix matrixIn, BoolMatrix* matrixOut) = 0;
+  virtual void thresh(IntMatrix matrix, BoolMatrix mask) = 0;
+  virtual void life(BoolMatrix matrixIn, BoolMatrix matrixOut) = 0;
   virtual void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points) = 0;
   virtual void norm(PointList* pointsIn, PointList** pointsOut) = 0;
   virtual void hull(PointList* pointsIn, PointList** pointsOut) = 0;

@@ -1,56 +1,46 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix* mask)
-{
-  std::cout << THRESH;
-}
-
-void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix* matrixOut)
-{
-  std::cout << LIFE;
-}
-
-void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask, PointList** points)
+void CowichanSerial::winnow(IntMatrix /* matrix */, BoolMatrix /* mask */, PointList** /* points */)
 {
   std::cout << WINNOW;
 }
 
-void CowichanSerial::norm(PointList* pointsIn, PointList** pointsOut)
+void CowichanSerial::norm(PointList* /* pointsIn */, PointList** /* pointsOut */)
 {
   std::cout << NORM;
 }
 
-void CowichanSerial::hull(PointList* pointsIn, PointList** pointsOut)
+void CowichanSerial::hull(PointList* /* pointsIn */, PointList** /* pointsOut */)
 {
   std::cout << HULL;
 }
 
-void CowichanSerial::outer(PointList* points, Matrix* matrix, Vector* vector)
+void CowichanSerial::outer(PointList* /* points */, Matrix* /* matrix */, Vector* /* vector */)
 {
   std::cout << OUTER;
 }
 
-void CowichanSerial::gauss(Matrix matrix, Vector target, Vector* solution)
+void CowichanSerial::gauss(Matrix /* matrix */, Vector /* target */, Vector* /* solution */)
 {
   std::cout << GAUSS;
 }
 
-void CowichanSerial::sor(Matrix matrix, Vector target, Vector* solution)
+void CowichanSerial::sor(Matrix /* matrix */, Vector /* target */, Vector* /* solution */)
 {
   std::cout << SOR;
 }
 
-void CowichanSerial::product(Matrix matrix, Vector actual, Vector* solution)
+void CowichanSerial::product(Matrix /* matrix */, Vector /* actual */, Vector* /* solution */)
 {
   std::cout << PRODUCT;
 }
 
-void CowichanSerial::vecdiff(Vector actual, Vector computed, real* e)
+void CowichanSerial::vecdiff(Vector /* actual */, Vector /* computed */, real* /* e */)
 {
   std::cout << VECDIFF;
 }
 
-void CowichanSerial::chain(bool use_randmat, bool use_thresh)
+void CowichanSerial::chain(bool /* use_randmat */, bool /* use_thresh */)
 {
   std::cout << CHAIN;
 }
