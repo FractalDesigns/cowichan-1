@@ -19,7 +19,7 @@ protected: // chaining functions
   void thresh(IntMatrix matrix, BoolMatrix mask);
   void life(BoolMatrix matrixIn, BoolMatrix matrixOut);
   void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points);
-  void norm(PointList* pointsIn, PointList** pointsOut);
+  void norm(PointVector pointsIn, PointVector pointsOut);
   void hull(PointList* pointsIn, PointList** pointsOut);
   void outer(PointList* points, Matrix* matrix, Vector* vector);
   void gauss(Matrix matrix, Vector target, Vector* solution);

@@ -354,7 +354,35 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] points;
     }
     else if (strcmp (argv[1], NORM) == 0) {
-      norm (NULL, NULL);
+      // set up
+      n = NORM_N;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      PointVector pointsIn = NULL;
+      PointVector pointsOut = NULL;
+
+      try {
+        pointsIn = NEW_VECTOR(Point);
+        pointsOut = NEW_VECTOR(Point);
+      }
+      catch (...) {out_of_memory();}
+
+      int r;
+
+      for (r = 0; r < n; r++) {
+        VECTOR(pointsIn, r).x = uniform ((real)0, (real)20);
+        VECTOR(pointsIn, r).y = uniform ((real)0, (real)20);
+      }
+      
+      // execute
+      end = get_ticks ();
+      norm (pointsIn, pointsOut);
+      timeInfo(&start, &end, NORM);
+
+      // clean up
+      delete [] pointsIn;
+      delete [] pointsOut;
     }
     else if (strcmp (argv[1], HULL) == 0) {
       hull (NULL, NULL);

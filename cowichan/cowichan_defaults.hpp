@@ -5,9 +5,9 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 1000
-#define ALL_NC 1000
-#define ALL_N 1000
+#define ALL_NR 10000
+#define ALL_NC 10000
+#define ALL_N 10000
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -54,6 +54,9 @@
 #define WINNOW_NR ALL_NR
 #define WINNOW_NC ALL_NC
 #define WINNOW_N ALL_N
+
+// norm
+#define NORM_N ALL_N
 
 // sor
 #define SOR_OMEGA 0.9

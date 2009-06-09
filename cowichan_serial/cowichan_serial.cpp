@@ -1,10 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::norm(PointList* /* pointsIn */, PointList** /* pointsOut */)
-{
-  std::cout << NORM;
-}
-
 void CowichanSerial::hull(PointList* /* pointsIn */, PointList** /* pointsOut */)
 {
   std::cout << HULL;
