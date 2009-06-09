@@ -198,7 +198,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       int r, c;
 
-      for (r = 0; r < nc; r++) {
+      for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
           MATRIX_RECT(matrixIn, r, c) = rand () % RANDMAT_M;
         }
@@ -232,7 +232,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       int r, c;
 
-      for (r = 0; r < nc; r++) {
+      for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
           MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
         }
@@ -266,7 +266,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       int r, c;
 
-      for (r = 0; r < nc; r++) {
+      for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
           MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
         }
@@ -300,7 +300,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       int r, c;
 
-      for (r = 0; r < nc; r++) {
+      for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
           MATRIX_RECT(matrixIn, r, c) = (rand () % 2) == 0;
         }
@@ -316,7 +316,42 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] matrixOut;
     }
     else if (strcmp (argv[1], WINNOW) == 0) {
-      winnow (NULL, NULL, NULL);
+      // set up
+      nr = WINNOW_NR;
+      nc = WINNOW_NC;
+      n = WINNOW_N;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      IntMatrix matrix = NULL;
+      BoolMatrix mask = NULL;
+      PointVector points = NULL;
+
+      try {
+        matrix = NEW_MATRIX_RECT(uint);
+        mask = NEW_MATRIX_RECT(bool);
+        points = NEW_VECTOR(Point);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+
+      for (r = 0; r < nr; r++) {
+        for (c = 0; c < nc; c++) {
+          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+          MATRIX_RECT(mask, r, c) = (rand () % 2) == 0;
+        }
+      }
+      
+      // execute
+      end = get_ticks ();
+      winnow (matrix, mask, points);
+      timeInfo(&start, &end, WINNOW);
+
+      // clean up
+      delete [] matrix;
+      delete [] mask;
+      delete [] points;
     }
     else if (strcmp (argv[1], NORM) == 0) {
       norm (NULL, NULL);

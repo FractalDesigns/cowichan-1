@@ -18,7 +18,7 @@ protected: // chaining functions
   void invperc(IntMatrix matrix, BoolMatrix mask);
   void thresh(IntMatrix matrix, BoolMatrix mask);
   void life(BoolMatrix matrixIn, BoolMatrix matrixOut);
-  void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points);
+  void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points);
   void norm(PointList* pointsIn, PointList** pointsOut);
   void hull(PointList* pointsIn, PointList** pointsOut);
   void outer(PointList* points, Matrix* matrix, Vector* vector);

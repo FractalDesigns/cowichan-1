@@ -2,14 +2,19 @@
 
 int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc);
 
+void no_cells_alive();
+
 void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
   BoolMatrix first = matrixIn;
   BoolMatrix second = matrixOut;
 
   int i, r, c;
+  long long alive; // number of cells alive
 
 	for (i = 0; i < lifeIterations; ++i) {
+
+    alive = 0;
 
 		// update CA simulation
     for (r = 0; r < nr; r++) {
@@ -24,7 +29,14 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
           MATRIX_RECT(second, r, c) = MATRIX_RECT(first, r, c); // nothing
         }
         
+        if (MATRIX_RECT(second, r, c)) {
+          alive++;
+        }
       }
+    }
+
+    if (alive == 0) {
+      no_cells_alive();
     }
 
 		// swap arrays (ping-pong approach)
@@ -70,5 +82,13 @@ int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc) {
 
   return peers;
 
+}
+
+/**
+ * Prints no cells alive message and exits.
+ */
+void no_cells_alive() {
+  std::cout << "--- No cells alive! ---";
+  exit(1);
 }
 

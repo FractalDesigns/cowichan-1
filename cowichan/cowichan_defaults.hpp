@@ -7,6 +7,7 @@
 // common
 #define ALL_NR 1000
 #define ALL_NC 1000
+#define ALL_N 1000
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -48,6 +49,11 @@
 #define LIFE_NR ALL_NR
 #define LIFE_NC ALL_NC
 #define LIFE_ITERATIONS 200
+
+// winnow
+#define WINNOW_NR ALL_NR
+#define WINNOW_NC ALL_NC
+#define WINNOW_N ALL_N
 
 // sor
 #define SOR_OMEGA 0.9

@@ -58,8 +58,6 @@ typedef real*    RealVector;
 typedef RealMatrix  Matrix;
 typedef RealVector  Vector;
 
-typedef std::vector<real>  RealList;
-
 #ifdef max
 #undef max
 #endif
@@ -98,8 +96,8 @@ public:
 
 };
 
-typedef std::vector<Point>  PointList;
-typedef Point*        PointVector;
+typedef std::vector<Point> PointList;
+typedef Point* PointVector;
  
 // WEIGHTED POINT TYPE (FOR WINNOW) =========================================//
 class WeightedPoint {
@@ -109,6 +107,7 @@ public:
   uint weight;
   
   WeightedPoint(Point point, uint weight): point(point), weight(weight) { }
+  WeightedPoint(): point(0.0, 0.0), weight(0) { }
   WeightedPoint(real x, real y, uint weight): point(x, y), weight(weight) { }  
 
   inline bool operator<(const WeightedPoint& rhs) const {
@@ -118,6 +117,7 @@ public:
 };
 
 typedef std::vector<WeightedPoint>  WeightedPointList;
+typedef WeightedPoint* WeightedPointVector;
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
@@ -166,7 +166,7 @@ protected: // individual problems
   virtual void invperc(IntMatrix matrix, BoolMatrix mask) = 0;
   virtual void thresh(IntMatrix matrix, BoolMatrix mask) = 0;
   virtual void life(BoolMatrix matrixIn, BoolMatrix matrixOut) = 0;
-  virtual void winnow(IntMatrix matrix, BoolMatrix mask, PointList** points) = 0;
+  virtual void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points) = 0;
   virtual void norm(PointList* pointsIn, PointList** pointsOut) = 0;
   virtual void hull(PointList* pointsIn, PointList** pointsOut) = 0;
   virtual void outer(PointList* points, Matrix* matrix, Vector* vector) = 0;

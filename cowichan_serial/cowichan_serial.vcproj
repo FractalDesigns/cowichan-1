@@ -206,6 +206,10 @@
 				RelativePath=".\thresh.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\winnow.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

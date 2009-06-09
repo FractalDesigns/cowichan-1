@@ -1,10 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::winnow(IntMatrix /* matrix */, BoolMatrix /* mask */, PointList** /* points */)
-{
-  std::cout << WINNOW;
-}
-
 void CowichanSerial::norm(PointList* /* pointsIn */, PointList** /* pointsOut */)
 {
   std::cout << NORM;
