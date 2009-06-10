@@ -21,7 +21,7 @@ protected: // chaining functions
   void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points);
   void norm(PointVector pointsIn, PointVector pointsOut);
   void hull(PointVector pointsIn, PointVector pointsOut);
-  void outer(PointList* points, Matrix* matrix, Vector* vector);
+  void outer(PointVector points, Matrix matrix, Vector vector);
   void gauss(Matrix matrix, Vector target, Vector* solution);
   void sor(Matrix matrix, Vector target, Vector* solution);
   void product(Matrix matrix, Vector actual, Vector* solution);

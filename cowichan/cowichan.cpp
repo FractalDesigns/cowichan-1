@@ -416,7 +416,40 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] pointsOut;
     }
     else if (strcmp (argv[1], OUTER) == 0) {
-      outer (NULL, NULL, NULL);
+      // set up
+      n = OUTER_N;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      PointVector points = NULL;
+      Matrix matrix = NULL;
+      Vector vector = NULL;
+
+      try {
+        points = NEW_VECTOR(Point);
+        matrix = NEW_MATRIX_SQUARE(real);
+        vector = NEW_VECTOR(real);
+      }
+      catch (...) {out_of_memory();}
+
+      int r;
+
+      for (r = 0; r < n; r++) {
+        //VECTOR(points, r).x = uniform ((real)0, (real)20);
+        //VECTOR(points, r).y = uniform ((real)0, (real)20);
+        VECTOR(points, r).x = rand () % 10;
+        VECTOR(points, r).y = rand () % 10;
+      }
+      
+      // execute
+      end = get_ticks ();
+      outer (points, matrix, vector);
+      timeInfo(&start, &end, OUTER);
+
+      // clean up
+      delete [] points;
+      delete [] matrix;
+      delete [] vector;
     }
     else if (strcmp (argv[1], GAUSS) == 0) {
       gauss (NULL, NULL, NULL);

@@ -59,7 +59,10 @@
 #define NORM_N ALL_N
 
 // hull
-#define HULL_N 10000000
+#define HULL_N ALL_N
+
+// outer
+#define OUTER_N ALL_N
 
 // sor
 #define SOR_OMEGA 0.9

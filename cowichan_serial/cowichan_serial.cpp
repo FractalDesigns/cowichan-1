@@ -1,10 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::outer(PointList* /* points */, Matrix* /* matrix */, Vector* /* vector */)
-{
-  std::cout << OUTER;
-}
-
 void CowichanSerial::gauss(Matrix /* matrix */, Vector /* target */, Vector* /* solution */)
 {
   std::cout << GAUSS;
