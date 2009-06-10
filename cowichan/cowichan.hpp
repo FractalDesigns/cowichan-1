@@ -94,6 +94,12 @@ public:
     return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
   }
 
+  /**
+   * Computes the cross product of the vectors (l1,l2) and (l1,p).
+   */
+  static inline real cross (const Point& l1, const Point& l2, const Point& p) {
+    return (l1.x - p.x) * (l2.y - p.y) - (l1.y - p.y) * (l2.x - p.x);
+  }
 };
 
 typedef std::vector<Point> PointList;
@@ -168,7 +174,7 @@ protected: // individual problems
   virtual void life(BoolMatrix matrixIn, BoolMatrix matrixOut) = 0;
   virtual void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points) = 0;
   virtual void norm(PointVector pointsIn, PointVector pointsOut) = 0;
-  virtual void hull(PointList* pointsIn, PointList** pointsOut) = 0;
+  virtual void hull(PointVector pointsIn, PointVector pointsOut) = 0;
   virtual void outer(PointList* points, Matrix* matrix, Vector* vector) = 0;
   virtual void gauss(Matrix matrix, Vector target, Vector* solution) = 0;
   virtual void sor(Matrix matrix, Vector target, Vector* solution) = 0;

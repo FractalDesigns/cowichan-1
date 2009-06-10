@@ -20,7 +20,7 @@ protected: // chaining functions
   void life(BoolMatrix matrixIn, BoolMatrix matrixOut);
   void winnow(IntMatrix matrix, BoolMatrix mask, PointVector points);
   void norm(PointVector pointsIn, PointVector pointsOut);
-  void hull(PointList* pointsIn, PointList** pointsOut);
+  void hull(PointVector pointsIn, PointVector pointsOut);
   void outer(PointList* points, Matrix* matrix, Vector* vector);
   void gauss(Matrix matrix, Vector target, Vector* solution);
   void sor(Matrix matrix, Vector target, Vector* solution);

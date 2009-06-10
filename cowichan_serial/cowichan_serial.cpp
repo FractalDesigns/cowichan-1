@@ -1,10 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::hull(PointList* /* pointsIn */, PointList** /* pointsOut */)
-{
-  std::cout << HULL;
-}
-
 void CowichanSerial::outer(PointList* /* points */, Matrix* /* matrix */, Vector* /* vector */)
 {
   std::cout << OUTER;

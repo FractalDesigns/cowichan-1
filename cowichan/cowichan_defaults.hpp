@@ -58,6 +58,9 @@
 // norm
 #define NORM_N ALL_N
 
+// hull
+#define HULL_N 10000000
+
 // sor
 #define SOR_OMEGA 0.9
 #define SOR_TOLERANCE 10e-6
