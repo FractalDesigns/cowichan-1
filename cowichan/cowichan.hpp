@@ -13,7 +13,6 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip>
-#include <vector>
 #include <climits>
 #include <limits>
 #include <string>
@@ -21,6 +20,9 @@ using std::numeric_limits;
 
 // TIMING ===================================================================//
 
+/**
+ * Enables printing of test time.
+ */
 #define TEST_TIME
 
 #if defined(WIN32)   // Windows
@@ -38,6 +40,23 @@ void print_elapsed_time (INT64 start, INT64 end);
  * Does a sort of swap-out, printing progress.
  */
 void timeInfo(INT64 *start, INT64 *end, std::string message);
+
+// DEBUGGING FUNCTIONS ======================================================//
+
+/**
+ * Enables printing of output data.
+ */
+//#define OUTPUT_DATA
+
+/**
+ * Prints out of memory message and exits.
+ */
+void out_of_memory();
+
+/**
+ * Prints not enough points message and exits.
+ */
+void not_enough_points();
 
 // BASIC TYPES ==============================================================//
 #ifndef REAL_TYPE
@@ -102,7 +121,6 @@ public:
   }
 };
 
-typedef std::vector<Point> PointList;
 typedef Point* PointVector;
  
 // WEIGHTED POINT TYPE (FOR WINNOW) =========================================//
@@ -122,8 +140,27 @@ public:
 
 };
 
-typedef std::vector<WeightedPoint>  WeightedPointList;
 typedef WeightedPoint* WeightedPointVector;
+
+// UTILITY FUNCTIONS ========================================================//
+
+#define MATRIX_RECT(mtrx,row,col)  (mtrx)[(row)*this->nc + col]
+#define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(row)*(nc) + col]
+#define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(row)*this->n + col]
+#define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(row)*(n) + col]
+#define MATRIX            MATRIX_SQUARE
+#define VECTOR(vect,row)      (vect)[row]
+#define DIAG(mtrx,v)        (mtrx)[v*this->n + v]
+
+#define NEW_MATRIX_SQUARE(__type)  (new __type[this->n * this->n])
+#define NEW_MATRIX_RECT(__type)    (new __type[this->nr * this->nc])
+#define NEW_VECTOR_SZ(__type,__num)  (new __type[__num])
+#define NEW_VECTOR(__type)      NEW_VECTOR_SZ(__type, this->n)
+
+/**
+ * Returns a pseudorandom number ~ U[mean - range, mean + range].
+ */
+real uniform(real mean, real range);
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
@@ -179,7 +216,7 @@ protected: // individual problems
   virtual void gauss(Matrix matrix, Vector target, Vector solution) = 0;
   virtual void sor(Matrix matrix, Vector target, Vector solution) = 0;
   virtual void product(Matrix matrix, Vector candidate, Vector solution) = 0;
-  virtual real vecdiff(Vector actual, Vector solution) = 0;
+  virtual real vecdiff(Vector actual, Vector computed) = 0;
 
 protected:
 
@@ -192,12 +229,35 @@ protected:
    */
   virtual void chain(bool use_randmat, bool use_thresh) = 0;
 
-protected:
+public:
 
   /**
-   * DEBUGGING FUNCTION: show a matrix result
+   * DEBUGGING FUNCTION: show a matrix result.
    */
   void printAxb(Matrix matrix, Vector answer, Vector vector);
+
+  /**
+   * DEBUGGING FUNCTION: Print a rectangular matrix.
+   */
+  template <typename T>
+  void print_rect_matrix(T* matrix);
+
+  /**
+   * DEBUGGING FUNCTION: Print a square matrix.
+   */
+  template <typename T>
+  void print_square_matrix(T* matrix);
+
+  /**
+   * DEBUGGING FUNCTION: Print a vector.
+   */
+  template <typename T>
+  void print_vector(T* vector);
+
+  /**
+   * DEBUGGING FUNCTION: Print a point vector.
+   */
+  void print_vector(PointVector points);
 
 public:
 
@@ -207,45 +267,12 @@ public:
    * @param argv command line arguments.
    * @param use_randmat true: generate a random matrix.
    *                    false: use a window of the mandelbrot set.
-   * @param use_thresh true: use image thresholding for int->bool.
-   *                   false: use invasion percolation for int->bool.
+   * @param use_thresh  true: use image thresholding for int->bool.
+   *                    false: use invasion percolation for int->bool.
    */
   void main(int argc, char* argv[], bool use_randmat, bool use_thresh);
 
 };
-
-// UTILITY FUNCTIONS ========================================================//
-
-#define MATRIX_RECT(mtrx,row,col)  (mtrx)[(row)*this->nc + col]
-#define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(row)*(nc) + col]
-#define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(row)*this->n + col]
-#define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(row)*(n) + col]
-#define MATRIX            MATRIX_SQUARE
-#define VECTOR(vect,row)      (vect)[row]
-#define DIAG(mtrx,v)        (mtrx)[v*this->n + v]
-
-#define NEW_MATRIX_SQUARE(__type)  (new __type[this->n * this->n])
-#define NEW_MATRIX_RECT(__type)    (new __type[this->nr * this->nc])
-#define NEW_VECTOR_SZ(__type,__num)  (new __type[__num])
-#define NEW_VECTOR(__type)      NEW_VECTOR_SZ(__type, this->n)
-
-/**
- * Returns a pseudorandom number ~ U[mean - range, mean + range].
- */
-real uniform(real mean, real range);
-
-// DEBUGGING FUNCTIONS ======================================================//
-
-/**
- * "pretty-print" a list of points.
- */
-#define PRINT_BREAK 4
-void print(PointList& points);
-
-/**
- * Prints out of memory message and exits.
- */
-void out_of_memory();
 
 #endif
 

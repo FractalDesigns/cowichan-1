@@ -10,25 +10,100 @@ real uniform(real mean, real range) {
 /*****************************************************************************/
 
 /**
- * "pretty-print" a list of points.
- */
-#define PRINT_BREAK 4
-void print(PointList& points) {
-  int b = 0;
-  for (PointList::const_iterator it = points.begin(); it != points.end(); ++it) {
-    if (b == 0) std::cout << std::endl << "\t";
-    std::cout << "(" << it->x << "," << it->y << ")\t";
-    b = (b + 1) % PRINT_BREAK;
-  }
-}
-
-/**
  * Prints out of memory message and exits.
  */
 void out_of_memory() {
   std::cout << "--- Out of memory! ---";
   exit(1);
 }
+
+/**
+ * Prints not enough points message and exits.
+ */
+void not_enough_points() {
+  std::cout << "--- Not enough points! ---";
+  exit(1);
+}
+
+/**
+ * Print a rectangular matrix.
+ */
+#ifdef OUTPUT_DATA
+template <typename T>
+void Cowichan::print_rect_matrix(T* matrix)
+{
+  int r, c;
+
+  for (r = 0; r < nr; r++) {
+    for (c = 0; c < nc; c++) {
+      std::cout << MATRIX_RECT(matrix, r, c) << "\t";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "\n";
+}
+#else
+template <typename T>
+void Cowichan::print_rect_matrix(T* /* matrix */) { }
+#endif
+
+/**
+ * Print a rectangular matrix.
+ */
+#ifdef OUTPUT_DATA
+template <typename T>
+void Cowichan::print_square_matrix(T* matrix)
+{
+  int r, c;
+
+  for (r = 0; r < n; r++) {
+    for (c = 0; c < n; c++) {
+      std::cout << MATRIX_SQUARE(matrix, r, c) << "\t";
+    }
+    std::cout << "\n";
+  }
+  std::cout << "\n";
+}
+#else
+template <typename T>
+void Cowichan::print_square_matrix(T* /* matrix */) { }
+#endif
+
+/**
+ * Print a vector.
+ */
+#ifdef OUTPUT_DATA
+template <typename T>
+void Cowichan::print_vector(T* vector)
+{
+  int r;
+
+  for (r = 0; r < n; r++) {
+    std::cout << VECTOR(vector, r) << "\n";
+  }
+  std::cout << "\n";
+}
+#else
+template <typename T>
+void Cowichan::print_vector(T* /* vector */) { }
+#endif
+
+/**
+ * Print a point vector.
+ */
+#ifdef OUTPUT_DATA
+void Cowichan::print_vector(PointVector points)
+{
+  int r;
+
+  for (r = 0; r < n; r++) {
+    std::cout << "[" << points[r].x << ", " << points[r].y << "]\n";
+  }
+  std::cout << "\n";
+}
+#else
+void Cowichan::print_vector(PointVector /* points */) { }
+#endif
 
 /**
  * show a matrix result
@@ -154,6 +229,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       mandel (matrix);
       timeInfo(&start, &end, MANDEL);
+      print_rect_matrix<uint> (matrix);
 
       // clean up
       delete [] matrix;
@@ -176,6 +252,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       randmat (matrix);
       timeInfo(&start, &end, RANDMAT);
+      print_rect_matrix<uint> (matrix);
 
       // clean up
       delete [] matrix;
@@ -208,6 +285,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       half (matrixIn, matrixOut);
       timeInfo(&start, &end, HALF);
+      print_rect_matrix<uint> (matrixOut);
 
       // clean up
       delete [] matrixIn;
@@ -242,6 +320,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       invperc (matrix, mask);
       timeInfo(&start, &end, INVPERC);
+      print_rect_matrix<bool> (mask);
 
       // clean up
       delete [] matrix;
@@ -276,6 +355,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       thresh (matrix, mask);
       timeInfo(&start, &end, THRESH);
+      print_rect_matrix<bool> (mask);
 
       // clean up
       delete [] matrix;
@@ -310,6 +390,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       life (matrixIn, matrixOut);
       timeInfo(&start, &end, LIFE);
+      print_rect_matrix<bool> (matrixOut);
 
       // clean up
       delete [] matrixIn;
@@ -347,6 +428,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       winnow (matrix, mask, points);
       timeInfo(&start, &end, WINNOW);
+      print_vector(points);
 
       // clean up
       delete [] matrix;
@@ -379,6 +461,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       norm (pointsIn, pointsOut);
       timeInfo(&start, &end, NORM);
+      print_vector(pointsOut);
 
       // clean up
       delete [] pointsIn;
@@ -410,6 +493,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       hull (pointsIn, pointsOut);
       timeInfo(&start, &end, HULL);
+      print_vector(pointsOut);
 
       // clean up
       delete [] pointsIn;
@@ -443,6 +527,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       outer (points, matrix, vector);
       timeInfo(&start, &end, OUTER);
+      print_square_matrix<real> (matrix);
+      print_vector<real> (vector);
 
       // clean up
       delete [] points;
@@ -489,6 +575,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       gauss (matrix, target, solution);
       timeInfo(&start, &end, GAUSS);
+      print_vector<real> (solution);
 
       // clean up
       delete [] matrix;
@@ -535,6 +622,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       sor (matrix, target, solution);
       timeInfo(&start, &end, SOR);
+      print_vector<real> (solution);
 
       // clean up
       delete [] matrix;
@@ -571,6 +659,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       product (matrix, candidate, solution);
       timeInfo(&start, &end, PRODUCT);
+      print_vector<real> (solution);
 
       // clean up
       delete [] matrix;
@@ -578,7 +667,41 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] solution;
     }
     else if (strcmp (argv[1], VECDIFF) == 0) {
-      vecdiff (NULL, NULL);
+      // set up
+      n = VECDIFF_N;
+      srand(RAND_SEED);
+
+      // initialize
+      Vector actual = NULL;
+      Vector computed = NULL;
+
+      try {
+        actual = NEW_VECTOR(real);
+        computed = NEW_VECTOR(real);
+      }
+      catch (...) {out_of_memory();}
+
+      int r;
+      for (r = 0; r < n; r++) {
+        actual[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+        computed[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+      }
+      
+      // execute
+      end = get_ticks ();
+#ifdef OUTPUT_DATA
+      real maxDiff = vecdiff (actual, computed);
+#else
+      vecdiff (actual, computed);
+#endif
+      timeInfo(&start, &end, VECDIFF);
+#ifdef OUTPUT_DATA
+      std::cout << maxDiff;
+#endif
+
+      // clean up
+      delete [] actual;
+      delete [] computed;
     }
   }
 }

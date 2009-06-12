@@ -68,11 +68,3 @@ int mask_count(BoolMatrix mask, int nr, int nc) {
   return sum;
 }
 
-/**
- * Prints not enough points message and exits.
- */
-void not_enough_points() {
-  std::cout << "--- Not enough points! ---";
-  exit(1);
-}
-

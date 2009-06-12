@@ -27,6 +27,10 @@ public:
 
 void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
   
+  if (nr * nc < invpercNFill) {
+    not_enough_points();
+  }
+
   PercPoint pp(Point(0, 0));
   pp.matrix = matrix;
   pp.nc = nc;

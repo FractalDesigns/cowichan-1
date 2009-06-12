@@ -77,6 +77,9 @@
 
 // product
 #define PRODUCT_N ALL_N
+
+// vecdiff
+#define VECDIFF_N ALL_N
  
 #endif
 
