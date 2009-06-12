@@ -10,6 +10,8 @@
 #define ALL_N 1000
 #define RAND_MEAN 0
 #define RAND_RANGE 20
+#define RAND_SEED 681304
+#define RAND_M 56197
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -28,10 +30,8 @@
 // randmat
 #define RANDMAT_NR ALL_NR
 #define RANDMAT_NC ALL_NC
-#define RANDMAT_SEED 681304
 #define RANDMAT_A  1291
 #define RANDMAT_C   917
-#define RANDMAT_M 56197
 
 // half
 #define HALF_NR ALL_NR
@@ -74,6 +74,9 @@
 #define SOR_OMEGA 0.9
 #define SOR_TOLERANCE 10e-6
 #define SOR_MAX_ITERS 1000000000
+
+// product
+#define PRODUCT_N ALL_N
  
 #endif
 

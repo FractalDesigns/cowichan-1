@@ -162,7 +162,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       // set up
       nr = RANDMAT_NR;
       nc = RANDMAT_NC;
-      seed = RANDMAT_SEED;
+      seed = RAND_SEED;
 
       // initialize
       IntMatrix matrix = NULL;
@@ -184,7 +184,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       // set up
       nr = HALF_NR;
       nc = HALF_NC;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       IntMatrix matrixIn = NULL;
@@ -200,7 +200,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
-          MATRIX_RECT(matrixIn, r, c) = rand () % RANDMAT_M;
+          MATRIX_RECT(matrixIn, r, c) = rand () % RAND_M;
         }
       }
 
@@ -218,7 +218,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       nr = INVPERC_NR;
       nc = INVPERC_NC;
       invpercNFill = INVPERC_NFILL;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       IntMatrix matrix = NULL;
@@ -234,7 +234,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
-          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+          MATRIX_RECT(matrix, r, c) = rand () % RAND_M;
         }
       }
       
@@ -252,7 +252,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       nr = THRESH_NR;
       nc = THRESH_NC;
       threshPercent = THRESH_PERCENT;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       IntMatrix matrix = NULL;
@@ -268,7 +268,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
-          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+          MATRIX_RECT(matrix, r, c) = rand () % RAND_M;
         }
       }
       
@@ -286,7 +286,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       nr = LIFE_NR;
       nc = LIFE_NC;
       lifeIterations = LIFE_ITERATIONS;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       BoolMatrix matrixIn = NULL;
@@ -320,7 +320,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       nr = WINNOW_NR;
       nc = WINNOW_NC;
       n = WINNOW_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       IntMatrix matrix = NULL;
@@ -338,7 +338,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
-          MATRIX_RECT(matrix, r, c) = rand () % RANDMAT_M;
+          MATRIX_RECT(matrix, r, c) = rand () % RAND_M;
           MATRIX_RECT(mask, r, c) = (rand () % 2) == 0;
         }
       }
@@ -356,7 +356,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     else if (strcmp (argv[1], NORM) == 0) {
       // set up
       n = NORM_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       PointVector pointsIn = NULL;
@@ -387,7 +387,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     else if (strcmp (argv[1], HULL) == 0) {
       // set up
       n = HULL_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       PointVector pointsIn = NULL;
@@ -418,7 +418,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     else if (strcmp (argv[1], OUTER) == 0) {
       // set up
       n = OUTER_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       PointVector points = NULL;
@@ -452,7 +452,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     else if (strcmp (argv[1], GAUSS) == 0) {
       // set up
       n = GAUSS_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       Matrix matrix = NULL;
@@ -498,7 +498,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
     else if (strcmp (argv[1], SOR) == 0) {
       // set up
       n = SOR_N;
-      srand(RANDMAT_SEED);
+      srand(RAND_SEED);
 
       // initialize
       Matrix matrix = NULL;
@@ -542,10 +542,43 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] solution;
     }
     else if (strcmp (argv[1], PRODUCT) == 0) {
-      product (NULL, NULL, NULL);
+      // set up
+      n = PRODUCT_N;
+      srand(RAND_SEED);
+
+      // initialize
+      Matrix matrix = NULL;
+      Vector candidate = NULL;
+      Vector solution = NULL;
+
+      try {
+        matrix = NEW_MATRIX_SQUARE(real);
+        candidate = NEW_VECTOR(real);
+        solution = NEW_VECTOR(real);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+      for (r = 0; r < n; r++) {
+        for (c = 0; c < r; c++) {
+          MATRIX_SQUARE(matrix, r, c) = uniform ((real)RAND_MEAN,
+              (real)RAND_RANGE);
+        }
+        candidate[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+      }
+      
+      // execute
+      end = get_ticks ();
+      product (matrix, candidate, solution);
+      timeInfo(&start, &end, PRODUCT);
+
+      // clean up
+      delete [] matrix;
+      delete [] candidate;
+      delete [] solution;
     }
     else if (strcmp (argv[1], VECDIFF) == 0) {
-      vecdiff (NULL, NULL, NULL);
+      vecdiff (NULL, NULL);
     }
   }
 }

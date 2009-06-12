@@ -24,8 +24,8 @@ protected: // chaining functions
   void outer(PointVector points, Matrix matrix, Vector vector);
   void gauss(Matrix matrix, Vector target, Vector solution);
   void sor(Matrix matrix, Vector target, Vector solution);
-  void product(Matrix matrix, Vector actual, Vector* solution);
-  void vecdiff(Vector actual, Vector computed, real* e);
+  void product(Matrix matrix, Vector candidate, Vector solution);
+  real vecdiff(Vector actual, Vector computed);
 
 protected:
 
