@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gauss.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\half.cpp"
 				>
 			</File>
@@ -212,6 +216,10 @@
 			</File>
 			<File
 				RelativePath=".\randmat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sor.cpp"
 				>
 			</File>
 			<File

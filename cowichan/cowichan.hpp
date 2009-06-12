@@ -176,8 +176,8 @@ protected: // individual problems
   virtual void norm(PointVector pointsIn, PointVector pointsOut) = 0;
   virtual void hull(PointVector pointsIn, PointVector pointsOut) = 0;
   virtual void outer(PointVector points, Matrix matrix, Vector vector) = 0;
-  virtual void gauss(Matrix matrix, Vector target, Vector* solution) = 0;
-  virtual void sor(Matrix matrix, Vector target, Vector* solution) = 0;
+  virtual void gauss(Matrix matrix, Vector target, Vector solution) = 0;
+  virtual void sor(Matrix matrix, Vector target, Vector solution) = 0;
   virtual void product(Matrix matrix, Vector actual, Vector* solution) = 0;
   virtual void vecdiff(Vector actual, Vector computed, real* e) = 0;
 

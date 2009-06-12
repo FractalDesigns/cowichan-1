@@ -1,15 +1,5 @@
 #include "cowichan_serial.hpp"
 
-void CowichanSerial::gauss(Matrix /* matrix */, Vector /* target */, Vector* /* solution */)
-{
-  std::cout << GAUSS;
-}
-
-void CowichanSerial::sor(Matrix /* matrix */, Vector /* target */, Vector* /* solution */)
-{
-  std::cout << SOR;
-}
-
 void CowichanSerial::product(Matrix /* matrix */, Vector /* actual */, Vector* /* solution */)
 {
   std::cout << PRODUCT;

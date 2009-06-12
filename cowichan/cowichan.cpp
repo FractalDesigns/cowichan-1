@@ -371,8 +371,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       int r;
 
       for (r = 0; r < n; r++) {
-        VECTOR(pointsIn, r).x = uniform ((real)0, (real)20);
-        VECTOR(pointsIn, r).y = uniform ((real)0, (real)20);
+        VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+        VECTOR(pointsIn, r).y = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
       }
       
       // execute
@@ -402,8 +402,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       int r;
 
       for (r = 0; r < n; r++) {
-        VECTOR(pointsIn, r).x = uniform ((real)0, (real)20);
-        VECTOR(pointsIn, r).y = uniform ((real)0, (real)20);
+        VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+        VECTOR(pointsIn, r).y = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
       }
       
       // execute
@@ -435,10 +435,8 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       int r;
 
       for (r = 0; r < n; r++) {
-        //VECTOR(points, r).x = uniform ((real)0, (real)20);
-        //VECTOR(points, r).y = uniform ((real)0, (real)20);
-        VECTOR(points, r).x = rand () % 10;
-        VECTOR(points, r).y = rand () % 10;
+        VECTOR(points, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+        VECTOR(points, r).y = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
       }
       
       // execute
@@ -452,10 +450,96 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       delete [] vector;
     }
     else if (strcmp (argv[1], GAUSS) == 0) {
-      gauss (NULL, NULL, NULL);
+      // set up
+      n = GAUSS_N;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      Matrix matrix = NULL;
+      Vector target = NULL;
+      Vector solution = NULL;
+
+      try {
+        matrix = NEW_MATRIX_SQUARE(real);
+        target = NEW_VECTOR(real);
+        solution = NEW_VECTOR(real);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+      real value, maxValue = -1;
+
+      // create symmetric, diagonally dominant matrix
+      for (r = 0; r < n; r++) {
+        for (c = 0; c < r; c++) {
+          value = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+          MATRIX_SQUARE(matrix, r, c) = MATRIX_SQUARE(matrix, c, r) = value;
+          if (std::abs(value) > maxValue) {
+            maxValue = std::abs(value);
+          }
+        }
+        target[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+      }
+      maxValue *= n;
+      for (r = 0; r < n; r++) {
+        DIAG(matrix, r) = maxValue;
+      }
+      
+      // execute
+      end = get_ticks ();
+      gauss (matrix, target, solution);
+      timeInfo(&start, &end, GAUSS);
+
+      // clean up
+      delete [] matrix;
+      delete [] target;
+      delete [] solution;
     }
     else if (strcmp (argv[1], SOR) == 0) {
-      sor (NULL, NULL, NULL);
+      // set up
+      n = SOR_N;
+      srand(RANDMAT_SEED);
+
+      // initialize
+      Matrix matrix = NULL;
+      Vector target = NULL;
+      Vector solution = NULL;
+
+      try {
+        matrix = NEW_MATRIX_SQUARE(real);
+        target = NEW_VECTOR(real);
+        solution = NEW_VECTOR(real);
+      }
+      catch (...) {out_of_memory();}
+
+      int r, c;
+      real value, maxValue = -1;
+
+      // create symmetric, diagonally dominant matrix
+      for (r = 0; r < n; r++) {
+        for (c = 0; c < r; c++) {
+          value = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+          MATRIX_SQUARE(matrix, r, c) = MATRIX_SQUARE(matrix, c, r) = value;
+          if (std::abs(value) > maxValue) {
+            maxValue = std::abs(value);
+          }
+        }
+        target[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
+      }
+      maxValue *= n;
+      for (r = 0; r < n; r++) {
+        DIAG(matrix, r) = maxValue;
+      }
+      
+      // execute
+      end = get_ticks ();
+      sor (matrix, target, solution);
+      timeInfo(&start, &end, SOR);
+
+      // clean up
+      delete [] matrix;
+      delete [] target;
+      delete [] solution;
     }
     else if (strcmp (argv[1], PRODUCT) == 0) {
       product (NULL, NULL, NULL);

@@ -5,9 +5,11 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 10000
-#define ALL_NC 10000
-#define ALL_N 10000
+#define ALL_NR 1000
+#define ALL_NC 1000
+#define ALL_N 1000
+#define RAND_MEAN 0
+#define RAND_RANGE 20
 
 // chain
 #define CHAIN_NR ALL_NR
@@ -64,9 +66,14 @@
 // outer
 #define OUTER_N ALL_N
 
+// gauss
+#define GAUSS_N ALL_N
+
 // sor
+#define SOR_N ALL_N
 #define SOR_OMEGA 0.9
 #define SOR_TOLERANCE 10e-6
+#define SOR_MAX_ITERS 1000000000
  
 #endif
 
