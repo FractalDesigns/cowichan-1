@@ -105,33 +105,6 @@ void Cowichan::print_vector(PointVector points)
 void Cowichan::print_vector(PointVector /* points */) { }
 #endif
 
-/**
- * show a matrix result
- */
-void Cowichan::printAxb(Matrix matrix, Vector answer, Vector vector) {
-  std::cout.precision(5);
-  for (int row = 0; row < n; ++row) {
-
-    // print out the matrix
-    std::cout << " [ ";
-    for (int col = 0; col < n; ++col) {
-      std::cout << MATRIX(matrix, row, col) << "\t";
-    }
-    
-    // print out the answer
-    std::cout << "] [ " << VECTOR(answer, row) << " ]\t";
-
-    // print out the vector
-    if (row == int(n / 2)) {
-      std::cout << "= [ ";
-    } else {
-      std::cout << "  [ ";
-    }
-    std::cout << VECTOR(vector, row) << " ]" << std::endl;
-    
-  }
-}
-
 /*****************************************************************************/
 
 INT64 get_ticks ()

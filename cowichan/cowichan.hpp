@@ -232,11 +232,6 @@ protected:
 public:
 
   /**
-   * DEBUGGING FUNCTION: show a matrix result.
-   */
-  void printAxb(Matrix matrix, Vector answer, Vector vector);
-
-  /**
    * DEBUGGING FUNCTION: Print a rectangular matrix.
    */
   template <typename T>
