@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="cowichan_serial"
-	ProjectGUID="{3F8546A1-038C-4BA9-B28F-22E0E0925501}"
-	RootNamespace="cowichan_serial"
+	Name="cowichan_openmp"
+	ProjectGUID="{11DE927D-B71F-47CD-B8B8-5221EC3EC3AD}"
+	RootNamespace="cowichan_openmp"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -44,6 +44,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				OpenMP="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
@@ -117,6 +118,7 @@
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
+				OpenMP="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
@@ -175,71 +177,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\chain.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\cowichan\cowichan.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cowichan_serial.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\gauss.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\half.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\hull.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\invperc.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\life.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mandel.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\norm.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\outer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\product.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\randmat.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\sor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\thresh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vecdiff.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\winnow.cpp"
+				RelativePath=".\cowichan_openmp.cpp"
 				>
 			</File>
 		</Filter>
@@ -257,7 +199,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cowichan_serial.hpp"
+				RelativePath=".\cowichan_openmp.hpp"
 				>
 			</File>
 		</Filter>
