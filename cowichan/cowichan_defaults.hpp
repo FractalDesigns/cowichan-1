@@ -40,7 +40,7 @@
 // invperc
 #define INVPERC_NR ALL_NR
 #define INVPERC_NC ALL_NC
-#define INVPERC_NFILL 200
+#define INVPERC_NFILL 2000
 
 // thresh
 #define THRESH_NR ALL_NR
@@ -50,7 +50,7 @@
 // life
 #define LIFE_NR ALL_NR
 #define LIFE_NC ALL_NC
-#define LIFE_ITERATIONS 200
+#define LIFE_ITERATIONS 20
 
 // winnow
 #define WINNOW_NR ALL_NR
@@ -80,6 +80,11 @@
 
 // vecdiff
 #define VECDIFF_N ALL_N
+
+// chain
+#define CHAIN_NR ALL_NR
+#define CHAIN_NC ALL_NC
+#define CHAIN_N ALL_N
  
 #endif
 
