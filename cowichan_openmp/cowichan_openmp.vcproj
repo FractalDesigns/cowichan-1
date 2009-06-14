@@ -62,6 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				GenerateManifest="true"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -186,6 +187,10 @@
 			</File>
 			<File
 				RelativePath=".\mandel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\randmat.cpp"
 				>
 			</File>
 		</Filter>
