@@ -7,6 +7,8 @@
 
 #include "../cowichan/cowichan.hpp"
 
+#include <omp.h>
+
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
 class CowichanOpenMP : public Cowichan {
