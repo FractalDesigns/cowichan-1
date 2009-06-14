@@ -1,10 +1,10 @@
 #include "cowichan_serial.hpp"
 
-uint mandel_calc (real x, real y);
+INT_TYPE mandel_calc (real x, real y);
 
 void CowichanSerial::mandel (IntMatrix matrix)
 {
-  int r, c;
+  INT64 r, c;
   real dx, dy;
 
   dx = mandelDx / (nr - 1);
@@ -24,11 +24,11 @@ void CowichanSerial::mandel (IntMatrix matrix)
  * @param y y-coordinate.
  * @return mandelbrot value.
  */
-uint mandel_calc (real x, real y)
+INT_TYPE mandel_calc (real x, real y)
 {
   real r = 0.0, i = 0.0; // real and imaginary parts
   real rs = 0.0, is = 0.0; // " ", squared
-  uint iter = 0; // number of iterations
+  INT_TYPE iter = 0; // number of iterations
 
   do {
     i = (((real)2.0) * r * i) + x;

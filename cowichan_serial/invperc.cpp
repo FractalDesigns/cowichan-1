@@ -6,7 +6,7 @@ public:
 
   Point point;
   IntMatrix matrix;
-  int nc;
+  INT64 nc;
 
 public:
 
@@ -17,8 +17,8 @@ public:
     return value() > other.value();
   }
 
-  uint value() const {
-    return MATRIX_RECT(matrix, (int)point.y, (int)point.x);
+  INT_TYPE value() const {
+    return MATRIX_RECT(matrix, (INT64)point.y, (INT64)point.x);
   }
 
 };
@@ -36,7 +36,7 @@ void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
   pp.nc = nc;
   
   // fill mask with false.
-  for (int i = 0; i < nr * nc; i++) {
+  for (INT64 i = 0; i < nr * nc; i++) {
     VECTOR(mask, i) = false;
   }
 
@@ -50,8 +50,8 @@ void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
   std::make_heap(points.begin(), points.end());
 
   // perform invasion percolation nfill times.
-  int r, c;
-  for (int it = 0; it < invpercNFill; ++it) {
+  INT64 r, c;
+  for (INT64 it = 0; it < invpercNFill; ++it) {
 
     // get the highest-priority point that hasn't already
     // been filled.
@@ -59,8 +59,8 @@ void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
       std::pop_heap(points.begin(), points.end());
       pp = points.back();
       points.pop_back();
-      r = (int)pp.point.y;
-      c = (int)pp.point.x;
+      r = (INT64)pp.point.y;
+      c = (INT64)pp.point.x;
     } while (MATRIX_RECT(mask, r, c)); // find a free one
 
     // fill it.

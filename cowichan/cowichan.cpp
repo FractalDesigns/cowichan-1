@@ -32,7 +32,7 @@ void not_enough_points() {
 template <typename T>
 void Cowichan::print_rect_matrix(T* matrix)
 {
-  int r, c;
+  INT64 r, c;
 
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
@@ -54,7 +54,7 @@ void Cowichan::print_rect_matrix(T* /* matrix */) { }
 template <typename T>
 void Cowichan::print_square_matrix(T* matrix)
 {
-  int r, c;
+  INT64 r, c;
 
   for (r = 0; r < n; r++) {
     for (c = 0; c < n; c++) {
@@ -76,7 +76,7 @@ void Cowichan::print_square_matrix(T* /* matrix */) { }
 template <typename T>
 void Cowichan::print_vector(T* vector)
 {
-  int r;
+  INT64 r;
 
   for (r = 0; r < n; r++) {
     std::cout << VECTOR(vector, r) << "\n";
@@ -94,7 +94,7 @@ void Cowichan::print_vector(T* /* vector */) { }
 #ifdef OUTPUT_DATA
 void Cowichan::print_vector(PointVector points)
 {
-  int r;
+  INT64 r;
 
   for (r = 0; r < n; r++) {
     std::cout << "[" << points[r].x << ", " << points[r].y << "]\n";
@@ -194,7 +194,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       IntMatrix matrix = NULL;
 
       try {
-        matrix = NEW_MATRIX_RECT(uint);
+        matrix = NEW_MATRIX_RECT(INT_TYPE);
       }
       catch (...) {out_of_memory();}
 
@@ -202,7 +202,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       mandel (matrix);
       timeInfo(&start, &end, MANDEL);
-      print_rect_matrix<uint> (matrix);
+      print_rect_matrix<INT_TYPE> (matrix);
 
       // clean up
       delete [] matrix;
@@ -217,7 +217,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       IntMatrix matrix = NULL;
 
       try {
-        matrix = NEW_MATRIX_RECT(uint);
+        matrix = NEW_MATRIX_RECT(INT_TYPE);
       }
       catch (...) {out_of_memory();}
 
@@ -225,7 +225,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       randmat (matrix);
       timeInfo(&start, &end, RANDMAT);
-      print_rect_matrix<uint> (matrix);
+      print_rect_matrix<INT_TYPE> (matrix);
 
       // clean up
       delete [] matrix;
@@ -241,12 +241,12 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       IntMatrix matrixOut = NULL;
 
       try {
-        matrixIn = NEW_MATRIX_RECT(uint);
-        matrixOut = NEW_MATRIX_RECT(uint);
+        matrixIn = NEW_MATRIX_RECT(INT_TYPE);
+        matrixOut = NEW_MATRIX_RECT(INT_TYPE);
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -258,7 +258,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       half (matrixIn, matrixOut);
       timeInfo(&start, &end, HALF);
-      print_rect_matrix<uint> (matrixOut);
+      print_rect_matrix<INT_TYPE> (matrixOut);
 
       // clean up
       delete [] matrixIn;
@@ -276,12 +276,12 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       BoolMatrix mask = NULL;
 
       try {
-        matrix = NEW_MATRIX_RECT(uint);
+        matrix = NEW_MATRIX_RECT(INT_TYPE);
         mask = NEW_MATRIX_RECT(bool);
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -311,12 +311,12 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       BoolMatrix mask = NULL;
 
       try {
-        matrix = NEW_MATRIX_RECT(uint);
+        matrix = NEW_MATRIX_RECT(INT_TYPE);
         mask = NEW_MATRIX_RECT(bool);
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -351,7 +351,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -382,13 +382,13 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       PointVector points = NULL;
 
       try {
-        matrix = NEW_MATRIX_RECT(uint);
+        matrix = NEW_MATRIX_RECT(INT_TYPE);
         mask = NEW_MATRIX_RECT(bool);
         points = NEW_VECTOR(Point);
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -423,7 +423,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r;
+      INT64 r;
 
       for (r = 0; r < n; r++) {
         VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -455,7 +455,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r;
+      INT64 r;
 
       for (r = 0; r < n; r++) {
         VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -489,7 +489,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r;
+      INT64 r;
 
       for (r = 0; r < n; r++) {
         VECTOR(points, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -525,7 +525,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
       real value, maxValue = -1;
 
       // create symmetric, diagonally dominant matrix
@@ -572,7 +572,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
       real value, maxValue = -1;
 
       // create symmetric, diagonally dominant matrix
@@ -619,7 +619,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r, c;
+      INT64 r, c;
       for (r = 0; r < n; r++) {
         for (c = 0; c < r; c++) {
           MATRIX_SQUARE(matrix, r, c) = uniform ((real)RAND_MEAN,
@@ -654,7 +654,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      int r;
+      INT64 r;
       for (r = 0; r < n; r++) {
         actual[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
         computed[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);

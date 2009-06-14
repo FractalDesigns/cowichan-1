@@ -2,7 +2,7 @@
 
 real CowichanSerial::vecdiff (Vector actual, Vector computed)
 {
-  int i;
+  INT64 i;
   real diff;
   real maxDiff;
 

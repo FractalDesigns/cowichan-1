@@ -6,7 +6,7 @@
  */
 void CowichanSerial::sor (Matrix matrix, Vector target, Vector solution)
 {
-  int r, c, t;
+  INT64 r, c, t;
   real sum;
   real oldSolution;
   real diff, maxDiff;

@@ -25,11 +25,14 @@ using std::numeric_limits;
  */
 #define TEST_TIME
 
-#if defined(WIN32)   // Windows
+#if defined(WIN64) || defined(WIN32)   // Windows
   #include <windows.h>
 #else                // Linux
   #include <sys/times.h>
-  typedef uint64_t INT64;
+  typedef uint64_t UINT64;
+  typedef uint32_t UINT32;
+  typedef int64_t INT64;
+  typedef int32_t INT32;
 #endif
 
 INT64 get_ticks ();
@@ -63,19 +66,20 @@ void not_enough_points();
   // use IEEE single floating-point by default
   #define REAL_TYPE float
 #endif
-typedef REAL_TYPE  real;
-typedef unsigned int uint;
+typedef REAL_TYPE real;
 
-typedef uint*    IntMatrix;
-typedef bool*    BoolMatrix;
-typedef real*    RealMatrix;
+typedef UINT32 INT_TYPE;
 
-typedef uint*    IntVector;
-typedef bool*    BoolVector;
-typedef real*    RealVector;
+typedef INT_TYPE* IntMatrix;
+typedef bool* BoolMatrix;
+typedef real* RealMatrix;
 
-typedef RealMatrix  Matrix;
-typedef RealVector  Vector;
+typedef INT_TYPE* IntVector;
+typedef bool* BoolVector;
+typedef real* RealVector;
+
+typedef RealMatrix Matrix;
+typedef RealVector Vector;
 
 #ifdef max
 #undef max
@@ -86,15 +90,15 @@ typedef RealVector  Vector;
 #endif
 
 /*
- * It is worth explicitly pointing out that IntMatrix/IntVector use uint.
+ * It is worth explicitly pointing out that IntMatrix/IntVector use INT_TYPE.
  */
 // STATIC AND USEFUL DEFINITIONS ============================================//
 // as well as values needed for the toys that are not "inputs"
-#define MAXIMUM_INT    numeric_limits<int>::max()
-#define MINIMUM_INT    numeric_limits<int>::min()
-#define MAXIMUM_REAL  numeric_limits<real>::min()
-#define MINIMUM_REAL  numeric_limits<real>::min()
-#define INFINITY_REAL  numeric_limits<real>::infinity()
+#define MAXIMUM_INT numeric_limits<INT_TYPE>::max()
+#define MINIMUM_INT numeric_limits<INT_TYPE>::min()
+#define MAXIMUM_REAL numeric_limits<real>::min()
+#define MINIMUM_REAL numeric_limits<real>::min()
+#define INFINITY_REAL numeric_limits<real>::infinity()
 
 // POINT TYPE ===============================================================//
 class Point {
@@ -128,11 +132,11 @@ class WeightedPoint {
 public:
 
   Point point;
-  uint weight;
+  INT_TYPE weight;
   
-  WeightedPoint(Point point, uint weight): point(point), weight(weight) { }
+  WeightedPoint(Point point, INT_TYPE weight): point(point), weight(weight) { }
   WeightedPoint(): point(0.0, 0.0), weight(0) { }
-  WeightedPoint(real x, real y, uint weight): point(x, y), weight(weight) { }  
+  WeightedPoint(real x, real y, INT_TYPE weight): point(x, y), weight(weight) { }  
 
   inline bool operator<(const WeightedPoint& rhs) const {
     return (weight < rhs.weight);
@@ -144,18 +148,36 @@ typedef WeightedPoint* WeightedPointVector;
 
 // UTILITY FUNCTIONS ========================================================//
 
+#ifdef WIN32
+// 32-bit
+#define MATRIX_RECT(mtrx,row,col)  (mtrx)[(INT32)((row)*this->nc + col)]
+#define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(INT32)((row)*(nc) + col)]
+#define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(INT32)((row)*this->n + col)]
+#define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(INT32)((row)*(n) + col)]
+#define MATRIX MATRIX_SQUARE
+#define VECTOR(vect,row) (vect)[(INT32)(row)]
+#define DIAG(mtrx,v) (mtrx)[(INT32)(v*this->n + v)]
+
+#define NEW_MATRIX_SQUARE(__type) (new __type[(INT32)(this->n * this->n)])
+#define NEW_MATRIX_RECT(__type) (new __type[(INT32)(this->nr * this->nc)])
+#define NEW_VECTOR_SZ(__type,__num) (new __type[(INT32)(__num)])
+#define NEW_VECTOR(__type) NEW_VECTOR_SZ(__type, (INT32)this->n)
+
+#else
+// 64-bit
 #define MATRIX_RECT(mtrx,row,col)  (mtrx)[(row)*this->nc + col]
 #define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(row)*(nc) + col]
 #define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(row)*this->n + col]
 #define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(row)*(n) + col]
-#define MATRIX            MATRIX_SQUARE
-#define VECTOR(vect,row)      (vect)[row]
-#define DIAG(mtrx,v)        (mtrx)[v*this->n + v]
+#define MATRIX MATRIX_SQUARE
+#define VECTOR(vect,row) (vect)[row]
+#define DIAG(mtrx,v) (mtrx)[v*this->n + v]
 
-#define NEW_MATRIX_SQUARE(__type)  (new __type[this->n * this->n])
-#define NEW_MATRIX_RECT(__type)    (new __type[this->nr * this->nc])
-#define NEW_VECTOR_SZ(__type,__num)  (new __type[__num])
-#define NEW_VECTOR(__type)      NEW_VECTOR_SZ(__type, this->n)
+#define NEW_MATRIX_SQUARE(__type) (new __type[this->n * this->n])
+#define NEW_MATRIX_RECT(__type) (new __type[this->nr * this->nc])
+#define NEW_VECTOR_SZ(__type,__num) (new __type[__num])
+#define NEW_VECTOR(__type) NEW_VECTOR_SZ(__type, this->n)
+#endif
 
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
@@ -187,19 +209,19 @@ protected:
 protected:
 
   // common
-  int nr;
-  int nc;
-  int n;
+  INT64 nr;
+  INT64 nc;
+  INT64 n;
   // game of life
-  int lifeIterations;
+  INT64 lifeIterations;
   // mandelbrot
   real mandelX0, mandelY0, mandelDx, mandelDy;
   // threshold
   real threshPercent;
   // percolation
-  int invpercNFill;
+  INT64 invpercNFill;
   // seed value for simple random number generator
-  uint seed;
+  INT_TYPE seed;
 
 protected: // individual problems
 

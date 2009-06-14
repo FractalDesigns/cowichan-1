@@ -14,7 +14,7 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
   IntMatrix matrix1 = NULL;
 
   try {
-    matrix1 = NEW_MATRIX_RECT(uint);
+    matrix1 = NEW_MATRIX_RECT(INT_TYPE);
   }
   catch (...) {out_of_memory();}
 
@@ -26,7 +26,7 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
     end = get_ticks ();
     randmat (matrix1);
     timeInfo(&start, &end, RANDMAT);
-    print_rect_matrix<uint> (matrix1);
+    print_rect_matrix<INT_TYPE> (matrix1);
   }
   else {
     // set up
@@ -39,7 +39,7 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
     end = get_ticks ();
     mandel (matrix1);
     timeInfo(&start, &end, MANDEL);
-    print_rect_matrix<uint> (matrix1);
+    print_rect_matrix<INT_TYPE> (matrix1);
   }
 
   // STEP 2: half
@@ -48,7 +48,7 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
   IntMatrix matrix2 = NULL;
 
   try {
-    matrix2 = NEW_MATRIX_RECT(uint);
+    matrix2 = NEW_MATRIX_RECT(INT_TYPE);
   }
   catch (...) {out_of_memory();}
 
@@ -56,7 +56,7 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
   end = get_ticks ();
   half (matrix1, matrix2);
   timeInfo(&start, &end, HALF);
-  print_rect_matrix<uint> (matrix2);
+  print_rect_matrix<INT_TYPE> (matrix2);
 
   // clean up
   delete [] matrix1;

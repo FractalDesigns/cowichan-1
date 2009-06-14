@@ -6,7 +6,7 @@
  */
 void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
 {
-  int r, c, k;
+  INT64 r, c, k;
 
   // forward elimination
   for (k = 0; k < n; k++) {

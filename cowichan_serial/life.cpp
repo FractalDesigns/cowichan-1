@@ -1,6 +1,6 @@
 #include "cowichan_serial.hpp"
 
-int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc);
+INT64 sumNeighbours(BoolMatrix first, INT64 r, INT64 c, INT64 nr, INT64 nc);
 
 void no_cells_alive();
 
@@ -9,8 +9,8 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
   BoolMatrix first = matrixIn;
   BoolMatrix second = matrixOut;
 
-  int i, r, c;
-  long long alive; // number of cells alive
+  INT64 i, r, c;
+  INT64 alive; // number of cells alive
 
 	for (i = 0; i < lifeIterations; ++i) {
 
@@ -20,7 +20,7 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
         
-        int peers = sumNeighbours (first, r, c, nr, nc);
+        INT64 peers = sumNeighbours (first, r, c, nr, nc);
         if (peers < 2 || peers > 3) {
           MATRIX_RECT(second, r, c) = false; // hunger/overcrowding
         } else if (peers == 3) {
@@ -60,9 +60,9 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 /**
  * Calculate number of peers.
  */
-int sumNeighbours(BoolMatrix first, int r, int c, int nr, int nc) {
+INT64 sumNeighbours(BoolMatrix first, INT64 r, INT64 c, INT64 nr, INT64 nc) {
 
-  int peers = 0;
+  INT64 peers = 0;
 
   // calculate possible neighbour positions
   bool ll = (c > 0);

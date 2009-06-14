@@ -1,6 +1,6 @@
 #include "cowichan_serial.hpp"
 
-void split(PointVector pointsIn, int n, PointVector pointsOut, int* hn,
+void split(PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
     Point minPoint, Point maxPoint);
 
 void CowichanSerial::hull (PointVector pointsIn, PointVector pointsOut)
@@ -12,8 +12,8 @@ void CowichanSerial::hull (PointVector pointsIn, PointVector pointsOut)
   maxPoint = pointsIn[0];
 
   // figure out the points with minimum and maximum x values
-  int i;
-  int hn = 0;
+  INT64 i;
+  INT64 hn = 0;
   for (i = 1; i < n; i++) {
     if (minPoint.x > pointsIn[i].x) {
       minPoint = pointsIn[i];
@@ -40,14 +40,14 @@ void CowichanSerial::hull (PointVector pointsIn, PointVector pointsOut)
  * @param p1 boundary point #1
  * @param p2 boundary point #2
  */
-void split (PointVector pointsIn, int n, PointVector pointsOut, int* hn,
+void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
     Point p1, Point p2) {
 
   Point* maxPoint = NULL;
   real maxCross = -numeric_limits<real>::infinity ();
 
   // compute the signed distances from the line for each point
-  for (int i = 0; i < n; i++) {
+  for (INT64 i = 0; i < n; i++) {
     real currentCross = Point::cross (p1, p2, pointsIn[i]);
     if (currentCross > maxCross) {
       maxPoint = &pointsIn[i];

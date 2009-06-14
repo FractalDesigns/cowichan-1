@@ -2,7 +2,7 @@
 
 void CowichanSerial::product (Matrix matrix, Vector candidate, Vector solution)
 {
-  int r, c;
+  INT64 r, c;
 
   for (r = 0; r < n; r++) {
     solution[r] = MATRIX_SQUARE(matrix, r, 0) * candidate[0];
