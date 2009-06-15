@@ -348,11 +348,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\invperc.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\mandel.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\randmat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\thresh.cpp"
 				>
 			</File>
 		</Filter>

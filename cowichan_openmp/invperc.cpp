@@ -1,4 +1,4 @@
-#include "cowichan_serial.hpp"
+#include "cowichan_openmp.hpp"
 #include <queue>
 
 class PercPoint {
@@ -25,7 +25,7 @@ public:
 
 /*****************************************************************************/
 
-void CowichanSerial::invperc(IntMatrix matrix, BoolMatrix mask) {
+void CowichanOpenMP::invperc(IntMatrix matrix, BoolMatrix mask) {
   
   if (nr * nc < invpercNFill) {
     not_enough_points();

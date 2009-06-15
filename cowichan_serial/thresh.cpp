@@ -12,7 +12,7 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
   vMax = 0;
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
-      if (vMax < MATRIX_RECT(matrix, r, c)){
+      if (vMax < MATRIX_RECT(matrix, r, c)) {
         vMax = MATRIX_RECT(matrix, r, c);
       }
     }
@@ -42,14 +42,14 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
   }
   retain = i;
 
+  delete [] hist;
+
   // threshold
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
       MATRIX_RECT(mask, r, c) = MATRIX_RECT(matrix, r, c) > retain;
     }
   }
-
-  delete [] hist;
 
 }
 

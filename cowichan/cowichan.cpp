@@ -286,6 +286,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
           MATRIX_RECT(matrix, r, c) = rand () % RAND_M;
+          MATRIX_RECT(mask, r, c) = false;
         }
       }
       

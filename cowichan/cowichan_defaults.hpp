@@ -50,7 +50,7 @@
 // life
 #define LIFE_NR ALL_NR
 #define LIFE_NC ALL_NC
-#define LIFE_ITERATIONS 20
+#define LIFE_ITERATIONS 10
 
 // winnow
 #define WINNOW_NR ALL_NR

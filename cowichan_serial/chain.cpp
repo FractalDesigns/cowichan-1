@@ -82,6 +82,14 @@ void CowichanSerial::chain(bool use_randmat, bool use_thresh)
     print_rect_matrix<bool> (mask1);
   }
   else {
+    // fill mask with false.
+    INT64 r, c;
+    for (r = 0; r < nr; r++) {
+      for (c = 0; c < nc; c++) {
+        MATRIX_RECT(mask1, r, c) = false;
+      }
+    }
+
     invpercNFill = INVPERC_NFILL;
 
     // execute
