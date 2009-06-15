@@ -4,14 +4,13 @@ int main(int argc, char* argv[])
 {
   Cowichan* openmp = new CowichanOpenMP ();
 
-  //omp_set_num_threads(1);
+  //omp_set_num_threads(2);
 
   openmp->main(argc, argv, false, true);
 
   return 0;
 }
 
-void CowichanOpenMP::half(IntMatrix /* matrixIn */, IntMatrix /* matrixOut */) {}
 void CowichanOpenMP::invperc(IntMatrix /* matrix */, BoolMatrix /* mask */) {}
 void CowichanOpenMP::thresh(IntMatrix /* matrix */, BoolMatrix /* mask */) {}
 void CowichanOpenMP::life(BoolMatrix /* matrixIn */, BoolMatrix /* matrixOut */) {}

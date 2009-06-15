@@ -5,9 +5,9 @@
 #define __cowichan_defaults_hpp__
 
 // common
-#define ALL_NR 10000
-#define ALL_NC 10000
-#define ALL_N 10000
+#define ALL_NR 15000
+#define ALL_NC 15000
+#define ALL_N 15000
 #define RAND_MEAN 0
 #define RAND_RANGE 20
 #define RAND_SEED 681304
