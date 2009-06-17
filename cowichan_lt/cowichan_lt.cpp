@@ -18,7 +18,6 @@ void CowichanLinuxTuples::sor(Matrix /* matrix */, Vector /* target */, Vector /
 void CowichanLinuxTuples::product(Matrix /* matrix */, Vector /* candidate */, Vector /* solution */) {}
 real CowichanLinuxTuples::vecdiff(Vector /* actual */, Vector /* computed */) {return (real)0.0;}
 
-  void CowichanLinuxTuples::randmat(IntMatrix matrix) {}
   void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {}
   void CowichanLinuxTuples::invperc(IntMatrix matrix, BoolMatrix mask) {}
   void CowichanLinuxTuples::thresh(IntMatrix matrix, BoolMatrix mask) {}

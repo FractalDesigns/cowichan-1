@@ -107,7 +107,7 @@ void LTMandel::produceOutput() {
 		// get the tuple and copy it into the matrix.
 		tuple* received = get_tuple(recv, &ctx);
 		memcpy(
-			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, MANDEL_NR),
+			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, MANDEL_NC),
 			received->elements[2].data.s.ptr,
 			received->elements[2].data.s.len);
 		computations--;
