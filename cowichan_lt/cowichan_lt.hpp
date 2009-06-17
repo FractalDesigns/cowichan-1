@@ -12,9 +12,9 @@
 class CowichanLinuxTuples : public Cowichan {
 public:
 
-	const char* SERVER = "localhost";
-	const int PORT = 25000;
-	const int NUM_WORKERS = 2;
+	static const char* SERVER;
+	static const int PORT = 25000;
+	static const int NUM_WORKERS = 2;
 
 protected: // chaining functions
 

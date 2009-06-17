@@ -6,14 +6,21 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-void CowichanOpenMP::life(BoolMatrix /* matrixIn */, BoolMatrix /* matrixOut */) {}
-void CowichanOpenMP::winnow(IntMatrix /* matrix */, BoolMatrix /* mask */, PointVector /* points */) {}
-void CowichanOpenMP::norm(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
-void CowichanOpenMP::hull(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
-void CowichanOpenMP::outer(PointVector /* points */, Matrix /* matrix */, Vector /* vector */) {}
-void CowichanOpenMP::gauss(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
-void CowichanOpenMP::sor(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
-void CowichanOpenMP::product(Matrix /* matrix */, Vector /* candidate */, Vector /* solution */) {}
-real CowichanOpenMP::vecdiff(Vector /* actual */, Vector /* computed */) {return (real)0.0;}
+const char* CowichanLinuxTuples::SERVER = "localhost";
 
-void CowichanOpenMP::chain(bool /* use_randmat */, bool /* use_thresh */) {}
+void CowichanLinuxTuples::life(BoolMatrix /* matrixIn */, BoolMatrix /* matrixOut */) {}
+void CowichanLinuxTuples::winnow(IntMatrix /* matrix */, BoolMatrix /* mask */, PointVector /* points */) {}
+void CowichanLinuxTuples::norm(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
+void CowichanLinuxTuples::hull(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
+void CowichanLinuxTuples::outer(PointVector /* points */, Matrix /* matrix */, Vector /* vector */) {}
+void CowichanLinuxTuples::gauss(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
+void CowichanLinuxTuples::sor(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
+void CowichanLinuxTuples::product(Matrix /* matrix */, Vector /* candidate */, Vector /* solution */) {}
+real CowichanLinuxTuples::vecdiff(Vector /* actual */, Vector /* computed */) {return (real)0.0;}
+
+  void CowichanLinuxTuples::randmat(IntMatrix matrix) {}
+  void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {}
+  void CowichanLinuxTuples::invperc(IntMatrix matrix, BoolMatrix mask) {}
+  void CowichanLinuxTuples::thresh(IntMatrix matrix, BoolMatrix mask) {}
+
+void CowichanLinuxTuples::chain(bool /* use_randmat */, bool /* use_thresh */) {}

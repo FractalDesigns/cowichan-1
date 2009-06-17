@@ -21,9 +21,9 @@
 #define MANDEL_NR ALL_NR
 #define MANDEL_NC ALL_NC
 #define MANDEL_X0 0
-#define MANDEL_Y0 0;
-#define MANDEL_DX 1.5;
-#define MANDEL_DY 1.5;
+#define MANDEL_Y0 0
+#define MANDEL_DX 1.5
+#define MANDEL_DY 1.5
 #define MANDEL_INFINITY 2.0
 #define MANDEL_MAX_ITER 150
 

@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <cassert>
+#include <sys/mman.h>
 
 extern "C" {
 	#include "tuple.h"
@@ -24,7 +25,9 @@ protected:
 	std::map<int, void*> inputs;
 	std::map<int, void*> outputs;
 	std::map<int, void*> originalOutputs;
-	std::map<int, int> sizes;
+	std::map<int, size_t> sizes;
+
+	struct context ctx;
 
 	/**
 	 * Processes will be forked and spawned here.
@@ -39,7 +42,7 @@ public:
 	 * Set up input/output pointers.
 	 */
 	void addInput(int name, void* data);
-	void addOutput(int name, void* data, int size);
+	void addOutput(int name, void* data, size_t size);
 
 	/**
  	 * Starts the tuple-space job.
@@ -47,10 +50,6 @@ public:
 	int start(const char* host, int portNumber, int numWorkers);
 
 };
-
-TUPLE_DO()
-
-#define TUPLE_DO(DATA, )
 
 #endif
 

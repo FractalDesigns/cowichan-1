@@ -4,7 +4,7 @@ void TupleApplication::addInput(int name, void* data) {
 	inputs[name] = data;
 }
 
-void TupleApplication::addOutput(int name, void* data, int size) {
+void TupleApplication::addOutput(int name, void* data, size_t size) {
 	assert(data != NULL);
 	assert(size != 0);
 
@@ -20,15 +20,10 @@ void TupleApplication::addOutput(int name, void* data, int size) {
 	originalOutputs[name] = data;
 }
 
-int TupleApplication::main(const char* host, int portNumber, int numWorkers) {
+int TupleApplication::start(const char* host, int portNumber, int numWorkers) {
 
 	// connect to the tuple server.
 	if (get_server_portnumber(&ctx)) {
-		if (argc < 3) {
-			/* help message */
-			fprintf(stderr, "Usage: %s <server> <portnumber>\n", argv[0]);
-			return 1;
-		}
 		strcpy(ctx.peername, host);
 		ctx.portnumber = portNumber;
 	}
@@ -65,11 +60,9 @@ int TupleApplication::main(const char* host, int portNumber, int numWorkers) {
 	}
 
 	// copy all of the mmaped outputs; delete them.
-	if (this->dataPackage != NULL) {
-		for (int i = 0; i < outputs.size(); ++i) {
-			memcpy(this->originalOutput[i], this->output[i], this->sizes[i]);
-			munmap(this->output[i]);
-		}
+	for (size_t i = 0; i < outputs.size(); ++i) {
+		memcpy(this->originalOutputs[i], this->outputs[i], this->sizes[i]);
+		munmap(this->outputs[i], this->sizes[i]);
 	}
 
 	// everything was successful.

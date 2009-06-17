@@ -4,17 +4,17 @@
 
 void CowichanLinuxTuples::mandel(IntMatrix matrix) {
 	LTMandel mandelApp;
-	mandelApp.addOutput(0, matrix);
+	mandelApp.addOutput(0, matrix, sizeof(matrix));
 	mandelApp.start(SERVER, PORT, NUM_WORKERS);
 }
 
-void LTmandel::consumeInput() {
+void LTMandel::consumeInput() {
 
 	// tuple template
 	tuple *send = make_tuple("si", "mandel request");
 
 	// send off a mandelbrot request for each grid row.
-	for (size_t y = 0; y < NROWS; ++y) {
+	for (size_t y = 0; y < MANDEL_NR; ++y) {
 		send->elements[1].data.i = y;
 		put_tuple(send, &ctx);
 	}
@@ -24,7 +24,7 @@ void LTmandel::consumeInput() {
 
 }
 
-int LTmandel::mandelCalc(real x, real y) {
+int LTMandel::mandelCalc(real x, real y) {
 
 	real r = 0.0, i = 0.0;
 	real rs = 0.0, is = 0.0;
@@ -50,14 +50,14 @@ int LTmandel::mandelCalc(real x, real y) {
 
 }
 
-void LTmandel::work() {
+void LTMandel::work() {
 
 	tuple *recv = make_tuple("s?", "mandel request");
 	tuple *send = make_tuple("sis", "mandel done");
 	
 	// 2D delta between calculated points
-	real dX = width / (NCOLS - 1);
-	real dY = height / (NROWS - 1);
+	real dX = MANDEL_DX / (MANDEL_NC - 1);
+	real dY = MANDEL_DY / (MANDEL_NR - 1);
 
 	// satisfy mandelbrot requests.
 	while (1) {
@@ -68,14 +68,14 @@ void LTmandel::work() {
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		send->elements[1].data.i = gotten->elements[1].data.i;
-		int* buffer = (int*) malloc(sizeof(int) * NCOLS);
-		send->elements[2].data.s.len = sizeof(int) * NCOLS;
+		int* buffer = (int*) malloc(sizeof(int) * MANDEL_NC);
+		send->elements[2].data.s.len = sizeof(int) * MANDEL_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row.
-		double rY = baseY + dY * send->elements[1].data.i;
-		double rX = baseX;
-		for (int x = 0; x < NCOLS; ++x, rX += dX) {
+		double rY = MANDEL_Y0 + dY * send->elements[1].data.i;
+		double rX = MANDEL_X0;
+		for (int x = 0; x < MANDEL_NC; ++x, rX += dX) {
 			buffer[x] = mandelCalc(rX, rY);
 		}
 	
@@ -91,23 +91,23 @@ void LTmandel::work() {
 
 }
 
-void LTmandel::produceOutput() {
+void LTMandel::produceOutput() {
 
 	// tuple template
 	tuple *recv = make_tuple("s??", "mandel done");
 
 	// grab output pointer locally.
-	IntMatrix output = outputs[0];
+	IntMatrix output = (IntMatrix) outputs[0];
 
 	// grab all of the mandelbrot computations from the workers,
 	// in an unspecified order.
-	int computations = NROWS;
+	int computations = MANDEL_NR;
 	while (computations > 0) {
 
 		// get the tuple and copy it into the matrix.
 		tuple* received = get_tuple(recv, &ctx);
 		memcpy(
-			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, NROWS),
+			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, MANDEL_NR),
 			received->elements[2].data.s.ptr,
 			received->elements[2].data.s.len);
 		computations--;
