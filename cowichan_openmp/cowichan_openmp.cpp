@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanOpenMP::life(BoolMatrix /* matrixIn */, BoolMatrix /* matrixOut */) {}
 void CowichanOpenMP::winnow(IntMatrix /* matrix */, BoolMatrix /* mask */, PointVector /* points */) {}
 void CowichanOpenMP::norm(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
 void CowichanOpenMP::hull(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
