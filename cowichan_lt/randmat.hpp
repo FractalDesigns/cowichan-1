@@ -5,10 +5,13 @@
 	#include "cowichan_lt.hpp"
 
 	class LTRandmat: public TupleApplication {
+	public:
+	
+		void setup();
+
 	protected:
 
 		INT_TYPE aPrime, cPrime;
-		void setup();
 
 		void consumeInput();
 		void work();

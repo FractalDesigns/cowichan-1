@@ -5,6 +5,7 @@
 void CowichanLinuxTuples::randmat(IntMatrix matrix) {
 	LTRandmat app;
 	app.addOutput(0, matrix, sizeof(matrix));
+	app.setup(); // create the first, seed column
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
 
@@ -29,9 +30,6 @@ void LTRandmat::setup() {
 }
 
 void LTRandmat::consumeInput() {
-
-	// grab output pointer locally.
-	setup();
 
 	// tuple template
 	tuple *send = make_tuple("si", "randmat request");
