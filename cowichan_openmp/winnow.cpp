@@ -10,12 +10,11 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   INT64 r, c;
   INT64 len; // number of points
   INT64 stride; // selection stride
-  INT64 i, j;
+  INT64 i;
 
   INT64 num_threads = omp_get_max_threads();
 
   INT64* buckets = NULL;
-  WeightedPointVector weightedPoints = NULL;
 
   try {
     buckets = NEW_VECTOR_SZ(INT64, num_threads);
@@ -37,6 +36,7 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
     not_enough_points();
   }
 
+  WeightedPointVector weightedPoints = NULL;
   try {
     weightedPoints = NEW_VECTOR_SZ(WeightedPoint, len);
   }
@@ -67,8 +67,9 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   // copy over points
   stride = len / n;
 
-  for (i = n - 1, j = len - 1; i >= 0; i--, j -= stride) {
-    points[i] =  weightedPoints[j].point;
+#pragma omp parallel for schedule(static)
+  for (i = n - 1; i >= 0; i--) {
+    points[i] = weightedPoints[len - 1 - (n - 1 - i) * stride].point;
   }
 
   delete [] weightedPoints;

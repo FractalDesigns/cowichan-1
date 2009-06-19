@@ -43,7 +43,7 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
   stride = len / n;
 
   for (i = n - 1, j = len - 1; i >= 0; i--, j -= stride) {
-    points[i] =  weightedPoints[j].point;
+    points[i] = weightedPoints[j].point;
   }
 
   delete [] weightedPoints;
