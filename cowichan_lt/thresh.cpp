@@ -4,7 +4,7 @@
 
 void CowichanLinuxTuples::thresh(IntMatrix matrix, BoolMatrix outMatrix) {
 	LTThresh app;
-	add.addInput(matrix);
+	app.addInput(0, matrix);
 	app.addOutput(0, outMatrix, sizeof(outMatrix));
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
@@ -34,7 +34,7 @@ void LTThresh::produceOutput() {
 	tuple *recv = make_tuple("s??", "thresh final");
 
 	// grab output pointer locally.
-	IntMatrix output = (IntMatrix) outputs[0];
+//	IntMatrix output = (IntMatrix) outputs[0];
 
 	// grab all of the mandelbrot computations from the workers,
 	// in an unspecified order.
