@@ -8,9 +8,7 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   INT_TYPE vMax; // max value in matrix
   INT64 retain; // selection
 
-  INT64 num_threads;
-#pragma omp parallel
-  num_threads = omp_get_num_threads();
+  INT64 num_threads = omp_get_max_threads();
 
   INT_TYPE* vMaxLocal = NULL;
   try {

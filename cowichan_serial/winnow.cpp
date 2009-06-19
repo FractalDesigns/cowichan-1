@@ -12,7 +12,7 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
   INT64 stride; // selection stride
   INT64 i, j;
 
-  // fill temporary vector
+  // count set cell
   len = mask_count (mask, nr, nc);
 
   if (len < n) {
@@ -25,6 +25,7 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
   }
   catch (...) {out_of_memory();}
 
+  // fill temporary vector
   i = 0;
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
@@ -44,6 +45,8 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
   for (i = n - 1, j = len - 1; i >= 0; i--, j -= stride) {
     points[i] =  weightedPoints[j].point;
   }
+
+  delete [] weightedPoints;
 
 }
 
