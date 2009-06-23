@@ -360,6 +360,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\norm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\randmat.cpp"
 				>
 			</File>

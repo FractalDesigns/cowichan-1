@@ -40,10 +40,18 @@ void findMinMax(PointVector points, INT64 n, Point* minPoint,
   maxPoint->y = points[0].y;
 
   for (INT64 i = 1; i < n; i++) {
-    minPoint->x = std::min (points[i].x, minPoint->x);
-    minPoint->y = std::min (points[i].y, minPoint->y);
-    maxPoint->x = std::max (points[i].x, maxPoint->x);
-    maxPoint->y = std::max (points[i].y, maxPoint->y);
+    if (points[i].x < minPoint->x) {
+      minPoint->x = points[i].x;
+    }
+    if (points[i].y < minPoint->y) {
+      minPoint->y = points[i].y;
+    }
+    if (points[i].x > maxPoint->x) {
+      maxPoint->x = points[i].x;
+    }
+    if (points[i].y > maxPoint->y) {
+      maxPoint->y = points[i].y;
+    }
   }
 
 }
