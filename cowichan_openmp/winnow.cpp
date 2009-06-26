@@ -105,17 +105,6 @@ void mask_count(BoolMatrix mask, INT64 nr, INT64 nc, INT64* buckets) {
 
 }
 
-INT64 get_pivot(WeightedPointVector pivots, INT64 num_pivots, WeightedPoint& point)
-{
-  INT64 i;
-  for (i = 0; i < num_pivots; i++) {
-    if (point < pivots[i]) {
-      break;
-    }
-  }
-  return i;
-}
-
 /**
  * This performs parallel histogram sort, which is similar to bucket sort, but
  * does not require additional space for buckets (in-place).
@@ -228,6 +217,7 @@ void sort(WeightedPointVector vector, INT64 len)
   offsets[num_buckets] = len;
 
   // put elements into appropriate buckets by swapping
+  // NOTE: not parallel, in-place
   WeightedPoint tmpPoint;
   INT64 src, dest;
   INT64 bucket;
