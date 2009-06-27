@@ -344,6 +344,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gauss.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\half.cpp"
 				>
 			</File>

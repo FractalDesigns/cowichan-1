@@ -4,14 +4,13 @@ int main(int argc, char* argv[])
 {
   Cowichan* openmp = new CowichanOpenMP ();
 
-  omp_set_num_threads(2);
+  //omp_set_num_threads(2);
 
   openmp->main(argc, argv, false, true);
 
   return 0;
 }
 
-void CowichanOpenMP::gauss(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
 void CowichanOpenMP::sor(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
 void CowichanOpenMP::product(Matrix /* matrix */, Vector /* candidate */, Vector /* solution */) {}
 real CowichanOpenMP::vecdiff(Vector /* actual */, Vector /* computed */) {return (real)0.0;}

@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
+#include "cowichan_openmp.hpp"
 
 /**
  * Matrices are required to be symmetric and diagonally dominant in order to
  * guarantee that there is a well-formed solution to the equation.
  */
-void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
+void CowichanOpenMP::gauss (Matrix matrix, Vector target, Vector solution)
 {
   INT64 i, j, k;
 
@@ -31,8 +31,10 @@ void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
 
     // eliminate i-th column in j-th row
     real column_i = MATRIX(matrix, i, i);
+#pragma omp parallel for schedule(static)
     for (j = i + 1; j < n; j++) {
       real factor = -(MATRIX(matrix, j, i) / column_i);
+#pragma omp parallel for schedule(static)
       for (k = n - 1; k >= i; k--) {
         MATRIX(matrix, j, k) += MATRIX(matrix, i, k) * factor;
       }
@@ -41,8 +43,10 @@ void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
   }
 
   // back substitution
+#pragma omp parallel for schedule(static)
   for (k = (n - 1); k >= 0; k--) {
     solution[k] = target[k] / MATRIX_SQUARE(matrix, k, k);
+#pragma omp parallel for schedule(static)
     for (i = k - 1; i >= 0; i--) {
       target[i] = target[i] - (MATRIX_SQUARE(matrix, i, k) * solution[k]);
     }
