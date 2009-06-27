@@ -40,6 +40,13 @@ protected:
    */
   void chain(bool use_randmat, bool use_thresh);
 
+public:
+
+  /**
+   * Cutoff n value for hull
+   */
+  static const int HULL_CUTOFF = 20000;
+
 };
 
 #endif

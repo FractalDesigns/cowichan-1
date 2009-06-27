@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanOpenMP::hull(PointVector /* pointsIn */, PointVector /* pointsOut */) {}
 void CowichanOpenMP::outer(PointVector /* points */, Matrix /* matrix */, Vector /* vector */) {}
 void CowichanOpenMP::gauss(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
 void CowichanOpenMP::sor(Matrix /* matrix */, Vector /* target */, Vector /* solution */) {}
