@@ -11,6 +11,4 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-real CowichanOpenMP::vecdiff(Vector /* actual */, Vector /* computed */) {return (real)0.0;}
-
 void CowichanOpenMP::chain(bool /* use_randmat */, bool /* use_thresh */) {}

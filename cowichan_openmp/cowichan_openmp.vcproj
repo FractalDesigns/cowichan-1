@@ -392,6 +392,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\vecdiff.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\winnow.cpp"
 				>
 			</File>
