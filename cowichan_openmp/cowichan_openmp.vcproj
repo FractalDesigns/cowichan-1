@@ -376,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\product.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\randmat.cpp"
 				>
 			</File>
