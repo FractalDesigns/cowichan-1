@@ -368,6 +368,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\outer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\randmat.cpp"
 				>
 			</File>
