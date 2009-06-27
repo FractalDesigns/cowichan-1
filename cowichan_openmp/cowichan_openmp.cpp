@@ -11,4 +11,3 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanOpenMP::chain(bool /* use_randmat */, bool /* use_thresh */) {}

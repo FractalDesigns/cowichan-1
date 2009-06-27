@@ -8,7 +8,6 @@ real CowichanOpenMP::vecdiff (Vector actual, Vector computed)
 
   Vector maxDiffs = NULL;
   INT64 num_threads = omp_get_max_threads();
-  printf ("%d\n", num_threads);
 
   try {
     maxDiffs = NEW_VECTOR_SZ(real, num_threads);

@@ -29,7 +29,7 @@ void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
 
     maxDiff = 0.0;
 
-#pragma omp parallel private(oldSolution, diff) firstprivate(maxDiff)
+#pragma omp parallel private(oldSolution, diff, sum, c) firstprivate(maxDiff)
     {
       INT64 thread_num = omp_get_thread_num();
 
@@ -37,16 +37,11 @@ void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
       for (r = 0; r < n; r++) {
         // compute sum
         sum = 0.0;
-#pragma omp parallel reduction(+:sum)
-        {
-#pragma omp for schedule(static) nowait
-          for (c = 0; c < r; c++) {
-            sum += MATRIX_SQUARE(matrix, r, c) * solution[c];
-          }
-#pragma omp for schedule(static)
-          for (c = r + 1; c < n; c++) {
-            sum += MATRIX_SQUARE(matrix, r, c) * solution[c];
-          }
+        for (c = 0; c < r; c++) {
+          sum += MATRIX_SQUARE(matrix, r, c) * solution[c];
+        }
+        for (c = r + 1; c < n; c++) {
+          sum += MATRIX_SQUARE(matrix, r, c) * solution[c];
         }
 
         // calculate new solution
