@@ -29,6 +29,8 @@ using std::numeric_limits;
   #include <windows.h>
 #else                // Linux
   #include <sys/times.h>
+  #include <stdint.h>
+  #include <string.h>
   typedef uint64_t UINT64;
   typedef uint32_t UINT32;
   typedef int64_t INT64;
@@ -256,20 +258,66 @@ public:
   /**
    * DEBUGGING FUNCTION: Print a rectangular matrix.
    */
+#ifdef OUTPUT_DATA
   template <typename T>
-  void print_rect_matrix(T* matrix);
+  void print_rect_matrix(T* matrix)
+  {
+    INT64 r, c;
+
+    for (r = 0; r < nr; r++) {
+      for (c = 0; c < nc; c++) {
+        std::cout << MATRIX_RECT(matrix, r, c) << "\t";
+      }
+      std::cout << "\n";
+    }
+    std::cout << "\n";
+  }
+#else
+  template <typename T>
+  void print_rect_matrix(T* /* matrix */) { }
+#endif
+
 
   /**
    * DEBUGGING FUNCTION: Print a square matrix.
    */
+#ifdef OUTPUT_DATA
   template <typename T>
-  void print_square_matrix(T* matrix);
+  void print_square_matrix(T* matrix)
+  {
+    INT64 r, c;
+
+    for (r = 0; r < n; r++) {
+      for (c = 0; c < n; c++) {
+        std::cout << MATRIX_SQUARE(matrix, r, c) << "\t";
+      }
+      std::cout << "\n";
+    }
+    std::cout << "\n";
+  }
+#else
+  template <typename T>
+  void print_square_matrix(T* /* matrix */) { }
+#endif
 
   /**
    * DEBUGGING FUNCTION: Print a vector.
    */
+#ifdef OUTPUT_DATA
   template <typename T>
-  void print_vector(T* vector);
+  void print_vector(T* vector)
+  {
+    INT64 r;
+
+    for (r = 0; r < n; r++) {
+      std::cout << VECTOR(vector, r) << "\n";
+    }
+    std::cout << "\n";
+  }
+#else
+  template <typename T>
+  void print_vector(T* /* vector */) { }
+#endif
 
   /**
    * DEBUGGING FUNCTION: Print a point vector.

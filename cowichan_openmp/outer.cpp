@@ -19,6 +19,7 @@ void CowichanOpenMP::outer (PointVector points, Matrix matrix, Vector vector)
 #pragma omp parallel private(dMax, d)
   {
     INT64 thread_num = omp_get_thread_num();
+    d = 0.0;
     dMax = -1.0;
 #pragma omp for schedule(guided)
     for (r = 0; r < n; r++) {
