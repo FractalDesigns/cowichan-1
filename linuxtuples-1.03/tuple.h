@@ -300,7 +300,7 @@ extern int send_tuple(struct context *ctx, struct tuple *t);
 extern int recv_chunk(struct context *ctx, char *buf, int size);
 extern struct tuple *recv_tuple(struct context *ctx);
 extern int put_tuple(struct tuple *s, struct context *ctx);
-extern int replace_tuple(struct tuple *template, struct tuple *replacement, struct context *ctx);
+extern int replace_tuple(struct tuple *tmplate, struct tuple *replacement, struct context *ctx);
 extern struct tuple *get_tuple(struct tuple *s, struct context *ctx);
 extern struct tuple *read_tuple(struct tuple *s, struct context *ctx);
 extern struct tuple *get_nb_tuple(struct tuple *s, struct context *ctx);
