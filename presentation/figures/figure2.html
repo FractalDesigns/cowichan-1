@@ -72,7 +72,7 @@
 			
 		}
 		
-		Event.observe(window, 'load', function() {
+		function crazy() {
 
 			while (currObject < numThreads) {
 				fillNext(
@@ -83,7 +83,7 @@
 				currObject++;
 			}
 					
-		});
+		}
 		
 	</script>
 </head>
@@ -288,6 +288,8 @@
 		</tr>
 
 	</table>
+
+	<input type="button" id="myButton" value="Start Simulation" onclick="crazy();" />
 
 
 </body>
