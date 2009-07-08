@@ -43,6 +43,9 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
   stride = len / n;
 
   for (i = n - 1, j = len - 1; i >= 0; i--, j -= stride) {
+#ifdef WINNOW_OUTPUT
+    std::cout << weightedPoints[j].weight << "\n";
+#endif
     points[i] = weightedPoints[j].point;
   }
 
@@ -70,4 +73,5 @@ INT64 mask_count(BoolMatrix mask, INT64 nr, INT64 nc) {
 
   return sum;
 }
+
 

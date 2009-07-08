@@ -44,27 +44,27 @@ void Cowichan::print_vector(PointVector /* points */) { }
 INT64 get_ticks ()
 {
   INT64 count;
-#if defined(WIN32)   // Windows
+#if defined(WIN32) || defined(WIN64)   // Windows
   if (! QueryPerformanceCounter((LARGE_INTEGER *) &count)) {
     count = GetTickCount (); // ms
   }
 #else                // Linux
   tms tm;
   count = times (&tm);
-#endif               // end of WIN32/Linux definitions
+#endif               // end of Windows/Linux definitions
   return count;
 }
 
 INT64 get_freq ()
 {
   INT64 freq;
-#if defined(WIN32)   // Windows
+#if defined(WIN32) || defined(WIN64)   // Windows
   if (! QueryPerformanceFrequency((LARGE_INTEGER *) &freq)) {
     freq = 1000; // ms
   }
 #else                // Linux
   freq = sysconf (_SC_CLK_TCK);
-#endif               // end of WIN32/Linux definitions
+#endif               // end of Windows/Linux definitions
   return freq;
 }
 

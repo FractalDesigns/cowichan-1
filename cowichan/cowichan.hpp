@@ -54,6 +54,11 @@ void timeInfo(INT64 *start, INT64 *end, std::string message);
 //#define OUTPUT_DATA
 
 /**
+ * Indicates that winnow weights should be printed.
+ */
+//#define WINNOW_OUTPUT
+
+/**
  * Prints out of memory message and exits.
  */
 void out_of_memory();
@@ -144,13 +149,17 @@ public:
     return (weight < rhs.weight);
   }
 
+  inline bool operator<=(const WeightedPoint& rhs) const {
+    return (weight <= rhs.weight);
+  }
+
 };
 
 typedef WeightedPoint* WeightedPointVector;
 
 // UTILITY FUNCTIONS ========================================================//
 
-#ifdef WIN32
+#if defined(WIN32) || defined(LIN32)
 // 32-bit
 #define MATRIX_RECT(mtrx,row,col)  (mtrx)[(INT32)((row)*this->nc + col)]
 #define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(INT32)((row)*(nc) + col)]
