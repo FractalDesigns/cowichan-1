@@ -64,7 +64,13 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
 
   // sort
 #if defined(LIN32) || defined(LIN64)
-  quick_sort(weightedPoints, len);
+#pragma omp parallel
+  {
+#pragma omp single
+    {
+      quick_sort(weightedPoints, len);
+    }
+  }
 #else
   histogram_sort(weightedPoints, len);
 #endif
