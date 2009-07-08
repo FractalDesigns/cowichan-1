@@ -74,7 +74,7 @@ void LTHalf::produceOutput() {
 
 	// grab all of the mandelbrot computations from the workers,
 	// in an unspecified order.
-	int computations = RANDMAT_NR;
+	int computations = HALF_NR;
 	while (computations > 0) {
 
 		// get the tuple and copy it into the matrix.

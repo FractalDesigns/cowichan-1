@@ -4,7 +4,7 @@
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
 
-	class LTThresh: public TupleApplication {
+	class LTFrequency: public TupleApplication {
 	protected:
 
 		void consumeInput();
@@ -13,6 +13,15 @@
 
 		const char* SYNCH_LOCK = "thresh synch lock";
 		const char* ROWS_DONE = "thresh rows reporting";
+
+	};
+
+	class LTThresh: public TupleApplication {
+	protected:
+
+		void consumeInput();
+		void work();
+		void produceOutput();
 
 	};
 
