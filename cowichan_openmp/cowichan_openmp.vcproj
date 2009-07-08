@@ -392,6 +392,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sort.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\thresh.cpp"
 				>
 			</File>
@@ -419,6 +423,10 @@
 			</File>
 			<File
 				RelativePath=".\cowichan_openmp.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sort.hpp"
 				>
 			</File>
 		</Filter>
