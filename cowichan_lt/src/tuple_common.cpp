@@ -4,20 +4,8 @@ void TupleApplication::addInput(int name, void* data) {
 	inputs[name] = data;
 }
 
-void TupleApplication::addOutput(int name, void* data, size_t size) {
-	assert(data != NULL);
-	assert(size != 0);
-
-	// Assign a patch of shared memory to communicate the output
-	// of the tuple-space program's calculations.
-	void* ptr = mmap(NULL, size, PROT_READ | PROT_WRITE,
-		MAP_SHARED | MAP_ANON, -1, 0);
-	memcpy(ptr, data, size);
-	outputs[name] = ptr;
-
-	// Store variables needed to communicate back the output.
-	sizes[name] = size;
-	originalOutputs[name] = data;
+void TupleApplication::addOutput(int name, void* data) {
+	outputs[name] = data;
 }
 
 int TupleApplication::start(const char* host, int portNumber, int numWorkers) {
@@ -45,24 +33,14 @@ int TupleApplication::start(const char* host, int portNumber, int numWorkers) {
 		exit(0);
 	}
 
-	// spawn output producer and wait for it to finish
-	pid_t outputPID = fork();
-	if (outputPID == 0) {
-		this->produceOutput();
-		exit(0);
-	}
-	waitpid(outputPID, NULL, 0);
+	// run the output producer.
+	// we run it in this thread so that its outputs are saved.
+	produceOutput();
 
 	// kill all of the worker processes (they spin)
 	// TODO send them tuple-space quit messages
 	for (int i = 0; i < numWorkers; ++i) {
 		kill(workers[i], SIGKILL);
-	}
-
-	// copy all of the mmaped outputs; delete them.
-	for (size_t i = 0; i < outputs.size(); ++i) {
-		memcpy(this->originalOutputs[i], this->outputs[i], this->sizes[i]);
-		munmap(this->outputs[i], this->sizes[i]);
 	}
 
 	// everything was successful.

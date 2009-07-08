@@ -4,7 +4,7 @@
 
 void CowichanLinuxTuples::mandel(IntMatrix matrix) {
 	LTMandel mandelApp;
-	mandelApp.addOutput(0, matrix, sizeof(matrix));
+	mandelApp.addOutput(0, matrix);
 	mandelApp.start(SERVER, PORT, NUM_WORKERS);
 }
 
@@ -62,7 +62,7 @@ void LTMandel::work() {
 	// satisfy mandelbrot requests.
 	while (1) {
 
-		// block until we receieve a tuple.
+		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
 
 		// copy over row co-ordinate of the computation; create

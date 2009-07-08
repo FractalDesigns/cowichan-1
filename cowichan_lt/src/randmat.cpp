@@ -4,7 +4,7 @@
 
 void CowichanLinuxTuples::randmat(IntMatrix matrix) {
 	LTRandmat app;
-	app.addOutput(0, matrix, sizeof(matrix));
+	app.addOutput(0, matrix);
 	app.setup(); // create the first, seed column
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
@@ -53,10 +53,10 @@ void LTRandmat::work() {
 	// grab output pointer locally.
 	IntMatrix output = (IntMatrix) outputs[0];
 
-	// satisfy mandelbrot requests.
+	// satisfy randmat requests.
 	while (1) {
 
-		// block until we receieve a tuple.
+		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
 
 		// copy over row co-ordinate of the computation; create

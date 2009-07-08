@@ -5,7 +5,7 @@
 void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {
 	LTHalf app;
 	app.addInput(0, matrixIn);
-	app.addOutput(0, matrixOut, sizeof(matrixOut));
+	app.addOutput(0, matrixOut);
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
 
@@ -33,10 +33,10 @@ void LTHalf::work() {
 	// grab pointers locally.
 	IntMatrix input = (IntMatrix) inputs[0];
 	
-	// satisfy mandelbrot requests.
+	// satisfy half requests.
 	while (1) {
 
-		// block until we receieve a tuple.
+		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
 
 		// copy over row co-ordinate of the computation; create

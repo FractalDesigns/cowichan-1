@@ -24,8 +24,6 @@ protected:
 
 	std::map<int, void*> inputs;
 	std::map<int, void*> outputs;
-	std::map<int, void*> originalOutputs;
-	std::map<int, size_t> sizes;
 
 	struct context ctx;
 
@@ -42,7 +40,7 @@ public:
 	 * Set up input/output pointers.
 	 */
 	void addInput(int name, void* data);
-	void addOutput(int name, void* data, size_t size);
+	void addOutput(int name, void* data);
 
 	/**
  	 * Starts the tuple-space job.
