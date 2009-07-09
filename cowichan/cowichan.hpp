@@ -256,7 +256,7 @@ protected: // individual problems
   virtual void product(Matrix matrix, Vector candidate, Vector solution) = 0;
   virtual real vecdiff(Vector actual, Vector computed) = 0;
 
-protected:
+private:
 
   /**
    * Runs the cowichan problem set, chained together.
@@ -265,7 +265,7 @@ protected:
    * @param use_thresh true: use image thresholding for int->bool.
    *                   false: use invasion percolation for int->bool.
    */
-  virtual void chain(bool use_randmat, bool use_thresh) = 0;
+  void chain(bool use_randmat, bool use_thresh);
 
 public:
 
