@@ -15,6 +15,9 @@ void histogram_sort(WeightedPointVector vector, INT64 len);
 // QUICK_SORT_CUTOFF must be > 1
 #define QUICK_SORT_CUTOFF 100
 
+// QUICK_SORT_TASK_CUTOFF
+#define QUICK_SORT_TASK_CUTOFF 1000
+
 /**
  * This performs parallel quick sort.
  */

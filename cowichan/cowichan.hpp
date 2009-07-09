@@ -25,6 +25,11 @@ using std::numeric_limits;
  */
 #define TEST_TIME
 
+/**
+ * Enables printing of sort time (in winnow).
+ */
+#define SORT_TIME
+
 #if defined(WIN64) || defined(WIN32)   // Windows
   #include <windows.h>
 #else                // Linux

@@ -179,9 +179,9 @@ void quick_sort(WeightedPointVector vector, INT64 len)
     }
     
     INT64 pivotNewIndex = quick_sort_partition(vector, len, len / 2);
-#pragma omp task
+#pragma omp task if(len > QUICK_SORT_TASK_CUTOFF)
     quick_sort(vector, pivotNewIndex);
-#pragma omp task
+#pragma omp task if(len > QUICK_SORT_TASK_CUTOFF)
     quick_sort(&vector[pivotNewIndex + 1], len - pivotNewIndex - 1);
 #pragma omp taskwait
   }

@@ -62,6 +62,11 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
 
   delete [] buckets;
 
+#ifdef SORT_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
+
   // sort
 #if defined(LIN32) || defined(LIN64)
 #pragma omp parallel
@@ -75,6 +80,10 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   histogram_sort(weightedPoints, len);
 #endif
 
+#ifdef SORT_TIME
+  end = get_ticks ();
+#endif
+
   // copy over points
   stride = len / n;
 
@@ -86,6 +95,12 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
     points[i] = weightedPoints[len - 1 - (n - 1 - i) * stride].point;
   }
   
+#ifdef SORT_TIME
+  std::cout << "winnow sort: ";
+  print_elapsed_time(start, end);
+  std::cout << std::endl;
+#endif
+
   delete [] weightedPoints;
 }
 

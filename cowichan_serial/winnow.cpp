@@ -36,8 +36,17 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
     }
   }
 
+#ifdef SORT_TIME
+  INT64 start, end;
+  start = get_ticks ();
+#endif
+
   // sort
   std::sort(weightedPoints, &weightedPoints[len]);
+  
+#ifdef SORT_TIME
+  end = get_ticks ();
+#endif
 
   // copy over points
   stride = len / n;
@@ -48,6 +57,12 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
 #endif
     points[i] = weightedPoints[j].point;
   }
+  
+#ifdef SORT_TIME
+  std::cout << "winnow sort: ";
+  print_elapsed_time(start, end);
+  std::cout << std::endl;
+#endif
 
   delete [] weightedPoints;
 
