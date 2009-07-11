@@ -345,6 +345,10 @@
 				RelativePath=".\cowichan_tbb.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\mandel.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
