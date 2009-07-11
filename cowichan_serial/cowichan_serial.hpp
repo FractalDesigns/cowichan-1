@@ -27,17 +27,6 @@ protected: // chaining functions
   void product(Matrix matrix, Vector candidate, Vector solution);
   real vecdiff(Vector actual, Vector computed);
 
-protected:
-
-  /**
-   * Runs the cowichan problem set, chained together.
-   * @param use_randmat  true: generate a random matrix.
-   *             false: use a window of the mandelbrot set.
-   * @param use_thresh  true: use image thresholding for int->bool.
-   *            false: use invasion percolation for int->bool.
-   */
-  void chain(bool use_randmat, bool use_thresh);
-
 };
 
 #endif

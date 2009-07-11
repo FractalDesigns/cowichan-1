@@ -1,17 +1,26 @@
 /**
  * Datatypes and common routines for Cowichan programs.
- * OpenMP implementation.
+ * Intel Thread Building Blocks implementation.
  */
-#ifndef __cowichan_openmp_hpp__
-#define __cowichan_openmp_hpp__
+#ifndef __cowichan_tbb_hpp__
+#define __cowichan_tbb_hpp__
 
 #include "../cowichan/cowichan.hpp"
 
-#include <omp.h>
+// THREADING BUILDING BLOCKS ================================================// 
+
+#include "tbb/task_scheduler_init.h"
+#include "tbb/blocked_range2d.h"
+#include "tbb/parallel_for.h"
+#include "tbb/parallel_reduce.h"
+using namespace tbb;
+
+typedef blocked_range<size_t> Range;
+typedef blocked_range2d<size_t,size_t> Range2D;
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
-class CowichanOpenMP : public Cowichan {
+class CowichanTBB : public Cowichan {
 protected: // chaining functions
 
   void mandel(IntMatrix matrix);
@@ -28,13 +37,6 @@ protected: // chaining functions
   void sor(Matrix matrix, Vector target, Vector solution);
   void product(Matrix matrix, Vector candidate, Vector solution);
   real vecdiff(Vector actual, Vector computed);
-
-public:
-
-  /**
-   * Cutoff n value for hull
-   */
-  static const INT64 HULL_CUTOFF = 20000;
 
 };
 
