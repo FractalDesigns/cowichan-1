@@ -16,6 +16,7 @@
 #include <climits>
 #include <limits>
 #include <string>
+#include <cstring>
 using std::numeric_limits;
 
 // TIMING ===================================================================//
