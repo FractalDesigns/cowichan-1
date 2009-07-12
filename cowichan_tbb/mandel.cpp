@@ -3,7 +3,7 @@
 class Mandelbrot {
 
   IntMatrix _matrix;    // to store the result.
-  INT64 nr, nc;         // number of rows, columns
+  index_t nr, nc;         // number of rows, columns
 
   real dX, dY;          // co-ordinate -> complex plane mapping coeff.
   real baseX, baseY;    // where to start the mandelbrot set
@@ -44,11 +44,12 @@ public:
   /**
     * Calculates the given mandelbrot set "window", and stores the result in matrix.
     */
-  static void exec(IntMatrix matrix, INT64 nr, INT64 nc, real x, real y,
+  static void exec(IntMatrix matrix, index_t nr, index_t nc, real x, real y,
       real width, real height) {
     
     Mandelbrot mandel(matrix, nr, nc, x, y, width, height);
-    parallel_for(Range2D(0, (size_t)nr, 0, (size_t)nc), mandel,
+
+    parallel_for(Range2D(0, nr, 0, nc), mandel,
       auto_partitioner());
     
   }
@@ -56,8 +57,9 @@ public:
   
 public:
 
-  Mandelbrot(IntMatrix matrix, INT64 nr, INT64 nc, real x, real y, real width,
-      real height): _matrix(matrix), nr(nr), nc(nc), baseX(x), baseY(y) {
+  Mandelbrot(IntMatrix matrix, index_t nr, index_t nc, real x, real y,
+      real width, real height) : _matrix(matrix), nr(nr), nc(nc), baseX(x),
+      baseY(y) {
     
     dX = width / (nc - 1);
     dY = height / (nr - 1);
@@ -74,8 +76,8 @@ public:
     const Range& rows = range.rows();
     const Range& cols = range.cols();
     
-    for (INT64 y = rows.begin(); y != rows.end(); ++y) {
-      for (INT64 x = cols.begin(); x != cols.end(); ++x) {
+    for (index_t y = rows.begin(); y != rows.end(); ++y) {
+      for (index_t x = cols.begin(); x != cols.end(); ++x) {
         MATRIX_RECT(matrix, y, x) = mandelCalc(baseX + (x * dX), baseY + (y * dY));
       }
     }

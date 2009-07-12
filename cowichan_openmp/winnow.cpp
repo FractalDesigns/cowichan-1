@@ -1,24 +1,24 @@
 #include "cowichan_openmp.hpp"
 #include "sort.hpp"
 
-void mask_count(BoolMatrix mask, INT64 nr, INT64 nc, INT64* buckets);
+void mask_count(BoolMatrix mask, index_t nr, index_t nc, index_t* buckets);
 
 void not_enough_points();
 
 void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
     PointVector points) {
 
-  INT64 r, c;
-  INT64 len; // number of points
-  INT64 stride; // selection stride
-  INT64 i;
+  index_t r, c;
+  index_t len; // number of points
+  index_t stride; // selection stride
+  index_t i;
 
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
 
-  INT64* buckets = NULL;
+  index_t* buckets = NULL;
 
   try {
-    buckets = NEW_VECTOR_SZ(INT64, num_threads);
+    buckets = NEW_VECTOR_SZ(index_t, num_threads);
   }
   catch (...) {out_of_memory();}
 
@@ -28,7 +28,7 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   // calculate offsets
   len = 0;
   for (i = 0; i < num_threads; i++) {
-    INT64 tmp = buckets[i];
+    index_t tmp = buckets[i];
     buckets[i] = len;
     len += tmp;
   }
@@ -46,7 +46,7 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   // fill temporary vector
 #pragma omp parallel private(i)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     i = buckets[thread_num];
 #pragma omp for schedule(static)
     for (r = 0; r < nr; r++) {
@@ -110,13 +110,14 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
  * @param nr number of rows.
  * @param nc number of columns.
  */
-void mask_count(BoolMatrix mask, INT64 nr, INT64 nc, INT64* buckets) {
+void mask_count(BoolMatrix mask, index_t nr, index_t nc, index_t* buckets) {
 
-  INT64 r, c, sum = 0;
+  index_t r, c;
+  index_t sum = 0;
 
 #pragma omp parallel firstprivate(sum)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
 #pragma omp for schedule(static)
     for (r = 0; r < nr; r++) {
 #pragma omp parallel for schedule(static)

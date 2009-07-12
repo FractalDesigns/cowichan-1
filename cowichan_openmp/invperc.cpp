@@ -6,7 +6,7 @@ public:
 
   Point point;
   IntMatrix matrix;
-  INT64 nc;
+  index_t nc;
 
 public:
 
@@ -18,7 +18,7 @@ public:
   }
 
   INT_TYPE value() const {
-    return MATRIX_RECT(matrix, (INT64)point.y, (INT64)point.x);
+    return MATRIX_RECT(matrix, (index_t)point.y, (index_t)point.x);
   }
 
 };
@@ -45,8 +45,8 @@ void CowichanOpenMP::invperc(IntMatrix matrix, BoolMatrix mask) {
   std::make_heap(points.begin(), points.end());
 
   // perform invasion percolation nfill times.
-  INT64 r, c;
-  for (INT64 it = 0; it < invpercNFill; ++it) {
+  index_t r, c;
+  for (index_t it = 0; it < invpercNFill; ++it) {
 
     // get the highest-priority point that hasn't already
     // been filled.
@@ -54,8 +54,8 @@ void CowichanOpenMP::invperc(IntMatrix matrix, BoolMatrix mask) {
       std::pop_heap(points.begin(), points.end());
       pp = points.back();
       points.pop_back();
-      r = (INT64)pp.point.y;
-      c = (INT64)pp.point.x;
+      r = (index_t)pp.point.y;
+      c = (index_t)pp.point.x;
     } while (MATRIX_RECT(mask, r, c)); // find a free one
 
     // fill it.

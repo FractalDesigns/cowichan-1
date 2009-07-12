@@ -28,7 +28,7 @@ void not_enough_points() {
 #ifdef OUTPUT_DATA
 void Cowichan::print_vector(PointVector points)
 {
-  INT64 r;
+  index_t r;
 
   for (r = 0; r < n; r++) {
     std::cout << "[" << points[r].x << ", " << points[r].y << "]\n";
@@ -180,7 +180,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -215,7 +215,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -251,7 +251,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -286,7 +286,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -323,7 +323,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
 
       for (r = 0; r < nr; r++) {
         for (c = 0; c < nc; c++) {
@@ -358,7 +358,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r;
+      index_t r;
 
       for (r = 0; r < n; r++) {
         VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -390,7 +390,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r;
+      index_t r;
 
       for (r = 0; r < n; r++) {
         VECTOR(pointsIn, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -424,7 +424,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r;
+      index_t r;
 
       for (r = 0; r < n; r++) {
         VECTOR(points, r).x = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -460,7 +460,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
       real value, maxValue = -1;
 
       // create symmetric, diagonally dominant matrix
@@ -507,7 +507,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
       real value, maxValue = -1;
 
       // create symmetric, diagonally dominant matrix
@@ -554,7 +554,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r, c;
+      index_t r, c;
       for (r = 0; r < n; r++) {
         for (c = 0; c < r; c++) {
           MATRIX_SQUARE(matrix, r, c) = uniform ((real)RAND_MEAN,
@@ -589,7 +589,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       }
       catch (...) {out_of_memory();}
 
-      INT64 r;
+      index_t r;
       for (r = 0; r < n; r++) {
         actual[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
         computed[r] = uniform ((real)RAND_MEAN, (real)RAND_RANGE);
@@ -697,7 +697,7 @@ void Cowichan::chain(bool use_randmat, bool use_thresh)
   }
   else {
     // fill mask with false.
-    INT64 r, c;
+    index_t r, c;
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
         MATRIX_RECT(mask1, r, c) = false;

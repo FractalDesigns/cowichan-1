@@ -15,8 +15,8 @@
 #include "tbb/parallel_reduce.h"
 using namespace tbb;
 
-typedef blocked_range<size_t> Range;
-typedef blocked_range2d<size_t,size_t> Range2D;
+typedef blocked_range<index_t> Range;
+typedef blocked_range2d<index_t, index_t> Range2D;
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.

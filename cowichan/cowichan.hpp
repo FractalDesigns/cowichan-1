@@ -101,6 +101,9 @@ typedef RealVector Vector;
 #undef min
 #endif
 
+// defined index type to be signed
+typedef ptrdiff_t index_t;
+
 /*
  * It is worth explicitly pointing out that IntMatrix/IntVector use INT_TYPE.
  */
@@ -164,23 +167,6 @@ typedef WeightedPoint* WeightedPointVector;
 
 // UTILITY FUNCTIONS ========================================================//
 
-#if defined(WIN32) || defined(LIN32)
-// 32-bit
-#define MATRIX_RECT(mtrx,row,col)  (mtrx)[(INT32)((row)*this->nc + col)]
-#define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(INT32)((row)*(nc) + col)]
-#define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(INT32)((row)*this->n + col)]
-#define MATRIX_SQUARE_N(mtrx,row,col,n)  (mtrx)[(INT32)((row)*(n) + col)]
-#define MATRIX MATRIX_SQUARE
-#define VECTOR(vect,row) (vect)[(INT32)(row)]
-#define DIAG(mtrx,v) (mtrx)[(INT32)(v*this->n + v)]
-
-#define NEW_MATRIX_SQUARE(__type) (new __type[(INT32)(this->n * this->n)])
-#define NEW_MATRIX_RECT(__type) (new __type[(INT32)(this->nr * this->nc)])
-#define NEW_VECTOR_SZ(__type,__num) (new __type[(INT32)(__num)])
-#define NEW_VECTOR(__type) NEW_VECTOR_SZ(__type, (INT32)this->n)
-
-#else
-// 64-bit
 #define MATRIX_RECT(mtrx,row,col)  (mtrx)[(row)*this->nc + col]
 #define MATRIX_RECT_NC(mtrx,row,col,nc)  (mtrx)[(row)*(nc) + col]
 #define MATRIX_SQUARE(mtrx,row,col)  (mtrx)[(row)*this->n + col]
@@ -193,7 +179,6 @@ typedef WeightedPoint* WeightedPointVector;
 #define NEW_MATRIX_RECT(__type) (new __type[this->nr * this->nc])
 #define NEW_VECTOR_SZ(__type,__num) (new __type[__num])
 #define NEW_VECTOR(__type) NEW_VECTOR_SZ(__type, this->n)
-#endif
 
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
@@ -225,17 +210,17 @@ protected:
 protected:
 
   // common
-  INT64 nr;
-  INT64 nc;
-  INT64 n;
+  index_t nr;
+  index_t nc;
+  index_t n;
   // game of life
-  INT64 lifeIterations;
+  index_t lifeIterations;
   // mandelbrot
   real mandelX0, mandelY0, mandelDx, mandelDy;
   // threshold
   real threshPercent;
   // percolation
-  INT64 invpercNFill;
+  index_t invpercNFill;
   // seed value for simple random number generator
   INT_TYPE seed;
 
@@ -276,7 +261,7 @@ public:
   template <typename T>
   void print_rect_matrix(T* matrix)
   {
-    INT64 r, c;
+    index_t r, c;
 
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
@@ -299,7 +284,7 @@ public:
   template <typename T>
   void print_square_matrix(T* matrix)
   {
-    INT64 r, c;
+    index_t r, c;
 
     for (r = 0; r < n; r++) {
       for (c = 0; c < n; c++) {
@@ -321,7 +306,7 @@ public:
   template <typename T>
   void print_vector(T* vector)
   {
-    INT64 r;
+    index_t r;
 
     for (r = 0; r < n; r++) {
       std::cout << VECTOR(vector, r) << "\n";

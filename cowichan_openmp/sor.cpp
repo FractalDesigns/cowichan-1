@@ -6,13 +6,14 @@
  */
 void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
 {
-  INT64 r, c, t;
+  index_t r, c;
+  index_t t;
   real sum;
   real oldSolution;
   real diff, maxDiff;
 
   Vector maxDiffs = NULL;
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
 
   try {
     maxDiffs = NEW_VECTOR_SZ(real, num_threads);
@@ -31,7 +32,7 @@ void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
 
 #pragma omp parallel private(oldSolution, diff, sum, c) firstprivate(maxDiff)
     {
-      INT64 thread_num = omp_get_thread_num();
+      index_t thread_num = omp_get_thread_num();
 
 #pragma omp for schedule(static)
       for (r = 0; r < n; r++) {
@@ -60,7 +61,7 @@ void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
     }
 
     maxDiff = maxDiffs[0];
-    for (INT64 i = 1; i < num_threads; i++) {
+    for (index_t i = 1; i < num_threads; i++) {
       if (maxDiff < maxDiffs[i]) {
         maxDiff = maxDiffs[i];
       }

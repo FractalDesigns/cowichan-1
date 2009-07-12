@@ -1,12 +1,12 @@
 #include "cowichan_openmp.hpp"
 
-void findMinMax(PointVector points, INT64 n, Point* minPoint, Point* maxPoint);
+void findMinMax(PointVector points, index_t n, Point* minPoint, Point* maxPoint);
 
 void CowichanOpenMP::norm (PointVector pointsIn, PointVector pointsOut)
 {
   Point minPoint, maxPoint;
   real sclX, sclY; // scaling factors
-  INT64 i;
+  index_t i;
 
   // compute scaling factors
   findMinMax(pointsIn, n, &minPoint, &maxPoint);
@@ -32,12 +32,12 @@ void CowichanOpenMP::norm (PointVector pointsIn, PointVector pointsOut)
  * @param minPoint min x/y values.
  * @param maxPoint max x/y values.
  */
-void findMinMax(PointVector points, INT64 n, Point* minPoint,
+void findMinMax(PointVector points, index_t n, Point* minPoint,
     Point* maxPoint) {
 
   PointVector minPoints = NULL;
   PointVector maxPoints = NULL;
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
 
   try {
     minPoints = NEW_VECTOR_SZ(Point, num_threads);
@@ -47,13 +47,13 @@ void findMinMax(PointVector points, INT64 n, Point* minPoint,
 
 #pragma omp parallel
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     minPoints[thread_num].x = points[0].x;
     minPoints[thread_num].y = points[0].y;
     maxPoints[thread_num].x = points[0].x;
     maxPoints[thread_num].y = points[0].y;
 #pragma omp for schedule(static)
-    for (INT64 i = 1; i < n; i++) {
+    for (index_t i = 1; i < n; i++) {
       if (points[i].x < minPoints[thread_num].x) {
         minPoints[thread_num].x = points[i].x;
       }
@@ -74,7 +74,7 @@ void findMinMax(PointVector points, INT64 n, Point* minPoint,
   maxPoint->x = maxPoints[0].x;
   maxPoint->y = maxPoints[0].y;
 
-  for (INT64 i = 0; i < num_threads; i++) {
+  for (index_t i = 0; i < num_threads; i++) {
     if (minPoint->x > minPoints[i].x) {
       minPoint->x = minPoints[i].x;
     }

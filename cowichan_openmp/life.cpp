@@ -1,6 +1,7 @@
 #include "cowichan_openmp.hpp"
 
-INT64 sumNeighbours(BoolMatrix first, INT64 r, INT64 c, INT64 nr, INT64 nc);
+index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
+    index_t nc);
 
 void no_cells_alive();
 
@@ -9,8 +10,9 @@ void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
   BoolMatrix first = matrixIn;
   BoolMatrix second = matrixOut;
 
-  INT64 i, r, c;
-  INT64 alive; // number of cells alive
+  index_t r, c;
+  index_t i;
+  index_t alive; // number of cells alive
 
 	for (i = 0; i < lifeIterations; ++i) {
 
@@ -22,7 +24,7 @@ void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 #pragma omp parallel for schedule(static)
       for (c = 0; c < nc; c++) {
         
-        INT64 peers = sumNeighbours (first, r, c, nr, nc);
+        index_t peers = sumNeighbours (first, r, c, nr, nc);
         if (peers < 2 || peers > 3) {
           MATRIX_RECT(second, r, c) = false; // hunger/overcrowding
         } else if (peers == 3) {
@@ -64,9 +66,10 @@ void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 /**
  * Calculate number of peers.
  */
-INT64 sumNeighbours(BoolMatrix first, INT64 r, INT64 c, INT64 nr, INT64 nc) {
+index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
+    index_t nc) {
 
-  INT64 peers = 0;
+  index_t peers = 0;
 
   // calculate possible neighbour positions
   bool ll = (c > 0);

@@ -2,12 +2,12 @@
 
 real CowichanOpenMP::vecdiff (Vector actual, Vector computed)
 {
-  INT64 i;
+  index_t i;
   real diff;
   real maxDiff;
 
   Vector maxDiffs = NULL;
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
 
   try {
     maxDiffs = NEW_VECTOR_SZ(real, num_threads);
@@ -16,7 +16,7 @@ real CowichanOpenMP::vecdiff (Vector actual, Vector computed)
 
 #pragma omp parallel private(diff, maxDiff)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     maxDiff = (real)fabs((double)(actual[0] - computed[0]));
 #pragma omp for schedule(static)
     for (i = 1; i < n; i++) {

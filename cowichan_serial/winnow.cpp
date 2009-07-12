@@ -1,16 +1,16 @@
 #include "cowichan_serial.hpp"
 
-INT64 mask_count(BoolMatrix mask, INT64 nr, INT64 nc);
+index_t mask_count(BoolMatrix mask, index_t nr, index_t nc);
 
 void not_enough_points();
 
 void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
     PointVector points) {
 
-  INT64 r, c;
-  INT64 len; // number of points
-  INT64 stride; // selection stride
-  INT64 i, j;
+  index_t r, c;
+  index_t len; // number of points
+  index_t stride; // selection stride
+  index_t i, j;
 
   // count set cell
   len = mask_count (mask, nr, nc);
@@ -74,9 +74,9 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
  * @param nr number of rows.
  * @param nc number of columns.
  */
-INT64 mask_count(BoolMatrix mask, INT64 nr, INT64 nc) {
+index_t mask_count(BoolMatrix mask, index_t nr, index_t nc) {
 
-  INT64 r, c, sum = 0;
+  index_t r, c, sum = 0;
 
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {

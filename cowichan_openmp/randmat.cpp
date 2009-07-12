@@ -10,7 +10,7 @@ void CowichanOpenMP::randmat (IntMatrix matrix)
   }
   catch (...) {out_of_memory();}
 
-  INT64 r;
+  index_t r;
   INT_TYPE aPrime, cPrime;
 
   state[0] = seed % RAND_M;
@@ -24,7 +24,7 @@ void CowichanOpenMP::randmat (IntMatrix matrix)
   cPrime = (cPrime * RANDMAT_C) % RAND_M;
 
   // fill in random matrix
-  INT64 c;
+  index_t c;
   INT_TYPE v;
 
 #pragma omp parallel for schedule(static) private(c, v)

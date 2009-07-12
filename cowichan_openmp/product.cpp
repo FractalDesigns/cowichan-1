@@ -2,7 +2,8 @@
 
 void CowichanOpenMP::product (Matrix matrix, Vector candidate, Vector solution)
 {
-  INT64 r, c;
+  index_t r;
+  index_t c;
 
 #pragma omp parallel for schedule(static) private(c)
   for (r = 0; r < n; r++) {

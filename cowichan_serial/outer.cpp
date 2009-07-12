@@ -5,7 +5,7 @@ void CowichanSerial::outer (PointVector points, Matrix matrix, Vector vector)
   Point zeroPoint(0.0, 0.0);
   real d; // distance between points
   real dMax = -1.0; // maximum distance
-  INT64 r, c; // loop indices
+  index_t r, c; // loop indices
 
   // all elements except matrix diagonal
   for (r = 0; r < n; r++) {

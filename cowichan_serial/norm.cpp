@@ -1,12 +1,13 @@
 #include "cowichan_serial.hpp"
 
-void findMinMax(PointVector points, INT64 n, Point* minPoint, Point* maxPoint);
+void findMinMax(PointVector points, index_t n, Point* minPoint,
+    Point* maxPoint);
 
 void CowichanSerial::norm (PointVector pointsIn, PointVector pointsOut)
 {
   Point minPoint, maxPoint;
   real sclX, sclY; // scaling factors
-  INT64 i;
+  index_t i;
 
   // compute scaling factors
   findMinMax(pointsIn, n, &minPoint, &maxPoint);
@@ -31,7 +32,7 @@ void CowichanSerial::norm (PointVector pointsIn, PointVector pointsOut)
  * @param minPoint min x/y values.
  * @param maxPoint max x/y values.
  */
-void findMinMax(PointVector points, INT64 n, Point* minPoint,
+void findMinMax(PointVector points, index_t n, Point* minPoint,
     Point* maxPoint) {
 
   minPoint->x = points[0].x;
@@ -39,7 +40,7 @@ void findMinMax(PointVector points, INT64 n, Point* minPoint,
   maxPoint->x = points[0].x;
   maxPoint->y = points[0].y;
 
-  for (INT64 i = 1; i < n; i++) {
+  for (index_t i = 1; i < n; i++) {
     if (points[i].x < minPoint->x) {
       minPoint->x = points[i].x;
     }

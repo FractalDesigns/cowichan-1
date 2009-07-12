@@ -3,12 +3,12 @@
 void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   IntVector hist = NULL; // histogram
-  INT64 i, j;
-  INT64 r, c;
+  index_t i, j;
+  index_t r, c;
   INT_TYPE vMax; // max value in matrix
-  INT64 retain; // selection
+  index_t retain; // selection
 
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
 
   INT_TYPE* vMaxLocal = NULL;
   try {
@@ -19,7 +19,7 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   // find max value in matrix
 #pragma omp parallel
   {
-  INT64 cur_thread = omp_get_thread_num();
+  index_t cur_thread = omp_get_thread_num();
   vMaxLocal[cur_thread] = 0;
 #pragma omp for schedule(static)
   for (r = 0; r < nr; r++) {
@@ -57,7 +57,7 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   catch (...) {out_of_memory();}
 
 #pragma omp parallel for schedule(static) private(j)
-  for (i = 0; i <= vMax; i++) {
+  for (i = 0; i <= (index_t)vMax; i++) {
     hist[i] = 0;
     for (j = 0; j < num_threads; j++) {
       histLocal[j][i] = 0;
@@ -67,18 +67,18 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   // count
 #pragma omp parallel
   {
-  INT64 cur_thread = omp_get_thread_num();
+    index_t cur_thread = omp_get_thread_num();
 #pragma omp for schedule(static)
-  for (r = 0; r < nr; r++) {
+    for (r = 0; r < nr; r++) {
 #pragma omp parallel for schedule(static)
-    for (c = 0; c < nc; c++) {
-      histLocal[cur_thread][MATRIX_RECT(matrix, r, c)]++;
+      for (c = 0; c < nc; c++) {
+        histLocal[cur_thread][MATRIX_RECT(matrix, r, c)]++;
+      }
     }
-  }
   }
 
   for (i = 0; i < num_threads; i++) {
-    for (j = 0; j <= vMax; j++) {
+    for (j = 0; j <= (index_t)vMax; j++) {
       hist[j] += histLocal[i][j];
     }
     delete [] histLocal[i];
@@ -87,7 +87,7 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   delete [] histLocal;
 
   // include
-  retain = (INT64)(threshPercent * nc * nr);
+  retain = (index_t)(threshPercent * nc * nr);
   for (i = vMax; ((i >= 0) && (retain > 0)); i--) {
     retain -= hist[i];
   }
@@ -100,7 +100,7 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
   for (r = 0; r < nr; r++) {
 #pragma omp parallel for schedule(static)
     for (c = 0; c < nc; c++) {
-      MATRIX_RECT(mask, r, c) = MATRIX_RECT(matrix, r, c) > retain;
+      MATRIX_RECT(mask, r, c) = ((index_t)MATRIX_RECT(matrix, r, c)) > retain;
     }
   }
 

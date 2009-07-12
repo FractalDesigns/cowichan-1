@@ -4,12 +4,12 @@
  * This performs parallel histogram sort, which is similar to bucket sort, but
  * does not require additional space for buckets (in-place).
  */
-void histogram_sort(WeightedPointVector vector, INT64 len)
+void histogram_sort(WeightedPointVector vector, index_t len)
 {
-  const INT64 BUCKETS_PER_THREAD = 50;
+  const index_t BUCKETS_PER_THREAD = 50;
 
-  INT64 num_threads = omp_get_max_threads();
-  INT64 num_buckets = BUCKETS_PER_THREAD * num_threads;
+  index_t num_threads = omp_get_max_threads();
+  index_t num_buckets = BUCKETS_PER_THREAD * num_threads;
 
   // sort serially if array is too small
   if (len < num_buckets) {
@@ -17,7 +17,7 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
     return;
   }
 
-  INT64 i, j;
+  index_t i, j;
 
   // find min/max values
   INT_TYPE* minWeights = NULL;
@@ -32,7 +32,7 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
 
 #pragma omp parallel private(i)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     minWeights[thread_num] = vector[0].weight;
     maxWeights[thread_num] = vector[0].weight;
 #pragma omp for schedule(static)
@@ -61,30 +61,30 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
   delete [] maxWeights;
 
   // count number of elements in each bucket
-  INT64** threadCounts = NULL;
-  INT64* counts = NULL;
-  INT64* offsets = NULL;
+  index_t** threadCounts = NULL;
+  index_t* counts = NULL;
+  index_t* offsets = NULL;
 
   try {
-    counts = NEW_VECTOR_SZ(INT64, num_buckets);
-    offsets = NEW_VECTOR_SZ(INT64, num_buckets + 1);
-    threadCounts = NEW_VECTOR_SZ(INT64*, num_threads);
+    counts = NEW_VECTOR_SZ(index_t, num_buckets);
+    offsets = NEW_VECTOR_SZ(index_t, num_buckets + 1);
+    threadCounts = NEW_VECTOR_SZ(index_t*, num_threads);
     for (i = 0; i < num_threads; i++) {
-      threadCounts[i] = NEW_VECTOR_SZ(INT64, num_buckets);
+      threadCounts[i] = NEW_VECTOR_SZ(index_t, num_buckets);
     }
   }
   catch (...) {out_of_memory();}
 
 #pragma omp parallel private(i)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     for (i = 0; i < num_buckets; i++) {
       threadCounts[thread_num][i] = 0;
     }
 #pragma omp for schedule(static)
     for (i = 0; i < len; i++) {
-      INT64 bucket = num_buckets * ((INT64)(vector[i].weight - minWeight))
-          / ((INT64)(maxWeight - minWeight + 2));
+      index_t bucket = num_buckets * ((index_t)(vector[i].weight - minWeight))
+          / ((index_t)(maxWeight - minWeight + 2));
       threadCounts[thread_num][bucket]++;
     }
   }
@@ -102,8 +102,8 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
   delete [] threadCounts;
 
   // calculate offsets
-  INT64 offset = 0;
-  INT64 tmp;
+  index_t offset = 0;
+  index_t tmp;
   for (i = 0; i < num_buckets; i++) {
     tmp = counts[i];
     offsets[i] = counts[i] = offset;
@@ -114,13 +114,13 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
   // put elements into appropriate buckets by swapping
   // NOTE: not parallel, in-place
   WeightedPoint tmpPoint;
-  INT64 src, dest;
-  INT64 bucket;
+  index_t src, dest;
+  index_t bucket;
 
   src = 0;
   while (src < len) {
-    bucket = num_buckets * ((INT64)(vector[src].weight - minWeight))
-        / ((INT64)(maxWeight - minWeight + 2));
+    bucket = num_buckets * ((index_t)(vector[src].weight - minWeight))
+        / ((index_t)(maxWeight - minWeight + 2));
 
     if ((src >= offsets[bucket]) && (src < offsets[bucket + 1])) {
       src++;
@@ -151,7 +151,7 @@ void histogram_sort(WeightedPointVector vector, INT64 len)
 /**
  * This performs parallel quick sort.
  */
-void quick_sort(WeightedPointVector vector, INT64 len)
+void quick_sort(WeightedPointVector vector, index_t len)
 {
   if (len > QUICK_SORT_CUTOFF) {
     WeightedPoint tmp;
@@ -178,7 +178,7 @@ void quick_sort(WeightedPointVector vector, INT64 len)
       vector[len - 1] = tmp;
     }
     
-    INT64 pivotNewIndex = quick_sort_partition(vector, len, len / 2);
+    index_t pivotNewIndex = quick_sort_partition(vector, len, len / 2);
 #pragma omp task if(len > QUICK_SORT_TASK_CUTOFF)
     quick_sort(vector, pivotNewIndex);
 #pragma omp task if(len > QUICK_SORT_TASK_CUTOFF)
@@ -188,10 +188,10 @@ void quick_sort(WeightedPointVector vector, INT64 len)
   else if (len > 1)
   {
     // insertion sort
-    for (INT64 i = 1; i < len; i++)
+    for (index_t i = 1; i < len; i++)
     {
       WeightedPoint value = vector[i];
-      INT64 j = i - 1;
+      index_t j = i - 1;
       
       while ((j >= 0) && (value < vector[j]))
       {
@@ -207,14 +207,15 @@ void quick_sort(WeightedPointVector vector, INT64 len)
 /**
  * Partitions vector into points less than and greater than the pivot.
  */
-INT64 quick_sort_partition(WeightedPointVector vector, INT64 len, INT64 pivotIndex)
+index_t quick_sort_partition(WeightedPointVector vector, index_t len,
+    index_t pivotIndex)
 {
   WeightedPoint pivot = vector[pivotIndex];
   
   vector[pivotIndex] = vector[len - 1];
 
-  INT64 left = 0;
-  INT64 right = len - 2;
+  index_t left = 0;
+  index_t right = len - 2;
 
   for (;;)
   {

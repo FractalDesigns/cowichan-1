@@ -34,7 +34,7 @@ public:
   /**
    * Cutoff n value for hull
    */
-  static const INT64 HULL_CUTOFF = 20000;
+  static const index_t HULL_CUTOFF = 20000;
 
 };
 

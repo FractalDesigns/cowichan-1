@@ -1,9 +1,9 @@
 #include "cowichan_openmp.hpp"
 
-void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
-    INT64* hn);
+void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
+    index_t* hn);
 
-void split(PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
+void split(PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
     Point* p1, Point* p2);
 
 /**
@@ -16,18 +16,18 @@ void split(PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
  */
 void CowichanOpenMP::hull (PointVector pointsIn, PointVector pointsOut)
 {
-  INT64 hn = 0;
-  INT64 previous_hn = 0;
+  index_t hn = 0;
+  index_t previous_hn = 0;
 
   // while not all points are used up then run quickhull on the rest of points
   while (n != hn) {
     // exclude added points from pointsIn by swapping them with points from the
     // end of pointsIn vector in range (0, n - nused)
-    INT64 added_i;
+    index_t added_i;
 #pragma omp parallel for schedule(static)
     for (added_i = previous_hn; added_i < hn; added_i++) {
       // search for the added point
-      for (INT64 i = 0; i < n - previous_hn; i++) {
+      for (index_t i = 0; i < n - previous_hn; i++) {
         if ((pointsIn[i].x == pointsOut[added_i].x)
             && (pointsIn[i].y == pointsOut[added_i].y)) {
           Point tmp = pointsIn[i];
@@ -43,8 +43,8 @@ void CowichanOpenMP::hull (PointVector pointsIn, PointVector pointsOut)
   }
 }
 
-void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
-    INT64* hn)
+void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
+    index_t* hn)
 {
   // base case
   if (n == 1) {
@@ -58,7 +58,7 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
   // checking cutoff value here prevents allocating unnecessary memory
   // for the reduction
   if(n > CowichanOpenMP::HULL_CUTOFF) {
-    INT64 num_threads = omp_get_max_threads();
+    index_t num_threads = omp_get_max_threads();
 
     Point** minPoints = NULL;
     Point** maxPoints = NULL;
@@ -72,10 +72,10 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
     // figure out the points with minimum and maximum x values
   #pragma omp parallel
     {
-      INT64 thread_num = omp_get_thread_num();
+      index_t thread_num = omp_get_thread_num();
       minPoints[thread_num] = &pointsIn[0];
       maxPoints[thread_num] = &pointsIn[0];
-      INT64 i;
+      index_t i;
   #pragma omp for schedule(static)
       for (i = 1; i < n; i++) {
         if (minPoints[thread_num]->x > pointsIn[i].x) {
@@ -90,7 +90,7 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
     minPoint = minPoints[0];
     maxPoint = maxPoints[0];
 
-    for (INT64 i = 1; i < num_threads; i++) {
+    for (index_t i = 1; i < num_threads; i++) {
       if (minPoint->x > minPoints[i]->x) {
         minPoint = minPoints[i];
       }
@@ -107,7 +107,7 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
     maxPoint = &pointsIn[0];
 
     // figure out the points with minimum and maximum x values
-    INT64 i;
+    index_t i;
     for (i = 1; i < n; i++) {
       if (minPoint->x > pointsIn[i].x) {
         minPoint = &pointsIn[i];
@@ -132,7 +132,7 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
  * @param p1 boundary point #1.
  * @param p2 boundary point #2.
  */
-void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
+void split (PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
     Point* p1, Point* p2) {
 
   Point* maxPoint;
@@ -141,7 +141,7 @@ void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
   // checking cutoff value here prevents allocating unnecessary memory
   // for the reduction
   if (n > CowichanOpenMP::HULL_CUTOFF) {
-    INT64 num_threads = omp_get_max_threads();
+    index_t num_threads = omp_get_max_threads();
 
     Point** maxPoints = NULL;
     Vector maxCrosses = NULL;
@@ -155,11 +155,11 @@ void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
     // compute the signed distances from the line for each point
 #pragma omp parallel
     {
-      INT64 thread_num = omp_get_thread_num();
+      index_t thread_num = omp_get_thread_num();
       maxPoints[thread_num] = &pointsIn[0];
       maxCrosses[thread_num] = Point::cross (*p1, *p2, pointsIn[0]);
 #pragma omp for schedule(static)
-      for (INT64 i = 1; i < n; i++) {
+      for (index_t i = 1; i < n; i++) {
         real currentCross = Point::cross (*p1, *p2, pointsIn[i]);
         if (currentCross > maxCrosses[thread_num]) {
           maxPoints[thread_num] = &pointsIn[i];
@@ -171,7 +171,7 @@ void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
     maxPoint = maxPoints[0];
     maxCross = maxCrosses[0];
 
-    for (INT64 i = 0; i < num_threads; i++) {
+    for (index_t i = 0; i < num_threads; i++) {
       if (maxCross < maxCrosses[i]) {
         maxPoint = maxPoints[i];
         maxCross = maxCrosses[i];
@@ -187,7 +187,7 @@ void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
     maxCross = Point::cross (*p1, *p2, pointsIn[0]);
 
     // compute the signed distances from the line for each point
-    for (INT64 i = 1; i < n; i++) {
+    for (index_t i = 1; i < n; i++) {
       real currentCross = Point::cross (*p1, *p2, pointsIn[i]);
       if (currentCross > maxCross) {
         maxPoint = &pointsIn[i];

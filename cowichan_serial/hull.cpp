@@ -1,9 +1,9 @@
 #include "cowichan_serial.hpp"
 
-void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
-    INT64* hn);
+void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
+    index_t* hn);
 
-void split(PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
+void split(PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
     Point* p1, Point* p2);
 
 /**
@@ -16,17 +16,17 @@ void split(PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
  */
 void CowichanSerial::hull (PointVector pointsIn, PointVector pointsOut)
 {
-  INT64 hn = 0;
-  INT64 previous_hn = 0;
+  index_t hn = 0;
+  index_t previous_hn = 0;
 
   // while not all points are used up then run quickhull on the rest of points
   while (n != hn) {
     // exclude added points from pointsIn by swapping them with points from the
     // end of pointsIn vector in range (0, n - nused)
-    INT64 added_i;
+    index_t added_i;
     for (added_i = previous_hn; added_i < hn; added_i++) {
       // search for the added point
-      for (INT64 i = 0; i < n - previous_hn; i++) {
+      for (index_t i = 0; i < n - previous_hn; i++) {
         if ((pointsIn[i].x == pointsOut[added_i].x)
             && (pointsIn[i].y == pointsOut[added_i].y)) {
           Point tmp = pointsIn[i];
@@ -42,8 +42,8 @@ void CowichanSerial::hull (PointVector pointsIn, PointVector pointsOut)
   }
 }
 
-void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
-    INT64* hn)
+void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
+    index_t* hn)
 {
   // base case
   if (n == 1) {
@@ -58,7 +58,7 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
   maxPoint = &pointsIn[0];
 
   // figure out the points with minimum and maximum x values
-  INT64 i;
+  index_t i;
   for (i = 1; i < n; i++) {
     if (minPoint->x > pointsIn[i].x) {
       minPoint = &pointsIn[i];
@@ -82,14 +82,14 @@ void quickhull(PointVector pointsIn, INT64 n, PointVector pointsOut,
  * @param p1 boundary point #1.
  * @param p2 boundary point #2.
  */
-void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
-    Point* p1, Point* p2) {
+void split (PointVector pointsIn, index_t n, PointVector pointsOut,
+    index_t* hn, Point* p1, Point* p2) {
 
   Point* maxPoint = &pointsIn[0];
   real maxCross = Point::cross (*p1, *p2, pointsIn[0]);
 
   // compute the signed distances from the line for each point
-  for (INT64 i = 1; i < n; i++) {
+  for (index_t i = 1; i < n; i++) {
     real currentCross = Point::cross (*p1, *p2, pointsIn[i]);
     if (currentCross > maxCross) {
       maxPoint = &pointsIn[i];
@@ -107,8 +107,8 @@ void split (PointVector pointsIn, INT64 n, PointVector pointsOut, INT64* hn,
   }
 
   // otherwise, it's not on the right side; we don't need to split anymore.
-  // this is because all points are inside the hull when we use this half-space.
-  // add the first point and return.
+  // this is because all points are inside the hull when we use this
+  // half-space. add the first point and return.
   pointsOut[(*hn)++] = *p1;
 
 }

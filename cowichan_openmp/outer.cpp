@@ -5,9 +5,9 @@ void CowichanOpenMP::outer (PointVector points, Matrix matrix, Vector vector)
   Point zeroPoint(0.0, 0.0);
   real d; // distance between points
   real dMax; // maximum distance
-  INT64 r, c; // loop indices
+  index_t r, c; // loop indices
 
-  INT64 num_threads = omp_get_max_threads();
+  index_t num_threads = omp_get_max_threads();
   Vector dMaxes = NULL;
 
   try {
@@ -18,7 +18,7 @@ void CowichanOpenMP::outer (PointVector points, Matrix matrix, Vector vector)
   // all elements except matrix diagonal
 #pragma omp parallel private(dMax, d)
   {
-    INT64 thread_num = omp_get_thread_num();
+    index_t thread_num = omp_get_thread_num();
     d = 0.0;
     dMax = -1.0;
 #pragma omp for schedule(guided)
@@ -37,7 +37,7 @@ void CowichanOpenMP::outer (PointVector points, Matrix matrix, Vector vector)
   }
 
   dMax = dMaxes[0];
-  for (INT64 i = 1; i < num_threads; i++) {
+  for (index_t i = 1; i < num_threads; i++) {
     if (dMax < dMaxes[i]) {
       dMax = dMaxes[i];
     }

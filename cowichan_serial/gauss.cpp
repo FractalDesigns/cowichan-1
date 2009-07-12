@@ -6,12 +6,12 @@
  */
 void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
 {
-  INT64 i, j, k;
+  index_t i, j, k;
 
   // forward elimination
   for (i = 0; i < n; i++) {
     // get row with maximum column i
-    INT64 max = i;
+    index_t max = i;
     for (j = i + 1; j < n; j++) {
       if (fabs(MATRIX(matrix, j, i)) > fabs(MATRIX(matrix, max, i))) {
         max = j;

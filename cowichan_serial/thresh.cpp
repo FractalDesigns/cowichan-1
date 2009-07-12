@@ -3,10 +3,10 @@
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   IntVector hist = NULL; // histogram
-  INT64 i;
-  INT64 r, c;
+  index_t i;
+  index_t r, c;
   INT_TYPE vMax; // max value in matrix
-  INT64 retain; // selection
+  index_t retain; // selection
 
   // find max value in matrix
   vMax = 0;
@@ -24,7 +24,7 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
   }
   catch (...) {out_of_memory();}
 
-  for (i = 0; i <= vMax; i++) {
+  for (i = 0; i <= (index_t)vMax; i++) {
     hist[i] = 0;
   }
 
@@ -36,7 +36,7 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
   }
 
   // include
-  retain = (INT64)(threshPercent * nc * nr);
+  retain = (index_t)(threshPercent * nc * nr);
   for (i = vMax; ((i >= 0) && (retain > 0)); i--) {
     retain -= hist[i];
   }
@@ -47,7 +47,7 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
   // threshold
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
-      MATRIX_RECT(mask, r, c) = MATRIX_RECT(matrix, r, c) > retain;
+      MATRIX_RECT(mask, r, c) = ((index_t)MATRIX_RECT(matrix, r, c)) > retain;
     }
   }
 

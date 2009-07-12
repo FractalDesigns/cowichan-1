@@ -4,7 +4,7 @@ INT_TYPE mandel_calc (real x, real y);
 
 void CowichanOpenMP::mandel (IntMatrix matrix)
 {
-  INT64 r, c;
+  index_t r, c;
   real dx, dy;
 
   dx = mandelDx / (nr - 1);

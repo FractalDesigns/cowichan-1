@@ -2,12 +2,12 @@
 
 void CowichanSerial::half (IntMatrix matrixIn, IntMatrix matrixOut)
 {
-  INT64 r, c;
+  index_t r, c;
 
-  INT64 middle_r = (nr + 1) / 2;
-  INT64 middle_c = (nc + 1) / 2;
+  index_t middle_r = (nr + 1) / 2;
+  index_t middle_c = (nc + 1) / 2;
 
-  INT64 previous_r, previous_c;
+  index_t previous_r, previous_c;
 
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {

@@ -2,7 +2,7 @@
 
 void CowichanSerial::randmat (IntMatrix matrix)
 {
-  INT64 r, c;
+  index_t r, c;
   INT_TYPE v = seed % RAND_M;
 
   for (r = 0; r < nr; r++) {
