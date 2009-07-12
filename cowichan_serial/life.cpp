@@ -13,11 +13,11 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
   index_t i, r, c;
   index_t alive; // number of cells alive
 
-	for (i = 0; i < lifeIterations; ++i) {
+  for (i = 0; i < lifeIterations; ++i) {
 
     alive = 0;
 
-		// update CA simulation
+    // update CA simulation
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
         
@@ -40,12 +40,12 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
       no_cells_alive();
     }
 
-		// swap arrays (ping-pong approach)
+    // swap arrays (ping-pong approach)
     BoolMatrix temp = first;
     first = second;
     second = temp;
 
-	}
+  }
 
   if (lifeIterations % 2 == 0) {
     // final result is in matrixIn - copy to matrixOut

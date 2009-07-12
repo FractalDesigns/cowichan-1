@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanTBB::half(IntMatrix matrixIn, IntMatrix matrixOut) {}
 void CowichanTBB::invperc(IntMatrix matrix, BoolMatrix mask) {}
 void CowichanTBB::thresh(IntMatrix matrix, BoolMatrix mask) {}
 void CowichanTBB::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {}

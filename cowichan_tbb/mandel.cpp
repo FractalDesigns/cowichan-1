@@ -49,7 +49,7 @@ public:
     
     Mandelbrot mandel(matrix, nr, nc, x, y, width, height);
 
-    parallel_for(Range2D(0, nr, 1, 0, nc, 1), mandel,
+    parallel_for(Range2D(0, nr, 0, nc), mandel,
       auto_partitioner());
     
   }

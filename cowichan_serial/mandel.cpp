@@ -7,13 +7,13 @@ void CowichanSerial::mandel (IntMatrix matrix)
   index_t r, c;
   real dx, dy;
 
-  dx = mandelDx / (nr - 1);
-  dy = mandelDy / (nc - 1);
+  dx = mandelDx / (nc - 1);
+  dy = mandelDy / (nr - 1);
 
   for (r = 0; r < nr; r++) {
     for (c = 0; c < nc; c++) {
-      MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (r * dx),
-          mandelY0 + (c * dy));
+      MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (c * dx),
+          mandelY0 + (r * dy));
     }
   }
 }
