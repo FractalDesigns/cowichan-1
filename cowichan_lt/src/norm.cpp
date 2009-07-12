@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdio>
+#include <cmath>
 #include "norm.hpp"
 
 void CowichanLinuxTuples::norm(PointVector pointsIn, PointVector pointsOut) {
@@ -9,7 +10,7 @@ void CowichanLinuxTuples::norm(PointVector pointsIn, PointVector pointsOut) {
 	bounds.addInput(0, pointsIn);
 	bounds.start(SERVER, PORT, NUM_WORKERS);
 
-	// change all the points into
+	// transform all the points to lie in the unit square
 	LTNorm norm;
 	norm.addInput(0, pointsIn);
 	norm.addOutput(0, pointsOut);
@@ -25,14 +26,22 @@ void LTBounds::consumeInput() {
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	put_tuple(synchLock, &ctx);
 
-	// create a "rows reporting" tuple, so that we
+	// create a "points reporting" tuple, so that we
 	// know when the computation should end.
 	tuple *pointsReporting = make_tuple("si", POINTS_DONE, 0);
 	put_tuple(pointsReporting, &ctx);
 
-	// tuple template
-	tuple *send = make_tuple("sii", "norm request");
-	// TODO communicate all of the points (must split them up)
+	// tuple template.
+	tuple *send = make_tuple("sii", "bounds request");
+
+	// split points, based on a cluster size of the square-root of the
+	// number of points given.
+	size_t skip = (size_t) sqrt((real) NORM_N);
+	for (size_t pos = 0; pos < NORM_N; pos += skip) {
+		send->elements[1].data.i = pos;
+		send->elements[2].data.i = min(pos + skip, NORM_N);
+		put_tuple(send, &ctx);
+	}
 
 }
 
@@ -40,7 +49,7 @@ void LTBounds::work() {
 
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
-	tuple *recv = make_tuple("s??", "norm request");
+	tuple *recv = make_tuple("s??", "bounds request");
 
 	// grab pointers locally.
 	PointVector input = (PointVector) inputs[0];
@@ -131,7 +140,15 @@ void LTNorm::consumeInput() {
 
 	// tuple template
 	tuple *send = make_tuple("sii", "norm request");
-	// TODO communicate all of the points (must split them up)
+
+	// split points, based on a cluster size of the square-root of the
+	// number of points given.
+	size_t skip = (size_t) sqrt((real) NORM_N);
+	for (size_t pos = 0; pos < NORM_N; pos += skip) {
+		send->elements[1].data.i = pos;
+		send->elements[2].data.i = min(pos + skip, NORM_N);
+		put_tuple(send, &ctx);
+	}
 
 	// destroy the template tuple
 	destroy_tuple(send);
@@ -144,7 +161,7 @@ void LTNorm::work() {
 	tuple *send = make_tuple("siis", "norm done");
 
 	// grab pointers locally.
-	IntMatrix input = (IntMatrix) inputs[0];
+	PointVector input = (PointVector) inputs[0];
 
 	// get the min/max points from the bounds computation
 	tuple *tmpMin = make_tuple("s?", MIN_POINT);
@@ -170,9 +187,18 @@ void LTNorm::work() {
 		send->elements[3].data.s.len = sizeof(Point) * (stop - start);
 		send->elements[3].data.s.ptr = (char*) buffer;
 
-		// perform the actual computation for this row.
-		for (size_t pos = start; pos < stop; ++pos) {
-			// TODO enter in that stuff
+		// compute scaling factors
+		real sclX = (real)((maxPoint.x == minPoint.x) ?
+			0.0 : 1 / (maxPoint.x - minPoint.x));
+		real sclY = (real)((maxPoint.y == minPoint.y) ?
+			0.0 : 1 / (maxPoint.y - minPoint.y));
+
+		// scale (perform the actual computation for this row)
+		size_t outPos = 0;
+		for (size_t inPos = start; inPos < stop; ++inPos) {
+			buffer[outPos].x = sclX * (input[inPos].x - minPoint.x);
+			buffer[outPos].y = sclY * (input[inPos].y - minPoint.y);
+			outPos++;
 		}
 
 		// send off the new tuple and purge local memory of the one we got

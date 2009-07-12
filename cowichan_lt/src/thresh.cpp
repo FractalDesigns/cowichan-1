@@ -39,20 +39,12 @@ void LTFrequency::work() {
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	tuple *recv = make_tuple("s?", "thresh request");
-	tuple *send = make_tuple("sis", "thresh done");
 
 	while (1) {
 
 		// block until we receieve a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
-
-		// copy over row co-ordinate of the computation; create
-		// a buffer for the results of the computation.
 		size_t y = gotten->elements[1].data.i;
-		send->elements[1].data.i = y;
-		int* buffer = (int*) malloc(sizeof(int) * THRESH_NC);
-		send->elements[2].data.s.len = sizeof(int) * THRESH_NC;
-		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row (counting)
 		for (int x = 0; x < THRESH_NC; ++x) {
@@ -66,26 +58,27 @@ void LTFrequency::work() {
 		// enter the critical section
 		get_tuple(synchLock, &ctx);
 
-		// combine results with master copy
-		for (std::iterator on map returning pairs) {
-			tuple *templateHist = make_tuple("sii", "thresh hist", n);
-			tuple *hist = get_nb_tuple(templateHist, &ctx);
-			if (hist == NULL) {
-				// use only this row's frequency
-				templateHist->elements[2].data.i = freq[n];
-			} else {
-				// combine this row's frequency and existing frequency
-				templateHist->elements[2].data.i = freq[n] + hist->elements[2].data.i;
+			// combine results with master copy
+			for (std::iterator on map returning pairs) {
+				tuple *templateHist = make_tuple("sii", "thresh hist", n);
+				tuple *hist = get_nb_tuple(templateHist, &ctx);
+				if (hist == NULL) {
+					// use only this row's frequency
+					templateHist->elements[2].data.i = freq[n];
+				} else {
+					// combine this row's frequency and existing frequency
+					templateHist->elements[2].data.i = freq[n] + hist->elements[2].data.i;
+					destroy_tuple(hist);
+				}
+				put_tuple(templateHist, &ctx);
+				destroy_tuple(templateHist);
 			}
-			put_tuple(templateHist, &ctx);
-			destroy_tuple(hist);
-		}
 
-		// record the number of rows reporting
-		tuple *templateRowsReporting = make_tuple("si", ROWS_DONE);
-		tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
-		rowsReporting->elements[1].data.i += 1;
-		put_tuple(rowsReporting, &ctx);
+			// record the number of rows reporting
+			tuple *templateRowsReporting = make_tuple("si", ROWS_DONE);
+			tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
+			rowsReporting->elements[1].data.i += 1;
+			put_tuple(rowsReporting, &ctx);
 
 		// leave the critical section
 		put_tuple(synchLock, &ctx);

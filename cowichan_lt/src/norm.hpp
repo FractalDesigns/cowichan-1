@@ -1,5 +1,5 @@
-#ifndef __THRESH_PRIVATE_HPP__
-#define __THRESH_PRIVATE_HPP__
+#ifndef __NORM_PRIVATE_HPP__
+#define __NORM_PRIVATE_HPP__
 
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
