@@ -3,7 +3,7 @@
 class Mandelbrot {
 
   IntMatrix _matrix;    // to store the result.
-  index_t nr, nc;         // number of rows, columns
+  index_t nr, nc;       // number of rows, columns
 
   real dX, dY;          // co-ordinate -> complex plane mapping coeff.
   real baseX, baseY;    // where to start the mandelbrot set
@@ -49,11 +49,10 @@ public:
     
     Mandelbrot mandel(matrix, nr, nc, x, y, width, height);
 
-    parallel_for(Range2D(0, nr, 0, nc), mandel,
+    parallel_for(Range2D(0, nr, 1, 0, nc, 1), mandel,
       auto_partitioner());
     
   }
-  
   
 public:
 
