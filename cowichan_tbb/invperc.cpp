@@ -1,4 +1,4 @@
-#include "cowichan_openmp.hpp"
+#include "cowichan_tbb.hpp"
 #include <queue>
 
 // This is a serial implementation.
@@ -27,7 +27,7 @@ public:
 
 /*****************************************************************************/
 
-void CowichanOpenMP::invperc(IntMatrix matrix, BoolMatrix mask) {
+void CowichanTBB::invperc(IntMatrix matrix, BoolMatrix mask) {
   
   if (nr * nc < invpercNFill) {
     not_enough_points();

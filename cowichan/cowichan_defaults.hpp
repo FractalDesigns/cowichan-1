@@ -40,7 +40,7 @@
 // invperc
 #define INVPERC_NR ALL_NR
 #define INVPERC_NC ALL_NC
-#define INVPERC_NFILL 2000
+#define INVPERC_NFILL 1000000
 
 // thresh
 #define THRESH_NR ALL_NR
