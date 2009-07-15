@@ -1,6 +1,6 @@
 /**
  * Datatypes and common routines for Cowichan programs.
- * OpenMP implementation.
+ * LinuxTuples implementation.
  */
 #ifndef __cowichan_lt_hpp__
 #define __cowichan_lt_hpp__
