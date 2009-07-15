@@ -65,7 +65,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="tbb_debug.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\Andrew\tbb21_20080605oss\ia32\vc9\lib"
+				AdditionalLibraryDirectories="..\..\tbb21_20080605oss\ia32\vc9\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -143,7 +143,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="tbb_debug.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\Andrew\tbb21_20080605oss\em64t\vc9\lib"
+				AdditionalLibraryDirectories="..\..\tbb21_20080605oss\em64t\vc9\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="17"
@@ -218,7 +218,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="tbb.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Andrew\tbb21_20080605oss\ia32\vc9\lib"
+				AdditionalLibraryDirectories="..\..\tbb21_20080605oss\ia32\vc9\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -296,7 +296,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="tbb.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Andrew\tbb21_20080605oss\em64t\vc9\lib"
+				AdditionalLibraryDirectories="..\..\tbb21_20080605oss\em64t\vc9\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -359,6 +359,10 @@
 			</File>
 			<File
 				RelativePath=".\randmat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\thresh.cpp"
 				>
 			</File>
 		</Filter>

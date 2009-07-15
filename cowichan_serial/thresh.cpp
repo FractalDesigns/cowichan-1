@@ -2,7 +2,7 @@
 
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 
-  IntVector hist = NULL; // histogram
+  index_t* hist = NULL; // histogram
   index_t i;
   index_t r, c;
   INT_TYPE vMax; // max value in matrix
@@ -20,7 +20,7 @@ void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   // initialize histogram
   try {
-    hist = NEW_VECTOR_SZ(INT_TYPE, vMax + 1);
+    hist = NEW_VECTOR_SZ(index_t, vMax + 1);
   }
   catch (...) {out_of_memory();}
 

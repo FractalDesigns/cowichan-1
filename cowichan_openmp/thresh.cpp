@@ -2,7 +2,7 @@
 
 void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
 
-  IntVector hist = NULL; // histogram
+  index_t* hist = NULL; // histogram
   index_t i, j;
   index_t r, c;
   INT_TYPE vMax; // max value in matrix
@@ -43,15 +43,15 @@ void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   // initialize histogram
   try {
-    hist = NEW_VECTOR_SZ(INT_TYPE, vMax + 1);
+    hist = NEW_VECTOR_SZ(index_t, vMax + 1);
   }
   catch (...) {out_of_memory();}
 
-  INT_TYPE** histLocal = NULL;
+  index_t** histLocal = NULL;
   try {
-    histLocal = NEW_VECTOR_SZ(INT_TYPE*, num_threads);
+    histLocal = NEW_VECTOR_SZ(index_t*, num_threads);
     for (i = 0; i < num_threads; i++) {
-      histLocal[i] = NEW_VECTOR_SZ(INT_TYPE, vMax + 1);
+      histLocal[i] = NEW_VECTOR_SZ(index_t, vMax + 1);
     }
   }
   catch (...) {out_of_memory();}
