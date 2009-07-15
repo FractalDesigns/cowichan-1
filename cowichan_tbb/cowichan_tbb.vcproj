@@ -354,6 +354,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\life.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\mandel.cpp"
 				>
 			</File>

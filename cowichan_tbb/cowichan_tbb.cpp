@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanTBB::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {}
 void CowichanTBB::winnow(IntMatrix matrix, BoolMatrix mask, PointVector points) {}
 void CowichanTBB::norm(PointVector pointsIn, PointVector pointsOut) {}
 void CowichanTBB::hull(PointVector pointsIn, PointVector pointsOut) {}
