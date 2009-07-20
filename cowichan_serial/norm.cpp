@@ -13,9 +13,9 @@ void CowichanSerial::norm (PointVector pointsIn, PointVector pointsOut)
   findMinMax(pointsIn, n, &minPoint, &maxPoint);
 
   sclX = (real)((maxPoint.x == minPoint.x) ?
-      0.0 : 1 / (maxPoint.x - minPoint.x));
+      0.0 : 1.0 / (maxPoint.x - minPoint.x));
   sclY = (real)((maxPoint.y == minPoint.y) ?
-      0.0 : 1 / (maxPoint.y - minPoint.y));
+      0.0 : 1.0 / (maxPoint.y - minPoint.y));
 
   // scale
   for (i = 0; i < n; i++) {
