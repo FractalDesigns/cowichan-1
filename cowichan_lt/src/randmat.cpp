@@ -9,26 +9,6 @@ void CowichanLinuxTuples::randmat(IntMatrix matrix) {
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
 
-/**
- * Create the first column of random values (starting seed for each row).
- */
-void LTRandmat::setup() {
-
-	IntMatrix output = (IntMatrix) outputs[0];
-
-	// set up the first column of matrix values
-	MATRIX_RECT_NC(output, 0, 0, RANDMAT_NC) = RAND_SEED % RAND_M;
-	aPrime = RANDMAT_A;
-	cPrime = 1;
-	for (size_t r = 1; r < RANDMAT_NR; r++) {
-		MATRIX_RECT_NC(output, r, 0, RANDMAT_NC) = (RANDMAT_A * MATRIX_RECT_NC(output, r-1, 0, RANDMAT_NC) + RANDMAT_C) % RAND_M;
-		cPrime = (cPrime + aPrime) % RAND_M;
-		aPrime = (aPrime * RANDMAT_A) % RAND_M;
-	}
-	cPrime = (cPrime * RANDMAT_C) % RAND_M;
-
-}
-
 void LTRandmat::consumeInput() {
 
 	// tuple template
