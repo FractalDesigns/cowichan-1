@@ -43,10 +43,8 @@ void CowichanOpenMP::gauss (Matrix matrix, Vector target, Vector solution)
   }
 
   // back substitution
-#pragma omp parallel for schedule(static)
   for (k = (n - 1); k >= 0; k--) {
     solution[k] = target[k] / MATRIX_SQUARE(matrix, k, k);
-#pragma omp parallel for schedule(static)
     for (i = k - 1; i >= 0; i--) {
       target[i] = target[i] - (MATRIX_SQUARE(matrix, i, k) * solution[k]);
     }
