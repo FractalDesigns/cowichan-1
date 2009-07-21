@@ -350,6 +350,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hull.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\invperc.cpp"
 				>
 			</File>
