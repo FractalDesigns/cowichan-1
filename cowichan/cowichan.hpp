@@ -1,4 +1,8 @@
 /**
+ * \mainpage Parallel Programming and the Cowichan Problems
+ */
+
+/**
  * Datatypes and common routines for Cowichan programs.
  */
 #ifndef __cowichan_hpp__
