@@ -378,6 +378,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\product.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\randmat.cpp"
 				>
 			</File>
@@ -387,6 +391,10 @@
 			</File>
 			<File
 				RelativePath=".\thresh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vecdiff.cpp"
 				>
 			</File>
 			<File

@@ -11,6 +11,3 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void CowichanTBB::product(Matrix matrix, Vector candidate, Vector solution) {}
-real CowichanTBB::vecdiff(Vector actual, Vector computed) {return (real)0;}
-
