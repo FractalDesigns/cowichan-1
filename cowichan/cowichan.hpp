@@ -1,5 +1,124 @@
 /**
- * \mainpage Parallel Programming and the Cowichan Problems
+ * \mainpage Parallel Programming and Cowichan Problems
+ *
+ * \section intro_sec Introduction
+ *
+ * The Cowichan problems are implemented by various parallel programming
+ * systems. Serial C++ implementation is available for comparison.
+ * The Cowichan class is the base class for all C++ implementations.
+ *
+ * \section problems_sec The Problems
+ *
+ * Currently, there are 14 Cowichan problems. They are described below.
+ * Cowichan class. Problems can be run separately by
+ * passing the problem name as an argument on the command line. The inputs to
+ * the problems are defined in cowichan_defaults.hpp. There is currently no way
+ * to override the inputs without recompiling.
+ *
+ * TODO: add links to problems in Cowichan class.
+ *
+ * \subsection mandel_sec 1. mandel: Mandelbrot Set Generation
+ * This module generates the Mandelbrot Set for a specified region of the
+ * complex plane.
+ *
+ * \subsection randmat_sec 2. randmat: Random Number Generation
+ * This module fills a matrix with pseudo-random integers.
+ * Note that, as in all problems, the output is required to be independent of
+ * the number of processors used.
+ *
+ * \subsection half_sec 3. half: Two-Dimensional Shuffle
+ * This module divides the values in a rectangular two-dimensional integer
+ * matrix into two halves along one axis, shuffles them, and then repeats this
+ * operation along the other axis. Values in odd-numbered locations are
+ * collected at the low end of each row or column, while values in
+ * even-numbered locations are moved to the high end.
+ *
+ * \subsection invperc_sec 4. invperc: Invasion Percolation
+ * Invasion percolation models the displacement of one fluid (such as oil) by
+ * another (such as water) in fractured rock. In two dimensions, this can be
+ * simulated by generating an NxN grid of random numbers in the range
+ * [1. . .R], and then marking the center cell of the grid as filled. In each
+ * iteration, one examines the four orthogonal neighbors of all filled cells,
+ * chooses the one with the lowest value (i.e. the one with the least
+ * resistance to filling), and fills it in. The simulation continues until some
+ * fixed percentage of cells have been filled, or until some other condition
+ * (such as the presence of trapped regions) is achieved. The fractal structure
+ * of the filled and unfilled regions is then examined to determine how much
+ * oil could be recovered. The naive way to implement this is to repeatedly
+ * scan the array; a more sophisticated, and much faster, sequential technique
+ * is to maintain a priority queue of unfilled cells which are neighbors of
+ * filled cells. This latter technique is similar to the list-based methods
+ * used in some cellular automaton programs, and is very difficult to
+ * parallelize effectively. Filling begins at the central cell of the matrix
+ * (rounding down for even-sized axes).
+ *
+ * \subsection thresh_sec 5. thresh: Histogram Thresholding
+ * This module performs histogram thresholding on an image. Given an integer
+ * image I and a target percentage p, it constructs a binary image B such that
+ * B[i,j] is set if no more than p percent of the pixels in I are brighter than
+ * I[i,j]. The general idea is that an image's histogram should have 2 peaks,
+ * one centered around the average foreground intensity, and one centered
+ * around the average background intensity. This program attempts to set a
+ * threshold between the two peaks in the histogram and select the pixels above
+ * the threshold.
+ *
+ * \subsection life_sec 6. life: Game of Life
+ * This module simulates the evolution of Conway's Game of Life, a
+ * two-dimensional cellular automaton.
+ * At each time step, this module must count the number of live (true)
+ * neighbors of each cell, using both orthogonal and diagonal connectivity and
+ * circular boundary conditions. The update rule is simple: if a cell has 3
+ * live neighbors, or has 2 live neighbors and is already alive, it is alive in
+ * the next generation. In any other situation, the cell becomes, or stays,
+ * dead.
+ *
+ * \subsection winnow_sec 7. winnow: Weighted Point Selection
+ * This module converts a matrix of integer values to a vector of points,
+ * represented as x and y coordinates.
+ * Each location where mask is true becomes a candidate point, with a weight
+ * equal to the integer value in matrix at that location and x and y
+ * coordinates equal to its row and column indices. These candidate points
+ * are then \b sorted into increasing order by weight, and n evenly-spaced 
+ * points selected to create the result vector.
+ *
+ * \subsection norm_sec 8. norm: Point Location Normalization
+ * This module normalizes point coordinates so that all points lie within
+ * the unit square [0. . .1]x[0. . .1].
+ *
+ * \subsection hull_sec 9. hull: Convex Hull
+ * This module takes a list of two-dimensional points and reorders them by
+ * doing multiple convex hull computations. Convex hull is the boundary of the
+ * minimal convex set containing a given non-empty finite set of points in the
+ * plane. In other words, all points not in the convex hull are enclosed in the
+ * convex hull polygon. At each step the convex hull points are taken out of
+ * the input list and are put into the output list. The computation terminates
+ * when there are no more points left in the input list.
+ *
+ * \subsection outer_sec 10. outer: Outer Product
+ * This module turns a vector containing point positions into a dense,
+ * symmetric, diagonally dominant matrix by calculating the distances between
+ * each pair of points. It also constructs a real vector whose values are the
+ * distance of each point from the origin.
+ *
+ * \subsection gauss_sec 11. gauss: Gaussian Elimination
+ * This module solves a matrix equation AX = V for a dense, symmetric,
+ * diagonally dominant matrix A and an arbitrary vector non-zero V using
+ * explicit reduction (matrices are required to be symmetric and diagonally
+ * dominant in order to guarantee that there is a well-formed solution to the
+ * equation).
+ *
+ * \subsection sor_sec 12. sor: Successive Over-Relaxation
+ * This module solves a matrix equation AX = V for a dense, symmetric,
+ * diagonally dominant matrix A and an arbitrary vector non-zero V using
+ * successive over-relaxation.
+ *
+ * \subsection product_sec 13. product: Matrix-Vector Product
+ * This module calculates V in AX = V where A is a matrix and X is a vector.
+ *
+ * \subsection vecdiff_sec 14. vecdiff: 1-Norm Vector Difference
+ * This module calculates the 1-norm of the difference between two vectors. In
+ * case the vectors are actual and computed values of some calculation the
+ * result represents the magnitude of the error.
  */
 
 /**

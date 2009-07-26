@@ -10,6 +10,8 @@ private:
   BoolMatrix _first, _second;
   index_t nr, nc;
 
+  // TODO: add counting for number of cells left alive (use parallel_reduce)
+
   /**
    * Calculate number of peers.
    */
