@@ -544,6 +544,9 @@ typedef WeightedPoint* WeightedPointVector;
 
 /**
  * Returns a pseudorandom number ~ U[mean - range, mean + range].
+ * \param mean mean.
+ * \param range range.
+ * \return The pseudorandom number.
  */
 real uniform(real mean, real range);
 

@@ -1,25 +1,22 @@
 #include "cowichan.hpp"
 
 /**
- * Returns a pseudorandom number ~ U[mean - range, mean + range].
+ * \file cowichan.cpp
+ * \brief Implementation for Cowichan class and common routines for Cowichan
+ * programs.
  */
+
 real uniform(real mean, real range) {
   return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;
 }
 
 /*****************************************************************************/
 
-/**
- * Prints out of memory message and exits.
- */
 void out_of_memory() {
   std::cout << "--- Out of memory! ---";
   exit(1);
 }
 
-/**
- * Prints not enough points message and exits.
- */
 void not_enough_points() {
   std::cout << "--- Not enough points! ---";
   exit(1);
@@ -68,9 +65,14 @@ INT64 get_freq ()
   return freq;
 }
 
-/**
- * Does a sort of swap-out, printing progress.
- */
+void print_elapsed_time (INT64 start, INT64 end)
+{
+  INT64 freq = get_freq ();
+  std::cout.precision(5);
+  std::cout << (((double) (end - start)) / ((double) freq)) << " seconds";
+  std::cout.flush();
+}
+
 void timeInfo(INT64 *start, INT64 *end, std::string message) {
   *start = *end;
   *end = get_ticks();
@@ -79,14 +81,6 @@ void timeInfo(INT64 *start, INT64 *end, std::string message) {
     print_elapsed_time(*start, *end);
     std::cout << std::endl;
   #endif
-}
-
-void print_elapsed_time (INT64 start, INT64 end)
-{
-  INT64 freq = get_freq ();
-  std::cout.precision(5);
-  std::cout << (((double) (end - start)) / ((double) freq)) << " seconds";
-  std::cout.flush();
 }
 
 /*****************************************************************************/
@@ -877,5 +871,4 @@ void Cowichan::chain(bool use_randmat, bool use_thresh)
   delete [] vector3;
   delete [] vector4;
 }
-
 
