@@ -1,9 +1,11 @@
 #include "cowichan_serial.hpp"
 
 /**
- * Matrices are required to be symmetric and diagonally dominant in order to
- * guarantee that there is a well-formed solution to the equation.
+ * \file cowichan_serial/gauss.cpp
+ * \brief Serial gauss implementation.
+ * \see CowichanSerial::gauss
  */
+
 void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
 {
   index_t i, j, k;

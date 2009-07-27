@@ -253,6 +253,11 @@ void out_of_memory();
  */
 void not_enough_points();
 
+/**
+ * Prints no cells alive message and exits.
+ */
+void no_cells_alive();
+
 // BASIC TYPES ==============================================================//
 #ifndef REAL_TYPE
 /**
@@ -553,6 +558,7 @@ real uniform(real mean, real range);
 // COWICHAN DEFINITIONS =====================================================//
 /**
  * \brief Base class for all C++ implementations.
+ *
  * The abstract class containing the inputs, definitions, and some debugging
  * methods for the Cowichan problems.
  */
@@ -800,6 +806,8 @@ private:
 
   /**
    * Runs the cowichan problem set, chained together.
+   * The order in the chain is:
+   * 1. 
    * \param use_randmat true: generate a random matrix.
    *                    false: use a window of the mandelbrot set.
    * \param use_thresh true: use image thresholding for int->bool.

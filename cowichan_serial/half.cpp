@@ -1,5 +1,11 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/half.cpp
+ * \brief Serial half implementation.
+ * \see CowichanSerial::half
+ */
+
 void CowichanSerial::half (IntMatrix matrixIn, IntMatrix matrixOut)
 {
   index_t r, c;

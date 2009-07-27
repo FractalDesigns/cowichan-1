@@ -1,9 +1,29 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/life.cpp
+ * \brief Serial life implementation.
+ * \see CowichanSerial::life
+ */
+
+namespace cowichan_serial
+{
+
+/**
+ * Calculate number of peers.
+ * \param first world matrix.
+ * \param r row.
+ * \param c column.
+ * \param nr number of rows in the matrix.
+ * \param nc number of columns in the matrix.
+ * \return The number of peers.
+ */
 index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
     index_t nc);
 
-void no_cells_alive();
+}
+
+/*****************************************************************************/
 
 void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
@@ -58,9 +78,11 @@ void CowichanSerial::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
 }
 
-/**
- * Calculate number of peers.
- */
+/*****************************************************************************/
+
+namespace cowichan_serial
+{
+
 index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
     index_t nc) {
 
@@ -86,11 +108,5 @@ index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
 
 }
 
-/**
- * Prints no cells alive message and exits.
- */
-void no_cells_alive() {
-  std::cout << "--- No cells alive! ---";
-  exit(1);
 }
 

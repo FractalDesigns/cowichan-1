@@ -3,8 +3,6 @@
 index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
     index_t nc);
 
-void no_cells_alive();
-
 void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
   BoolMatrix first = matrixIn;
@@ -89,13 +87,5 @@ index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
 
   return peers;
 
-}
-
-/**
- * Prints no cells alive message and exits.
- */
-void no_cells_alive() {
-  std::cout << "--- No cells alive! ---";
-  exit(1);
 }
 

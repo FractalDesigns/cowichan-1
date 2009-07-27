@@ -1,16 +1,31 @@
 /**
- * Datatypes and common routines for Cowichan programs.
- * Serial implementation.
+ * \file cowichan_serial.hpp
+ * \brief Serial implementation of Cowichan problems.
  */
 #ifndef __cowichan_serial_hpp__
 #define __cowichan_serial_hpp__
 
 #include "../cowichan/cowichan.hpp"
 
-// COWICHAN DEFINITIONS =====================================================//
-// aka. "inputs" to the toys, and chaining functions.
+/**
+ * \brief Additional classes and functions specific to serial implementation.
+ *
+ * Using a namespace to avoid (documentation) name clashes.
+ */
+namespace cowichan_serial
+{
+}
+
+using namespace cowichan_serial;
+
+/**
+ * \brief Serial implementation.
+ *
+ * This implementation can serve as a reference when comparing to parallel
+ * programming systems in terms of performance, code size, complexity, etc.
+ */
 class CowichanSerial : public Cowichan {
-protected: // chaining functions
+protected:
 
   void mandel(IntMatrix matrix);
   void randmat(IntMatrix matrix);

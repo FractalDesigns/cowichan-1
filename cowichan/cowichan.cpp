@@ -22,6 +22,11 @@ void not_enough_points() {
   exit(1);
 }
 
+void no_cells_alive() {
+  std::cout << "--- No cells alive! ---";
+  exit(1);
+}
+
 #ifdef OUTPUT_DATA
 void Cowichan::print_vector(PointVector points)
 {

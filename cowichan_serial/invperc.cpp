@@ -1,27 +1,65 @@
 #include "cowichan_serial.hpp"
 #include <queue>
 
+/**
+ * \file cowichan_serial/invperc.cpp
+ * \brief Serial invperc implementation.
+ * \see CowichanSerial::invperc
+ */
+
+namespace cowichan_serial
+{
+
+/**
+ * \brief Percolation point.
+ *
+ * These are put into a heap to extract the one with lowest value.
+ */
 class PercPoint {
 public:
 
+  /**
+   * Point.
+   */
   Point point;
+
+  /**
+   * Matrix.
+   */
   IntMatrix matrix;
+
+  /**
+   * Number of columns.
+   */
   index_t nc;
 
 public:
 
+  /**
+   * Construct a percolation point.
+   * \param point point.
+   */
   PercPoint(Point point): point(point) { }
 
-  // we want to extract lowest values.
+  /**
+   * Less than comparison - we want to extract lowest values.
+   * \param other right hand side percolation point.
+   */
   bool operator<(const PercPoint &other) const {
     return value() > other.value();
   }
 
+  /**
+   * Get the value at this point.
+   * \return value from the matrix.
+   */
   INT_TYPE value() const {
     return MATRIX_RECT(matrix, (index_t)point.y, (index_t)point.x);
   }
 
 };
+
+}
 
 /*****************************************************************************/
 

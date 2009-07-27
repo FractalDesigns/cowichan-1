@@ -123,15 +123,6 @@ void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
   split (pointsIn, n, pointsOut, hn, maxPoint, minPoint);
 }
 
-/**
- * Compute hull on one side of the splitting line.
- * @param pointsIn hull input points.
- * @param n number of input points.
- * @param pointsOut hull output points.
- * @param hn pointer to the number of output points.
- * @param p1 boundary point #1.
- * @param p2 boundary point #2.
- */
 void split (PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
     Point* p1, Point* p2) {
 
