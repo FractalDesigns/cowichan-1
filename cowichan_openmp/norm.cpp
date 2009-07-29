@@ -1,6 +1,26 @@
+/**
+ * \file cowichan_openmp/norm.cpp
+ * \brief OpenMP norm implementation.
+ * \see CowichanOpenMP::norm
+ */
+
 #include "cowichan_openmp.hpp"
 
+namespace cowichan_openmp
+{
+
+/**
+ * Find min/max x/y coordinates.
+ * \param points point vector.
+ * \param n number of points.
+ * \param minPoint min x/y values.
+ * \param maxPoint max x/y values.
+ */
 void findMinMax(PointVector points, index_t n, Point* minPoint, Point* maxPoint);
+
+}
+
+/*****************************************************************************/
 
 void CowichanOpenMP::norm (PointVector pointsIn, PointVector pointsOut)
 {
@@ -25,13 +45,11 @@ void CowichanOpenMP::norm (PointVector pointsIn, PointVector pointsOut)
 
 }
 
-/**
- * Finds min/max x/y coordinates.
- * @param points point vector.
- * @param n number of points.
- * @param minPoint min x/y values.
- * @param maxPoint max x/y values.
- */
+/*****************************************************************************/
+
+namespace cowichan_openmp
+{
+
 void findMinMax(PointVector points, index_t n, Point* minPoint,
     Point* maxPoint) {
 
@@ -91,6 +109,8 @@ void findMinMax(PointVector points, index_t n, Point* minPoint,
 
   delete [] minPoints;
   delete [] maxPoints;
+
+}
 
 }
 

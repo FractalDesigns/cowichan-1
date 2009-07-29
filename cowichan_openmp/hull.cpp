@@ -1,12 +1,44 @@
+/**
+ * \file cowichan_openmp/hull.cpp
+ * \brief OpenMP hull implementation.
+ * \see CowichanOpenMP::hull
+ */
+
 #include "cowichan_openmp.hpp"
 
+namespace cowichan_openmp
+{
+
+/**
+ * Runs quickhull algorithm.
+ * \param pointsIn input points.
+ * \param n number of inputs points to use.
+ * \param pointsOut output points.
+ * \param hn number of output points generated so far.
+ */
 void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
     index_t* hn);
 
+/**
+ * Recursive step of the quickhull algorithm - compute hull on one side of the
+ * splitting line.
+ * \param pointsIn input points.
+ * \param n number of inputs points to use.
+ * \param pointsOut output points.
+ * \param hn number of output points generated so far.
+ * \param p1 first point of the splitting line (p1,p2).
+ * \param p2 second point of the splitting line (p1,p2).
+ */
 void split(PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
     Point* p1, Point* p2);
 
+}
+
+/*****************************************************************************/
+
 /**
+ * For description see \ref hull_sec
+ *
  * Runs quickhull algorithm until all points have been used up from the
  * original vector. At each step the hull points are marked as used and a new
  * convex hull is computed on the rest of points.
@@ -42,6 +74,11 @@ void CowichanOpenMP::hull (PointVector pointsIn, PointVector pointsOut)
     quickhull (pointsIn, n - hn, pointsOut, &hn);
   }
 }
+
+/*****************************************************************************/
+
+namespace cowichan_openmp
+{
 
 void quickhull(PointVector pointsIn, index_t n, PointVector pointsOut,
     index_t* hn)
@@ -200,6 +237,8 @@ void split (PointVector pointsIn, index_t n, PointVector pointsOut, index_t* hn,
   // this is because all points are inside the hull when we use this half-space.
   // add the first point and return.
   pointsOut[(*hn)++] = *p1;
+
+}
 
 }
 

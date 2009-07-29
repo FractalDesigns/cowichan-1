@@ -1,27 +1,68 @@
+/**
+ * \file cowichan_tbb/gauss.cpp
+ * \brief TBB gauss implementation.
+ * \see CowichanTBB::gauss
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
 /** 
- * Performs row elimination, i.e. eliminate i-th column in j-th row.
+ * \brief Performs row elimination, i.e. eliminate i-th column in j-th row.
  */
 class RowElimination {
 private:
 
+  /**
+   * Matrix.
+   */
   Matrix _matrix;
+
+  /**
+   * Target vector.
+   */
   Vector _target;
+
+  /**
+   * Matrix size.
+   */
   index_t n;
+
+  /**
+   * Current row index.
+   */
   index_t i;
+
+  /**
+   * Current i-th row i-th column value.
+   */
   real column_i;
 
 public:
 
+  /**
+   * Construct a row elimination object.
+   * \param matrix matrix.
+   * \param target target vector.
+   * \param n matrix size.
+   */
   RowElimination(Matrix matrix, Vector target, index_t n) : _matrix(matrix),
       _target(target), n(n) { };
 
+  /**
+   * Set current row index.
+   */
   void setI(index_t i) {
     this->i = i;
     column_i = MATRIX(_matrix, i, i);
   }
 
+  /**
+   * Perform row elimination on a range of rows.
+   * \param rows range of rows.
+   */
   void operator()(const Range& rows) const {
     
     // Get pointers locally.
@@ -39,10 +80,8 @@ public:
   
 };
 
-/**
- * Matrices are required to be symmetric and diagonally dominant in order to
- * guarantee that there is a well-formed solution to the equation.
- */
+}
+
 void CowichanTBB::gauss (Matrix matrix, Vector target, Vector solution)
 {
   index_t i, j, k;

@@ -1,7 +1,29 @@
+/**
+ * \file cowichan_openmp/life.cpp
+ * \brief OpenMP life implementation.
+ * \see CowichanOpenMP::life
+ */
+
 #include "cowichan_openmp.hpp"
 
+namespace cowichan_openmp
+{
+
+/**
+ * Calculate number of peers.
+ * \param first world matrix.
+ * \param r row.
+ * \param c column.
+ * \param nr number of rows in the matrix.
+ * \param nc number of columns in the matrix.
+ * \return The number of peers.
+ */
 index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
     index_t nc);
+
+}
+
+/*****************************************************************************/
 
 void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
@@ -61,9 +83,11 @@ void CowichanOpenMP::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 
 }
 
-/**
- * Calculate number of peers.
- */
+/*****************************************************************************/
+
+namespace cowichan_openmp
+{
+
 index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
     index_t nc) {
 
@@ -86,6 +110,8 @@ index_t sumNeighbours(BoolMatrix first, index_t r, index_t c, index_t nr,
   if (ll && dd && MATRIX_RECT_NC(first, r + 1, c - 1, nc)) ++peers;
 
   return peers;
+
+}
 
 }
 

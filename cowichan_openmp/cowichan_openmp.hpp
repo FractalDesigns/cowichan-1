@@ -1,16 +1,31 @@
 /**
- * Datatypes and common routines for Cowichan programs.
- * OpenMP implementation.
+ * \file cowichan_openmp.hpp
+ * \brief Open Multi-Processing (OpenMP) implementation of Cowichan problems.
  */
+
 #ifndef __cowichan_openmp_hpp__
 #define __cowichan_openmp_hpp__
 
 #include "../cowichan/cowichan.hpp"
 
+/**
+ * \brief Additional classes and functions specific to openmp implementation.
+ */
+namespace cowichan_openmp
+{
+}
+
+// using a namespace to avoid (documentation) name clashes
+using namespace cowichan_openmp;
+
 #include <omp.h>
 
-// COWICHAN DEFINITIONS =====================================================//
-// aka. "inputs" to the toys, and chaining functions.
+/**
+ * \brief Open Multi-Processing (OpenMP) implementation.
+ *
+ * Tags: shared memory, data parallel, shared variables, task based,
+ * compiler specific.
+ */
 class CowichanOpenMP : public Cowichan {
 protected: // chaining functions
 
@@ -32,7 +47,7 @@ protected: // chaining functions
 public:
 
   /**
-   * Cutoff n value for hull
+   * Cutoff value n for hull.
    */
   static const index_t HULL_CUTOFF = 20000;
 

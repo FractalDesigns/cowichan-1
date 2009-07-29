@@ -1,6 +1,25 @@
+/**
+ * \file cowichan_openmp/mandel.cpp
+ * \brief OpenMP mandel implementation.
+ * \see CowichanOpenMP::mandel
+ */
+
 #include "cowichan_openmp.hpp"
 
+namespace cowichan_openmp
+{
+
+/**
+ * Calculate mandelbrot value.
+ * \param x x-coordinate.
+ * \param y y-coordinate.
+ * \return Mandelbrot value.
+ */
 INT_TYPE mandel_calc (real x, real y);
+
+}
+
+/*****************************************************************************/
 
 void CowichanOpenMP::mandel (IntMatrix matrix)
 {
@@ -20,12 +39,11 @@ void CowichanOpenMP::mandel (IntMatrix matrix)
   }
 }
 
-/**
- * Calculates mandelbrot value.
- * @param x x-coordinate.
- * @param y y-coordinate.
- * @return mandelbrot value.
- */
+/*****************************************************************************/
+
+namespace cowichan_openmp
+{
+
 INT_TYPE mandel_calc (real x, real y)
 {
   real r = 0.0, i = 0.0; // real and imaginary parts
@@ -41,5 +59,7 @@ INT_TYPE mandel_calc (real x, real y)
   } while ((iter < MANDEL_MAX_ITER) && ((rs + is) < MANDEL_INFINITY));
 
   return iter;
+}
+
 }
 

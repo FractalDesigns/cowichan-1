@@ -1,7 +1,8 @@
 /**
- * Datatypes and common routines for Cowichan programs.
- * Intel Thread Building Blocks implementation.
+ * \file cowichan_tbb.hpp
+ * \brief Thread Building Blocks (TBB) implementation of Cowichan problems.
  */
+
 #ifndef __cowichan_tbb_hpp__
 #define __cowichan_tbb_hpp__
 
@@ -16,11 +17,31 @@
 #include "tbb/parallel_sort.h"
 using namespace tbb;
 
+/**
+ * One-dimensional tbb range.
+ */
 typedef blocked_range<index_t> Range;
+
+/**
+ * Two-dimensional tbb range.
+ */
 typedef blocked_range2d<index_t, index_t> Range2D;
 
-// COWICHAN DEFINITIONS =====================================================//
-// aka. "inputs" to the toys, and chaining functions.
+/**
+ * \brief Additional classes and functions specific to tbb implementation.
+ */
+namespace cowichan_tbb
+{
+}
+
+// using a namespace to avoid (documentation) name clashes
+using namespace cowichan_tbb;
+
+/**
+ * \brief Thread Building Blocks (TBB) implementation.
+ *
+ * Tags: shared memory, data parallel, task based.
+ */
 class CowichanTBB : public Cowichan {
 protected: // chaining functions
 

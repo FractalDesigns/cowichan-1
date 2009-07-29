@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/life.cpp
  * \brief Serial life implementation.
  * \see CowichanSerial::life
  */
+
+#include "cowichan_serial.hpp"
 
 namespace cowichan_serial
 {

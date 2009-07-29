@@ -2,6 +2,7 @@
  * \file cowichan_serial.hpp
  * \brief Serial implementation of Cowichan problems.
  */
+
 #ifndef __cowichan_serial_hpp__
 #define __cowichan_serial_hpp__
 
@@ -9,13 +10,12 @@
 
 /**
  * \brief Additional classes and functions specific to serial implementation.
- *
- * Using a namespace to avoid (documentation) name clashes.
  */
 namespace cowichan_serial
 {
 }
 
+// using a namespace to avoid (documentation) name clashes
 using namespace cowichan_serial;
 
 /**

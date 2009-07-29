@@ -1,9 +1,11 @@
 #include "cowichan_serial.hpp"
 
 /**
- * Matrices are required to be symmetric and diagonally dominant in order to
- * guarantee that there is a well-formed solution to the equation.
+ * \file cowichan_serial/sor.cpp
+ * \brief Serial sor implementation.
+ * \see CowichanSerial::sor
  */
+
 void CowichanSerial::sor (Matrix matrix, Vector target, Vector solution)
 {
   index_t r, c, t;

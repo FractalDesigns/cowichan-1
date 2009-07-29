@@ -1,9 +1,9 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial.cpp
  * \brief This file contains main method that drives the serial implementation.
  */
+
+#include "cowichan_serial.hpp"
 
 /**
  * Main method - creates a CowichanSerial instance and executes Cowichan::main.

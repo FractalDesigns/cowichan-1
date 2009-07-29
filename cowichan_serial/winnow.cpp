@@ -1,8 +1,24 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/winnow.cpp
+ * \brief Serial winnow implementation.
+ * \see CowichanSerial::winnow
+ */
+
+namespace cowichan_serial
+{
+
+/**
+ * Count the number of set cells in the mask.
+ * \param mask boolean mask.
+ * \param nr number of rows.
+ * \param nc number of columns.
+ * \return Number of set cells in the mask.
+ */
 index_t mask_count(BoolMatrix mask, index_t nr, index_t nc);
 
-void not_enough_points();
+}
 
 void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
     PointVector points) {
@@ -68,12 +84,9 @@ void CowichanSerial::winnow(IntMatrix matrix, BoolMatrix mask,
 
 }
 
-/**
- * Count the number of set cells in the mask.
- * @param mask boolean mask.
- * @param nr number of rows.
- * @param nc number of columns.
- */
+namespace cowichan_serial
+{
+
 index_t mask_count(BoolMatrix mask, index_t nr, index_t nc) {
 
   index_t r, c, sum = 0;
@@ -89,4 +102,5 @@ index_t mask_count(BoolMatrix mask, index_t nr, index_t nc) {
   return sum;
 }
 
+}
 

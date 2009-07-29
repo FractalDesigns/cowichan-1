@@ -1,5 +1,11 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/product.cpp
+ * \brief Serial product implementation.
+ * \see CowichanSerial::product
+ */
+
 void CowichanSerial::product (Matrix matrix, Vector candidate, Vector solution)
 {
   index_t r, c;

@@ -1,5 +1,11 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/thresh.cpp
+ * \brief Serial thresh implementation.
+ * \see CowichanSerial::thresh
+ */
+
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   index_t* hist = NULL; // histogram

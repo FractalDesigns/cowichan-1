@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/half.cpp
+ * \brief OpenMP half implementation.
+ * \see CowichanOpenMP::half
+ */
+
 #include "cowichan_openmp.hpp"
 
 void CowichanOpenMP::half (IntMatrix matrixIn, IntMatrix matrixOut)

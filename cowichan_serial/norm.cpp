@@ -1,7 +1,25 @@
+/**
+ * \file cowichan_serial/norm.cpp
+ * \brief Serial norm implementation.
+ * \see CowichanSerial::norm
+ */
+
 #include "cowichan_serial.hpp"
 
+namespace cowichan_serial
+{
+
+/**
+ * Find min/max x/y coordinates.
+ * \param points point vector.
+ * \param n number of points.
+ * \param minPoint min x/y values.
+ * \param maxPoint max x/y values.
+ */
 void findMinMax(PointVector points, index_t n, Point* minPoint,
     Point* maxPoint);
+
+}
 
 void CowichanSerial::norm (PointVector pointsIn, PointVector pointsOut)
 {
@@ -25,13 +43,9 @@ void CowichanSerial::norm (PointVector pointsIn, PointVector pointsOut)
 
 }
 
-/**
- * Finds min/max x/y coordinates.
- * @param points point vector.
- * @param n number of points.
- * @param minPoint min x/y values.
- * @param maxPoint max x/y values.
- */
+namespace cowichan_serial
+{
+
 void findMinMax(PointVector points, index_t n, Point* minPoint,
     Point* maxPoint) {
 
@@ -57,3 +71,4 @@ void findMinMax(PointVector points, index_t n, Point* minPoint,
 
 }
 
+}

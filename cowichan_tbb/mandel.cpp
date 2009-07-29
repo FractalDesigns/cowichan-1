@@ -1,18 +1,62 @@
+/**
+ * \file cowichan_tbb/mandel.cpp
+ * \brief TBB mandel implementation.
+ * \see CowichanTBB::mandel
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
+/**
+ * \brief Perform mandelbrot generation.
+ */
 class Mandelbrot {
+private:
 
+  /**
+   * Matrix.
+   */
   IntMatrix _matrix;    // to store the result.
-  index_t nr, nc;       // number of rows, columns
 
-  real dX, dY;          // co-ordinate -> complex plane mapping coeff.
-  real baseX, baseY;    // where to start the mandelbrot set
+  /**
+   * Number of rows in the matrix.
+   */
+  index_t nr;
+  
+  /**
+   * Number of columns in the matrix.
+   */
+  index_t nc;
+
+  /**
+   * x-coordinate of the lower left corner.
+   */
+  real baseX;
+  
+  /**
+   * y-coordinate of the lower left corner.
+   */
+  real baseY;
+
+  /**
+   * Extent of the region along the x axis.
+   */
+  real dX;
+  
+  /**
+   * Extent of the region along the y axis.
+   */
+  real dY;
 
 private:
 
   /**
-    * Performs the mandelbrot set calculation.
-    */
+   * Performs the mandelbrot value calculation.
+   * \param x x-coordinate.
+   * \param y y-coordinate.
+   */
   INT_TYPE mandelCalc(real x, real y) const {
 
     real r = 0.0, i = 0.0;
@@ -42,20 +86,15 @@ private:
 public:
 
   /**
-    * Calculates the given mandelbrot set "window", and stores the result in matrix.
-    */
-  static void exec(IntMatrix matrix, index_t nr, index_t nc, real x, real y,
-      real width, real height) {
-    
-    Mandelbrot mandel(matrix, nr, nc, x, y, width, height);
-
-    parallel_for(Range2D(0, nr, 0, nc), mandel,
-      auto_partitioner());
-    
-  }
-  
-public:
-
+   * Construct a mandelbrot generation object.
+   * \param matrix matrix to fill.
+   * \param nr number of rows.
+   * \param nc number of columns.
+   * \param x base x.
+   * \param y base y.
+   * \param width width.
+   * \param height height.
+   */
   Mandelbrot(IntMatrix matrix, index_t nr, index_t nc, real x, real y,
       real width, real height) : _matrix(matrix), nr(nr), nc(nc), baseX(x),
       baseY(y) {
@@ -66,8 +105,9 @@ public:
   }
 
   /**
-    * Calculates a given portion of the current mandelbrot set "window".
-    */
+   * Calculates a given portion of the current mandelbrot set "window".
+   * \param range two-dimensional range.
+   */
   void operator()(const Range2D& range) const {
 
     IntMatrix matrix = _matrix;
@@ -85,10 +125,15 @@ public:
   
 };
 
+}
+
 /*****************************************************************************/
 
 void CowichanTBB::mandel(IntMatrix matrix)
 {
-  Mandelbrot::exec(matrix, nr, nc, mandelX0, mandelY0, mandelDx, mandelDy);
+  Mandelbrot mandel(matrix, nr, nc, mandelX0, mandelY0, mandelDx, mandelDy);
+
+  parallel_for(Range2D(0, nr, 0, nc), mandel,
+    auto_partitioner());
 }
 

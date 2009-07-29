@@ -788,7 +788,7 @@ protected: // individual problems
   virtual void sor(Matrix matrix, Vector target, Vector solution) = 0;
 
   /**
-   * For description see \ref sor_sec
+   * For description see \ref product_sec
    * \param matrix matrix A in AX = V.
    * \param candidate vector X in AX = V.
    * \param solution vector V in AX = V.
@@ -807,11 +807,23 @@ private:
   /**
    * Runs the cowichan problem set, chained together.
    * The order in the chain is:
-   * 1. 
-   * \param use_randmat true: generate a random matrix.
-   *                    false: use a window of the mandelbrot set.
-   * \param use_thresh true: use image thresholding for int->bool.
-   *                   false: use invasion percolation for int->bool.
+   * <OL>
+   * <LI>Cowichan::randmat or Cowichan::mandel</LI>
+   * <LI>Cowichan::half</LI>
+   * <LI>Cowichan::invperc or Cowichan::thresh</LI>
+   * <LI>Cowichan::life</LI>
+   * <LI>Cowichan::winnow</LI>
+   * <LI>Cowichan::norm</LI>
+   * <LI>Cowichan::hull</LI>
+   * <LI>Cowichan::outer</LI>
+   * <LI>Cowichan::gauss</LI>
+   * <LI>Cowichan::sor</LI>
+   * <LI>Cowichan::product (for gauss)</LI>
+   * <LI>Cowichan::product (for sor)</LI>
+   * <LI>Cowichan::vecdiff</LI>
+   * </OL>
+   * \param use_randmat in step 1 use: randmat (if true) or mandel (if false).
+   * \param use_thresh in step 3 use: thresh (if true) or invperc (if false).
    */
   void chain(bool use_randmat, bool use_thresh);
 
@@ -898,10 +910,8 @@ public:
    * \see Cowichan::chain
    * \param argc number of command line arguments.
    * \param argv command line arguments.
-   * \param use_randmat true: generate a random matrix.
-   *                    false: use a window of the mandelbrot set.
-   * \param use_thresh  true: use image thresholding for int->bool.
-   *                    false: use invasion percolation for int->bool.
+   * \param use_randmat passed to chain if chained version is used.
+   * \param use_thresh passed to chain if chained version is used.
    */
   void main(int argc, char* argv[], bool use_randmat, bool use_thresh);
 

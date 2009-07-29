@@ -1,31 +1,69 @@
+/**
+ * \file cowichan_tbb/half.cpp
+ * \brief TBB half implementation.
+ * \see CowichanTBB::half
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
 /**
- * This class does a halving shuffle.
+ * \brief This class does a halving shuffle.
  */
 class Shuffle {
 private:
 
-  index_t xBreak, yBreak;
-  index_t nr, nc;
+  /**
+   * Middle x.
+   */
+  index_t xBreak;
+  
+  /**
+   * Middle y;
+   */
+  index_t yBreak;
+
+  /**
+   * Number of rows in the matrix.
+   */
+  index_t nr;
+  
+  /**
+   * Number of columns in the matrix.
+   */
+  index_t nc;
+
+  /**
+   * Input matrix.
+   */
+  IntMatrix _input;
+  
+  /**
+   * Output matrix.
+   */
+  IntMatrix _output;
 
 public:
   
-  IntMatrix _first, _second;
-
+  /**
+   * Construct a halving shuffle object.
+   */
   Shuffle(IntMatrix input, IntMatrix output, index_t nr, index_t nc):
-      _first(input), _second(output),
+      _input(input), _output(output),
       nr(nr), nc(nc),
       xBreak((nc + 1) / 2),
       yBreak((nr + 1) / 2) {}
 
   /**
    * Performs the halving shuffle over the given range.
+   * \param range two-dimensional range.
    */
   void operator()(const Range2D& range) const {
     
-    IntMatrix first = _first;
-    IntMatrix second = _second;
+    IntMatrix input = _input;
+    IntMatrix output = _output;
     const Range& rows = range.rows();
     const Range& cols = range.cols();
     
@@ -52,13 +90,15 @@ public:
         }
               
         // assign new values in the output matrix.
-        MATRIX_RECT(second, y, x) = MATRIX_RECT(first, ySrc, xSrc);
+        MATRIX_RECT(output, y, x) = MATRIX_RECT(input, ySrc, xSrc);
         
       }
     }
     
   }
 };
+
+}
 
 /*****************************************************************************/
 

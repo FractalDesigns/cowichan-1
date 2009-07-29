@@ -1,10 +1,10 @@
-#include "cowichan.hpp"
-
 /**
  * \file cowichan.cpp
  * \brief Implementation for Cowichan class and common routines for Cowichan
  * programs.
  */
+
+#include "cowichan.hpp"
 
 real uniform(real mean, real range) {
   return (rand() / (real)RAND_MAX) * (2.0f * range) - range + mean;

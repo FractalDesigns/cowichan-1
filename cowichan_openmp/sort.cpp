@@ -1,9 +1,13 @@
+/**
+ * \file cowichan_openmp/sort.cpp
+ * \brief Implementation of OpenMP sorting algorithms.
+ */
+
 #include "sort.hpp"
 
-/**
- * This performs parallel histogram sort, which is similar to bucket sort, but
- * does not require additional space for buckets (in-place).
- */
+namespace cowichan_openmp
+{
+
 void histogram_sort(WeightedPointVector vector, index_t len)
 {
   const index_t BUCKETS_PER_THREAD = 50;
@@ -148,9 +152,7 @@ void histogram_sort(WeightedPointVector vector, index_t len)
 }
 
 #if defined(LIN32) || defined(LIN64)
-/**
- * This performs parallel quick sort.
- */
+
 void quick_sort(WeightedPointVector vector, index_t len)
 {
   if (len > QUICK_SORT_CUTOFF) {
@@ -204,9 +206,6 @@ void quick_sort(WeightedPointVector vector, index_t len)
   }
 }
 
-/**
- * Partitions vector into points less than and greater than the pivot.
- */
 index_t quick_sort_partition(WeightedPointVector vector, index_t len,
     index_t pivotIndex)
 {
@@ -251,6 +250,8 @@ index_t quick_sort_partition(WeightedPointVector vector, index_t len,
   }
   
 }
+
 #endif
 
+}
 

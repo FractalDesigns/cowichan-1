@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/gauss.cpp
  * \brief Serial gauss implementation.
  * \see CowichanSerial::gauss
  */
+
+#include "cowichan_serial.hpp"
 
 void CowichanSerial::gauss (Matrix matrix, Vector target, Vector solution)
 {

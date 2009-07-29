@@ -1,11 +1,11 @@
-#include "cowichan_serial.hpp"
-#include <queue>
-
 /**
  * \file cowichan_serial/invperc.cpp
  * \brief Serial invperc implementation.
  * \see CowichanSerial::invperc
  */
+
+#include "cowichan_serial.hpp"
+#include <queue>
 
 namespace cowichan_serial
 {

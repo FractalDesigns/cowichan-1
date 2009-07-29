@@ -1,5 +1,11 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/randmat.cpp
+ * \brief Serial randmat implementation.
+ * \see CowichanSerial::randmat
+ */
+
 void CowichanSerial::randmat (IntMatrix matrix)
 {
   index_t r, c;

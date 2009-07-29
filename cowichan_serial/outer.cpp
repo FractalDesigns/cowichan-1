@@ -1,5 +1,11 @@
 #include "cowichan_serial.hpp"
 
+/**
+ * \file cowichan_serial/outer.cpp
+ * \brief Serial outer implementation.
+ * \see CowichanSerial::outer
+ */
+
 void CowichanSerial::outer (PointVector points, Matrix matrix, Vector vector)
 {
   Point zeroPoint(0.0, 0.0);
