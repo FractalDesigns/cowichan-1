@@ -1,9 +1,11 @@
+/**
+ * \file cowichan_openmp/sor.cpp
+ * \brief OpenMP sor implementation.
+ * \see CowichanOpenMP::sor
+ */
+
 #include "cowichan_openmp.hpp"
 
-/**
- * Matrices are required to be symmetric and diagonally dominant in order to
- * guarantee that there is a well-formed solution to the equation.
- */
 void CowichanOpenMP::sor (Matrix matrix, Vector target, Vector solution)
 {
   index_t r, c;

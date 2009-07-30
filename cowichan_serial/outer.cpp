@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/outer.cpp
  * \brief Serial outer implementation.
  * \see CowichanSerial::outer
  */
+
+#include "cowichan_serial.hpp"
 
 void CowichanSerial::outer (PointVector points, Matrix matrix, Vector vector)
 {

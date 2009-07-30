@@ -1,45 +1,67 @@
 /**
-  This module turns a vector containing point positions into a dense, symmet-
-  ric, diagonally dominant matrix by calculating the distances between each
-  pair of points. It also constructs a real vector whose values are the distance
-  of each point from the origin. Inputs are:
-
-  points: a vector of (x, y) points, where x and y are the point’s position.
-  nelts: the number of points in the vector, and the size of the matrix along
-       each axis.
-
-  Its outputs are:
-
-  matrix: a real matrix, whose values are filled with inter-point distances.
-  vector: a real vector, whose values are filled with origin-to-point distances.
-
-  Each matrix element Mi,j such that i != j is given the value di,j, the Eu-
-  clidean distance between point i and point j. The diagonal values Mi,i are
-  then set to nelts times the maximum off-diagonal value to ensure that the
-  matrix is diagonally dominant. The value of the vector element vi is set to
-  the distance of point i from the origin, which is given by sqrt(xi^2 + yi^2).
+ * \file cowichan_tbb/outer.cpp
+ * \brief TBB outer implementation.
+ * \see CowichanTBB::outer
  */
+
 #include "cowichan_tbb.hpp"
- 
+
+namespace cowichan_tbb
+{
+
+/**
+ * \brief Fills in matrix and vector with distances.
+ */
 class PointDistances {
   
+  /**
+   * Given points.
+   */
   PointVector _points;
+  
+  /**
+   * Matrix to fill.
+   */
   Matrix _matrix;
+
+  /**
+   * Vector to fill.
+   */
   Vector _vector;
+
+  /**
+   * Matrix size.
+   */
   index_t n;
+
+  /**
+   * Maximum distance.
+   */
   real _max;
   
 public:
 
+  /**
+   * Construct point distances object.
+   * \param points given points.
+   * \param matrix matrix to fill.
+   * \param vector vector to fill.
+   * \param n matrix size.
+   */
   PointDistances(PointVector points, Matrix matrix, Vector vector, index_t n)
       : _points(points), _matrix(matrix), _vector(vector), n(n), _max(-1) { }
 
+  /**
+   * Get maximum of the distances.
+   * \return Max distance.
+   */
   real getMaximum() const {
     return _max;
   }
 
   /**
    * Calculates inter-point distances on the given range.
+   * \param rows range of rows to work on.
    */
   void operator()(const Range& rows) {
     
@@ -64,13 +86,15 @@ public:
   }
   
   /**
-   * Splitting (TBB) constructor
+   * Splitting (TBB) constructor.
+   * \param other object to split.
    */
   PointDistances(PointDistances& other, split) : _points(other._points),
       _matrix(other._matrix), _vector(other._vector), n(other.n), _max(-1) { }
 
   /**
    * Joiner (TBB).
+   * \param object to join.
    */
   void join(const PointDistances& other) {
     if (_max < other._max) {
@@ -82,21 +106,41 @@ public:
 
 
 /**
- * Makes a given matrix diagonally dominant by modifying its diagonal elements.
+ * \brief Makes a given matrix diagonally dominant.
+ *
+ * Modifies its diagonal elements.
  */
 class MakeDominant {
 
+  /**
+   * Matrix to modify.
+   */
   Matrix _matrix;
+
+  /**
+   * Matrix size.
+   */
   index_t n;
+
+  /**
+   * Value to use for diagonal.
+   */
   const real value;
   
 public:
 
+  /**
+   * Construct a make dominant object.
+   * \param matrix matrix to modify.
+   * \param n matrix size.
+   * \param value value for diagonal.
+   */
   MakeDominant(Matrix matrix, index_t n, real value):
     _matrix(matrix), n(n), value(value) { }
   
   /**
    * Sets diagonal elements to a given constant.
+   * \param rows range of rows to work on.
    */  
   void operator()(const Range& rows) const {
     Matrix matrix = _matrix;
@@ -107,6 +151,8 @@ public:
   }
   
 };
+
+}
 
 /*****************************************************************************/
 

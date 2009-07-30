@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/randmat.cpp
+ * \brief OpenMP randmat implementation.
+ * \see CowichanOpenMP::randmat
+ */
+
 #include "cowichan_openmp.hpp"
 
 void CowichanOpenMP::randmat (IntMatrix matrix)

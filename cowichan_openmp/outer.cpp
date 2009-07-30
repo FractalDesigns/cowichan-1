@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/outer.cpp
+ * \brief OpenMP outer implementation.
+ * \see CowichanOpenMP::outer
+ */
+
 #include "cowichan_openmp.hpp"
 
 void CowichanOpenMP::outer (PointVector points, Matrix matrix, Vector vector)

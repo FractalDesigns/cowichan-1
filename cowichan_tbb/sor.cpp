@@ -1,24 +1,60 @@
+/**
+ * \file cowichan_tbb/sor.cpp
+ * \brief TBB sor implementation.
+ * \see CowichanTBB::sor
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
 /**
- * Performs one iteration of relaxation.
+ * \brief Performs one iteration of relaxation.
  */
 class Relaxer {
 private:
 
+  /**
+   * Matrix to use.
+   */
   Matrix _matrix;
+
+  /**
+   * Given target vector.
+   */
   Vector _target;
+
+  /**
+   * Solution to update.
+   */
   Vector _solution;
+
+  /**
+   * Matrix size.
+   */
   index_t n;
+
+  /**
+   * Maximum difference found.
+   */
   real maxDiff;
 
 public:
 
+  /**
+   * Construct a relaxer object.
+   * \param matrix matrix to use.
+   * \param target target vector.
+   * \param solution solution vector.
+   * \param n matrix size.
+   */
   Relaxer(Matrix matrix, Vector target, Vector solution, index_t n)
       : _matrix(matrix), _target(target), _solution(solution), n(n) { }
 
   /**
    * Get maximum difference.
+   * \return Maximum difference.
    */
   real getMaxDiff() const {
     return maxDiff;
@@ -26,6 +62,7 @@ public:
 
   /**
    * Performs one iteration of relaxation.
+   * \param range range of rows.
    */
   void operator()(const Range& range) {
 
@@ -66,13 +103,15 @@ public:
   }
 
   /**
-   * Splitting (TBB) constructor
+   * Splitting (TBB) constructor.
+   * \param other object to split.
    */
   Relaxer(Relaxer& other, split) : _matrix(other._matrix),
       _target(other._target), _solution(other._solution), n(other.n) { }
 
   /**
    * Joiner (TBB).
+   * \param other object to join.
    */
   void join(const Relaxer& other) {
     if (maxDiff < other.maxDiff) {
@@ -81,6 +120,8 @@ public:
   }
   
 };
+
+}
 
 /*****************************************************************************/
 

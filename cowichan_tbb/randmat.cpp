@@ -1,6 +1,17 @@
+/**
+ * \file cowichan_tbb/randmat.cpp
+ * \brief TBB randmat implementation.
+ * \see CowichanTBB::randmat
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
 /**
+ * \brief Random generator.
+ *
  * This class generates random integers in a matrix, using a simple linear
  * congruential number generator with a given seed value, i.e. using the
  * recurrence:
@@ -13,14 +24,41 @@ class RandomGenerator {
 
 private:
 
+  /**
+   * Matrix to fill.
+   */
   IntMatrix _matrix;
+
+  /**
+   * First element vector.
+   */
   IntVector state;
-  INT_TYPE aPrime, cPrime;
-  index_t nr, nc;
+
+  /**
+   * Constant a prime.
+   */
+  INT_TYPE aPrime;
+  
+  /**
+   * Constant c prime.
+   */
+  INT_TYPE cPrime;
+
+  /**
+   * Number of rows in the matrix.
+   */
+  index_t nr;
+  
+  /**
+   * Number of columns in the matrix.
+   */
+  index_t nc;
   
   /**
    * Generates the next random number.
    * Convenience method for next(current, a, c);
+   * \param current current element.
+   * \return Next element.
    */
   inline INT_TYPE next(INT_TYPE& current) const {
     return (RANDMAT_A * current + RANDMAT_C) % RAND_M;
@@ -30,6 +68,8 @@ private:
    * Generates the k-th next random number, using an identity,
    *     where A = a^k mod m
    *        and C = c * sum[j=0..k-1](a^j mod m).
+   * \param current element.
+   * \return Next k-th element.
    */
   inline INT_TYPE nextK(INT_TYPE& current) const {
     return (aPrime * current + cPrime) % RAND_M;
@@ -65,6 +105,7 @@ public:
   /**
    * Provides NROWS-seperated linear congruential RNG on the specified range
    * of rows.
+   * \param rows range of rows to work on.
    */
   void operator()(const Range& rows) const {
     
@@ -88,16 +129,27 @@ public:
 
 public:
 
+  /**
+   * Construct a random number generator.
+   * \param nr number of matrix rows.
+   * \param nc number of matrix columns.
+   */
   RandomGenerator(index_t nr, index_t nc) : nr(nr), nc(nc) {
     initialise();
   }
 
+  /**
+   * Run in parallel.
+   * \param matrix matrix to use.
+   */
   void execute(IntMatrix matrix) {
     _matrix = matrix;
     parallel_for(Range(0, nr), *this, auto_partitioner());
   }
   
 };
+
+}
 
 /*****************************************************************************/
 

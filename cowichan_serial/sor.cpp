@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/sor.cpp
  * \brief Serial sor implementation.
  * \see CowichanSerial::sor
  */
+
+#include "cowichan_serial.hpp"
 
 void CowichanSerial::sor (Matrix matrix, Vector target, Vector solution)
 {

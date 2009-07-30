@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/product.cpp
  * \brief Serial product implementation.
  * \see CowichanSerial::product
  */
+
+#include "cowichan_serial.hpp"
 
 void CowichanSerial::product (Matrix matrix, Vector candidate, Vector solution)
 {

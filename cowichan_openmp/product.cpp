@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/product.cpp
+ * \brief OpenMP product implementation.
+ * \see CowichanOpenMP::product
+ */
+
 #include "cowichan_openmp.hpp"
 
 void CowichanOpenMP::product (Matrix matrix, Vector candidate, Vector solution)
