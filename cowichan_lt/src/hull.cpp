@@ -15,6 +15,7 @@ const char* MAX_X_POINT = "hull maxPoint";
 const char* MAX_CROSS = "hull max cross-product";
 const char* MAX_POINT = "hull furthest point";
 
+const char* HULL_POINT = "hull point";
 const char* MASKED_POINT = "hull masked point";
 const char* NUM_POINTS = "hull # of points in convex hull"
 
@@ -29,9 +30,9 @@ void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
 	while (order < HULL_N) {
 
 		// Run quickhull on the decided points as a tuple-space problem.
-		// TODO figure out this MESS with the inputs and the outputs
 		LTHull app;
 		app.addInput(0, pointsIn);
+		app.addOutput(0, pointsOut + order); // offset into the array
 		app.start(SERVER, PORT, NUM_WORKERS);
 
 		// get and remove the num-points "order" tuple from tuple space
@@ -57,7 +58,7 @@ void LTHull::consumeInput() {
 	if (n == 1) {
 
 		// emit the only point
-		tuple* hullPoint = make_tuple("sis", (*order)++);
+		tuple* hullPoint = make_tuple("sis", HULL_POINT, (*order)++);
 		hullPoint->elements[2].data.s.len = sizeof(Point);
 		hullPoint->elements[2].data.s.ptr = &p1;
 		put_tuple(hullPoint, &ctx);
@@ -129,7 +130,7 @@ void LTHull::split(const Point& p1, const Point& p2, index_t *order) {
 	// half-space. add the first point and return.
 
  	// emit p1 to tuple space using order index
-	tuple* hullPoint = make_tuple("sis", (*order)++);
+	tuple* hullPoint = make_tuple("sis", HULL_POINT, (*order)++);
 	hullPoint->elements[2].data.s.len = sizeof(Point);
 	hullPoint->elements[2].data.s.ptr = &p1;
 	put_tuple(hullPoint, &ctx);
@@ -386,11 +387,20 @@ int LTHull::getNumPoints() {
 
 void LTHull::produceOutput() {
 
+	// grab output locally.
+	PointVector outPoints = (PointVector) outputs[0];
+
 	// wait for output flag
 	tuple *flag = make_tuple("s", FLAG_OUTPUT);
 	destroy_tuple(get_tuple(flag, &ctx));
 
 	// TODO bring in all of the emitted points in order
+	for (index_t i = 0;; ++i) {
+		tuple *emittedPoint = make_tuple("si?", HULL_POINT, i);
+		tuple *gottenPoint = get_tuple_nb(emittedPoint);
+		if (gottenPoint == NULL) break; // no more points!
+		outPoints[i] = *((Point*)gottenPoint->elements[2].data.s.ptr);
+	}
 
 	// delete all mask tuples
 	tuple* maskTemplate = make_tuple("s?", MASKED_POINT);

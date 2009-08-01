@@ -23,6 +23,7 @@
 		static const char* MAX_CROSS;
 		static const char* MAX_POINT;
 
+		static const char* HULL_POINT;
 		static const char* MASKED_POINT;
 		static const char* NUM_POINTS;
 
