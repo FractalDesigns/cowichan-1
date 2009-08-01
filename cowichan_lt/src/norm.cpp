@@ -3,6 +3,15 @@
 #include <cmath>
 #include "norm.hpp"
 
+const char* LTBounds::SYNCH_LOCK = "norm synch lock";
+const char* LTBounds::POINTS_DONE = "norm points reporting";
+const char* LTBounds::MIN_POINT = "norm minPoint";
+const char* LTBounds::MAX_POINT = "norm maxPoint";
+
+const char* LTNorm::MIN_POINT = "norm minPoint";
+const char* LTNorm::MAX_POINT = "norm maxPoint";
+
+
 void CowichanLinuxTuples::norm(PointVector pointsIn, PointVector pointsOut) {
 
 	// calculate the 2D bounds of the point cloud

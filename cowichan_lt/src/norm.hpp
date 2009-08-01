@@ -11,10 +11,10 @@
 		void work();
 		void produceOutput();
 
-		const char* SYNCH_LOCK = "norm synch lock";
-		const char* POINTS_DONE = "norm points reporting";
-		const char* MIN_POINT = "norm minPoint";
-		const char* MAX_POINT = "norm maxPoint";
+		static const char* SYNCH_LOCK;
+		static const char* POINTS_DONE;
+		static const char* MIN_POINT;
+		static const char* MAX_POINT;
 
 	};
 
@@ -25,8 +25,8 @@
 		void work();
 		void produceOutput();
 
-		const char* MIN_POINT = "norm minPoint";
-		const char* MAX_POINT = "norm maxPoint";
+		static const char* MIN_POINT;
+		static const char* MAX_POINT;
 
 	};
 

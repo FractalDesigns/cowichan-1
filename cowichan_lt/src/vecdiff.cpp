@@ -3,6 +3,10 @@
 #include <cmath>
 #include "vecdiff.hpp"
 
+const char* LTVecDiff::SYNCH_LOCK = "vecdiff synch lock";
+const char* LTVecDiff::ELEMENTS_DONE = "vecdiff elements reporting";
+const char* LTVecDiff::MAX_DIFF = "vecdiff max difference";
+
 real CowichanLinuxTuples::vecdiff(Vector actual, Vector computed) {
 
 	real answer;

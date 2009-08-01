@@ -1,7 +1,12 @@
 #include <iostream>
 #include <cstdio>
 #include <cmath>
-#include "norm.hpp"
+#include "gauss.hpp"
+
+const char* LTForward::ROWS_DONE = "forward rows reporting";
+const char* LTForward::FORWARD_DONE = "forward done";
+
+//const char* LTBackward::SYNCH_LOCK = "backward synch lock";
 
 void CowichanLinuxTuples::gauss(Matrix matrix, Vector target, Vector solution) {
 
@@ -14,9 +19,9 @@ void CowichanLinuxTuples::gauss(Matrix matrix, Vector target, Vector solution) {
 
 	// backward-substitution and solution creation.
 	// backward takes the target and matrix vectors from tuple space.
-	LTBackward backward;
-	backward.addOutput(0, solution);
-	backward.start(SERVER, PORT, NUM_WORKERS);
+//	LTBackward backward;
+//	backward.addOutput(0, solution);
+//	backward.start(SERVER, PORT, NUM_WORKERS);
 
 }
 
@@ -31,21 +36,21 @@ void LTForward::consumeInput() {
 	// tuple templates.
 	tuple *send = make_tuple("sii", "forward request");
 	tuple *row = make_tuple("sis", "gauss matrix");
-	tuple *target = make_tuple("ss", "gauss target");
+	tuple *targetTuple = make_tuple("ss", "gauss target");
 
 	// put the matrix (row-by-row) and the target vector into the tuple space.
-	for (size_t r = 0; r < GAUSS_NR; ++r) {
+	for (size_t r = 0; r < GAUSS_N; ++r) {
 		row->elements[1].data.i = r;
-		row->elements[2].data.s.len = sizeof(matrix) / GAUSS_NR;
-		row->elements[2].data.s.ptr = MATRIX_NC(matrix, row, 0, GAUSS_NC);
+		row->elements[2].data.s.len = sizeof(matrix) / GAUSS_N;
+		row->elements[2].data.s.ptr = (char*) &MATRIX_RECT_NC(matrix, r, 0, GAUSS_N);
 		put_tuple(row, &ctx);
 	}
-	target->elements[1].data.s.len = sizeof(target);
-	target->elements[1].data.s.ptr = (void*) target;
-	put_tuple(target, &ctx);
+	targetTuple->elements[1].data.s.len = sizeof(target);
+	targetTuple->elements[1].data.s.ptr = (char*) target;
+	put_tuple(targetTuple, &ctx);
 
 	// one column at-a-time.
-	for (index_t c = 0; c < GAUSS_NC; ++c) {
+	for (index_t c = 0; c < GAUSS_N; ++c) {
 
 		// create a "rows reporting" tuple, so that we
 		// know when the computation has ended (workers are done)
@@ -53,31 +58,31 @@ void LTForward::consumeInput() {
 		put_tuple(rowsReporting, &ctx);
 
 	    // get row with maximum column i
-	    index_t max = c;
-	    for (index_t r = i + 1; r < GAUSS_NR; ++r) {
+	    index_t maxRow = c;
+	    for (index_t r = c + 1; r < GAUSS_N; ++r) {
 	    	// TODO grab the two rows (r and max)
-			if (fabs(MATRIX_NC(matrix, r, c, GAUSS_NC)) > fabs(MATRIX_NC(matrix, max, c, GAUSS_NC))) {
-				max = j;
+			if (fabs(MATRIX_RECT_NC(matrix, r, c, GAUSS_N)) > fabs(MATRIX_RECT_NC(matrix, maxRow, c, GAUSS_N))) {
+				maxRow = r;
 			}
 			// TODO put the two rows back (r and max)
 		}
 
 		// swap max row with row c
 	    real tmp;
-		for (index_t r = c; r < GAUSS_NR; ++r) {
+		for (index_t r = c; r < GAUSS_N; ++r) {
 			// TODO tuple space swap
 		}
 		// TODO grab target, swap, put it back
 
 		// create a forward request for each row under the diagonal
-		for (index_t r = c + 1; r < GAUSS_NR; ++r) {
+		for (index_t r = c + 1; r < GAUSS_N; ++r) {
 			send->elements[1].data.i = r; // row
 			send->elements[2].data.i = c; // column
 			put_tuple(send, &ctx);
 		}
 
 		// wait for the workers to finish this column
-		size_t rowsToBeDone = max(0, GAUSS_NR - (c + 1));
+		size_t rowsToBeDone = max(0, GAUSS_N - (c + 1));
 		rowsReporting->elements[1].data.i = rowsToBeDone;
 		get_tuple(rowsReporting, &ctx);
 
@@ -97,10 +102,16 @@ void LTForward::work() {
 		index_t row = gotten->elements[1].data.i;
 		index_t col = gotten->elements[2].data.i;
 
+		// XXX hacks to make compile, this is NOT DONE YET!
+		real* matrix = 0;
+		index_t j, i, n;
+		real column_i;
+		real* target;
+
 		// FIXME actual computation.
-		real factor = -(MATRIX(matrix, j, i) / column_i);
-		for (k = n - 1; k >= i; k--) {
-			MATRIX(matrix, j, k) += MATRIX(matrix, i, k) * factor;
+		real factor = -(MATRIX_RECT_NC(matrix, j, i, GAUSS_N) / column_i);
+		for (index_t k = n - 1; k >= i; k--) {
+			MATRIX_RECT_NC(matrix, j, k, GAUSS_N) += MATRIX_RECT_NC(matrix, i, k, GAUSS_N) * factor;
 		}
 		target[j] += target[i] * factor;
 
@@ -126,7 +137,7 @@ void LTForward::produceOutput() {
 }
 
 //===========================================================================//
-
+/*
 void LTNorm::consumeInput() {
 
 	// tuple template
@@ -235,3 +246,4 @@ void LTNorm::produceOutput() {
 	destroy_tuple(recv);
 
 }
+*/

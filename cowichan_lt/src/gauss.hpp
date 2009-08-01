@@ -11,10 +11,10 @@
 		void work();
 		void produceOutput();
 
-		const char* ROWS_DONE = "forward rows reporting";
-		const char* FORWARD_DONE = "forward done";
+		static const char* ROWS_DONE;
+		static const char* FORWARD_DONE;
 	};
-
+/*
 	class LTBackward: public TupleApplication {
 	protected:
 
@@ -22,10 +22,9 @@
 		void work();
 		void produceOutput();
 
-		const char* SYNCH_LOCK = "";
+		static const char* SYNCH_LOCK;
 
-
-	};
+	}; */
 
 #endif
 

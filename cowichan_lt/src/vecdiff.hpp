@@ -11,9 +11,9 @@
 		void work();
 		void produceOutput();
 
-		const char* SYNCH_LOCK = "vecdiff synch lock";
-		const char* ELEMENTS_DONE = "vecdiff elements reporting";
-		const char* MAX_DIFF = "vecdiff max difference";
+		static const char* SYNCH_LOCK;
+		static const char* ELEMENTS_DONE;
+		static const char* MAX_DIFF;
 
 	};
 

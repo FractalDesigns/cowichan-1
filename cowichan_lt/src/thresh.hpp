@@ -11,8 +11,8 @@
 		void work();
 		void produceOutput();
 
-		const char* SYNCH_LOCK = "thresh synch lock";
-		const char* ROWS_DONE = "thresh rows reporting";
+		static const char* SYNCH_LOCK = "thresh synch lock";
+		static const char* ROWS_DONE = "thresh rows reporting";
 
 	};
 
