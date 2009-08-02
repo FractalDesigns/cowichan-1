@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/vecdiff.cpp
+ * \brief OpenMP vecdiff implementation.
+ * \see CowichanOpenMP::vecdiff
+ */
+
 #include "cowichan_openmp.hpp"
 
 real CowichanOpenMP::vecdiff (Vector actual, Vector computed)

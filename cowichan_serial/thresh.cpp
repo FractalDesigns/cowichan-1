@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/thresh.cpp
  * \brief Serial thresh implementation.
  * \see CowichanSerial::thresh
  */
+
+#include "cowichan_serial.hpp"
 
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 

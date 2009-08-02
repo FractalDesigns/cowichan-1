@@ -1,29 +1,56 @@
+/**
+ * \file cowichan_tbb/thresh.cpp
+ * \brief TBB thresh implementation.
+ * \see CowichanTBB::thresh
+ */
+
 #include "cowichan_tbb.hpp"
 
+namespace cowichan_tbb
+{
+
 /**
- * Performs the maximum computation.
+ * \brief Finds the maximum value in the image.
  */
 class MaxReducer {
 private:
 
+  /**
+   * Image matrix.
+   */
   IntMatrix _image;
+
+  /**
+   * Maximum value.
+   */
   INT_TYPE _max;
+
+  /**
+   * Number of columns in the matrix.
+   */
   const index_t nc;
 
 public:
 
   /**
-   * Initialise max with the lowest possible value.
+   * Constructs a max reducer. Initialise max with the lowest possible value.
+   * \param image image matrix.
+   * \param nc number of matrix columns.
    */
   MaxReducer(IntMatrix image, index_t nc):
     _image(image), _max(MINIMUM_INT), nc(nc) { }
 
+  /**
+   * Get maximum value.
+   * \return Maximum value.
+   */
   INT_TYPE getMaximum() const {
     return _max;
   }
 
   /**
    * Calculates the maximum value over the given range.
+   * \param range row/column range.
    */
   void operator()(const Range2D& range) {
 
@@ -43,13 +70,15 @@ public:
   }
   
   /**
-   * Splitting (TBB) constructor
+   * Splitting (TBB) constructor.
+   * \param other object to split.
    */
   MaxReducer(MaxReducer& other, split) : _image(other._image),
       _max(MINIMUM_INT), nc(other.nc) { }
 
   /**
    * Joiner (TBB).
+   * \param other object to join.
    */
   void join(const MaxReducer& other) {
     if (_max < other._max) {
@@ -59,18 +88,45 @@ public:
   
 };
 
-/*
- * This class calculates the histogram of a matrix.
+/**
+ * \brief This class calculates the histogram of a matrix.
  */
 class Histogram {
   
+  /**
+   * Image matrix.
+   */
   IntMatrix _image;
+  
+  /**
+   * Histogram values.
+   */
   index_t* histogram;
+
+  /** 
+   * Number of bins in the histogram.
+   */
   const index_t bins;
-  const index_t nr, nc;
+  
+  /**
+   * Number of rows in the matrix.
+   */
+  const index_t nr;
+  
+  /**
+   * Number of columns in the matrix.
+   */
+  const index_t nc;
 
 public:
 
+  /**
+   * Construct a histogram object.
+   * \param image image matrix.
+   * \param maxValue number of bins to use.
+   * \param nr number of rows in the matrix.
+   * \param nc number of columns in the matrix.
+   */
   Histogram(IntMatrix image, INT_TYPE maxValue, index_t nr, index_t nc)
       : _image(image), bins(maxValue), nr(nr), nc(nc)
   {
@@ -81,6 +137,11 @@ public:
     }
   }
   
+  /**
+   * Get retention value.
+   * \param cutoff percentage of values to retain.
+   * \return Retention value.
+   */
   index_t getValue(real cutoff) const {
     index_t i;
     index_t retain = (index_t)(cutoff * nc * nr);
@@ -93,8 +154,9 @@ public:
   }
   
   /**
-    * Histogram calculation.
-    */
+   * Histogram calculation.
+   * \param range row/column range to work on.
+   */
   void operator()(const Range2D& range) const {
     IntMatrix image = _image;
     index_t* hist = histogram;
@@ -110,7 +172,8 @@ public:
   }
   
   /**
-   * Splitting (TBB) constructor
+   * Splitting (TBB) constructor.
+   * \param other object to split.
    */
   Histogram(Histogram& other, split): _image(other._image), bins(other.bins),
       nr(other.nr), nc(other.nc)
@@ -124,6 +187,7 @@ public:
   
   /**
    * Joiner (TBB).
+   * \param other object to join.
    */
   void join(const Histogram& other) {
     // SERIAL... can we speed up by parallel_for here, too?
@@ -135,17 +199,36 @@ public:
 };
 
 /**
- * This class takes an Integer array to a boolean array based on a cut-off value.
+ * \brief Creates a boolean array based on a cut-off value.
  */
 class Threshold {
 
+  /**
+   * Image matrix.
+   */
   IntMatrix _image;
+  
+  /**
+   * Resulting boolean matrix.
+   */
   BoolMatrix _result;
+
+  /**
+   * Retention value.
+   */
   const index_t retain;
+
+  /**
+   * Number of columns in the matrix.
+   */
   const index_t nc;
 
 public:
 
+  /**
+   * Perform thresholding.
+   * \param range row/column range to operate on.
+   */
   void operator()(const Range2D& range) const {
     IntMatrix image = _image;
     BoolMatrix result = _result;
@@ -161,10 +244,19 @@ public:
     }
   }
   
+  /**
+   * Construct a threshold object.
+   * \param image image matrix.
+   * \param retain retention value.
+   * \param result result matrix to fill.
+   * \param nc number of columns in the matrix.
+   */
   Threshold(IntMatrix image, index_t retain, BoolMatrix result, index_t nc):
     _image(image), _result(result), retain(retain), nc(nc) { }
 
 };
+
+}
 
 /*****************************************************************************/
 

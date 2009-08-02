@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/vecdiff.cpp
  * \brief Serial vecdiff implementation.
  * \see CowichanSerial::vecdiff
  */
+
+#include "cowichan_serial.hpp"
 
 real CowichanSerial::vecdiff (Vector actual, Vector computed)
 {

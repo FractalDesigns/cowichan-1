@@ -1,0 +1,90 @@
+\hypertarget{class_relaxer}{
+\section{Relaxer Class Reference}
+\label{class_relaxer}\index{Relaxer@{Relaxer}}
+}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hypertarget{class_relaxer_7867f2f26839f9faaa150b4d0ea180fa}{
+\textbf{Relaxer} (\hyperlink{cowichan_8hpp_3fb46f939e55c239fbc95656fc0f3399}{Matrix} matrix, \hyperlink{cowichan_8hpp_02bc1553e241b9b33408482658b3c355}{Vector} target, \hyperlink{cowichan_8hpp_02bc1553e241b9b33408482658b3c355}{Vector} solution, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} n)}
+\label{class_relaxer_7867f2f26839f9faaa150b4d0ea180fa}
+
+\item 
+\hyperlink{cowichan_8hpp_4d521b2c54a1f6312cc8fa04827eaf98}{real} \hyperlink{class_relaxer_6b4b0383b11cfdc6fc48ec7e137e688d}{getMaxDiff} () const 
+\item 
+void \hyperlink{class_relaxer_bbcc97706ee506fb14f822fe8ae57ee9}{operator()} (const \hyperlink{cowichan__tbb_8hpp_8e2057f725b08f3a15513c378a453a47}{Range} \&range)
+\item 
+\hyperlink{class_relaxer_34cd0a0220031f4ec6ab21dbcf9a9970}{Relaxer} (\hyperlink{class_relaxer}{Relaxer} \&other, split)
+\item 
+void \hyperlink{class_relaxer_521cb3709f2af24b307114d016b2cd44}{join} (const \hyperlink{class_relaxer}{Relaxer} \&other)
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+\hypertarget{class_relaxer_9055aba4c4a03387dd8809c3ab4a0629}{
+\hyperlink{cowichan_8hpp_3fb46f939e55c239fbc95656fc0f3399}{Matrix} \textbf{\_\-matrix}}
+\label{class_relaxer_9055aba4c4a03387dd8809c3ab4a0629}
+
+\item 
+\hypertarget{class_relaxer_352fb652b751f1df458ee2922fe6031f}{
+\hyperlink{cowichan_8hpp_02bc1553e241b9b33408482658b3c355}{Vector} \textbf{\_\-target}}
+\label{class_relaxer_352fb652b751f1df458ee2922fe6031f}
+
+\item 
+\hypertarget{class_relaxer_2c9cfda63081510022de66b90545382b}{
+\hyperlink{cowichan_8hpp_02bc1553e241b9b33408482658b3c355}{Vector} \textbf{\_\-solution}}
+\label{class_relaxer_2c9cfda63081510022de66b90545382b}
+
+\item 
+\hypertarget{class_relaxer_e5482dd547d0e30ab75a0d678ab0a6a7}{
+\hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} \textbf{n}}
+\label{class_relaxer_e5482dd547d0e30ab75a0d678ab0a6a7}
+
+\item 
+\hypertarget{class_relaxer_8ea0071b5726e7a21f2cf33637ba8d00}{
+\hyperlink{cowichan_8hpp_4d521b2c54a1f6312cc8fa04827eaf98}{real} \textbf{maxDiff}}
+\label{class_relaxer_8ea0071b5726e7a21f2cf33637ba8d00}
+
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Performs one iteration of relaxation. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_relaxer_34cd0a0220031f4ec6ab21dbcf9a9970}{
+\index{Relaxer@{Relaxer}!Relaxer@{Relaxer}}
+\index{Relaxer@{Relaxer}!Relaxer@{Relaxer}}
+\subsubsection[{Relaxer}]{\setlength{\rightskip}{0pt plus 5cm}Relaxer::Relaxer ({\bf Relaxer} \& {\em other}, \/  split)\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{class_relaxer_34cd0a0220031f4ec6ab21dbcf9a9970}
+
+
+Splitting (TBB) constructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_relaxer_6b4b0383b11cfdc6fc48ec7e137e688d}{
+\index{Relaxer@{Relaxer}!getMaxDiff@{getMaxDiff}}
+\index{getMaxDiff@{getMaxDiff}!Relaxer@{Relaxer}}
+\subsubsection[{getMaxDiff}]{\setlength{\rightskip}{0pt plus 5cm}{\bf real} Relaxer::getMaxDiff () const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{class_relaxer_6b4b0383b11cfdc6fc48ec7e137e688d}
+
+
+Get maximum difference. \hypertarget{class_relaxer_521cb3709f2af24b307114d016b2cd44}{
+\index{Relaxer@{Relaxer}!join@{join}}
+\index{join@{join}!Relaxer@{Relaxer}}
+\subsubsection[{join}]{\setlength{\rightskip}{0pt plus 5cm}void Relaxer::join (const {\bf Relaxer} \& {\em other})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{class_relaxer_521cb3709f2af24b307114d016b2cd44}
+
+
+Joiner (TBB). \hypertarget{class_relaxer_bbcc97706ee506fb14f822fe8ae57ee9}{
+\index{Relaxer@{Relaxer}!operator()@{operator()}}
+\index{operator()@{operator()}!Relaxer@{Relaxer}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}void Relaxer::operator() (const {\bf Range} \& {\em range})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{class_relaxer_bbcc97706ee506fb14f822fe8ae57ee9}
+
+
+Performs one iteration of relaxation. 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+cowichan\_\-tbb/sor.cpp\end{CompactItemize}

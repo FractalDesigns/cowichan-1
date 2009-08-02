@@ -1,9 +1,27 @@
+/**
+ * \file cowichan_openmp/winnow.cpp
+ * \brief OpenMP winnow implementation.
+ * \see CowichanOpenMP::winnow
+ */
+
 #include "cowichan_openmp.hpp"
 #include "sort.hpp"
 
+namespace cowichan_openmp
+{
+
+/**
+ * Count the number of set cells in each thread bucket.
+ * \param mask boolean mask.
+ * \param nr number of rows in mask.
+ * \param nc number of columns in mask.
+ * \param buckets number of cells in each bucket.
+ */
 void mask_count(BoolMatrix mask, index_t nr, index_t nc, index_t* buckets);
 
-void not_enough_points();
+}
+
+/*****************************************************************************/
 
 void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
     PointVector points) {
@@ -104,12 +122,11 @@ void CowichanOpenMP::winnow(IntMatrix matrix, BoolMatrix mask,
   delete [] weightedPoints;
 }
 
-/**
- * Count the number of set cells in each thread bucket.
- * @param mask boolean mask.
- * @param nr number of rows.
- * @param nc number of columns.
- */
+/*****************************************************************************/
+
+namespace cowichan_openmp
+{
+
 void mask_count(BoolMatrix mask, index_t nr, index_t nc, index_t* buckets) {
 
   index_t r, c;
@@ -132,4 +149,5 @@ void mask_count(BoolMatrix mask, index_t nr, index_t nc, index_t* buckets) {
 
 }
 
+}
 

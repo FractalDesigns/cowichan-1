@@ -94,7 +94,7 @@ public:
 
   /**
    * Joiner (TBB).
-   * \param object to join.
+   * \param other object to join.
    */
   void join(const PointDistances& other) {
     if (_max < other._max) {

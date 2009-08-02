@@ -1,36 +1,44 @@
-/*
-  This module converts a matrix of integer values to a vector of points, rep-
-  resented as x and y coordinates. Its inputs are:
+/**
+ * \file cowichan_tbb/winnow.cpp
+ * \brief TBB winnow implementation.
+ * \see CowichanTBB::winnow
+ */
 
-  matrix: an integer matrix, whose values are used as masses.
-  mask: a Boolean matrix showing which points are eligible for consideration.
-  nr, nc: the number of rows and columns in the matrix.
-  n: the number of points to select.
-
-  Its output is:
-
-  points: a vector of (x, y) points.
-
-  Each location where mask is true becomes a candidate point, with a weight
-  equal to the integer value in matrix at that location and x and y coordinates
-  equal to its row and column indices. These candidate points are then sorted
-  into increasing order by weight, and nelts evenly-spaced points selected to
-  create the result vector.
-*/
 #include "cowichan_tbb.hpp"
 
-class ValueCount {
+namespace cowichan_tbb
+{
+
+/**
+ * \brief Calculates the number of points to sort for winnow.
+ */
+class PointCount {
 private:
 
+  /**
+   * Candidate points matrix.
+   */
   IntMatrix _candidates;
+
+  /**
+   * Mask.
+   */
   BoolMatrix _mask;
+
+  /**
+   * Number of columns in the matrix.
+   */
   index_t nc;
+
+  /**
+   * Number of points to sort.
+   */
   index_t count;
 
 public:
 
   /**
-   * Return value count.
+   * Return point count.
    */
   index_t getCount()
   {
@@ -38,13 +46,17 @@ public:
   }
 
   /**
-   * Standard constructor
+   * Construct a point count object.
+   * \param candidates candidate points matrix.
+   * \param mask mask.
+   * \param nc number of columns in the matrix.
    */
-  ValueCount(IntMatrix candidates, BoolMatrix mask, index_t nc):
+  PointCount(IntMatrix candidates, BoolMatrix mask, index_t nc):
     _candidates(candidates), _mask(mask), nc(nc), count(0) { }
 
   /**
-   * Add candidate values to the value list based on mask (TBB).
+   * Calculate number of points to sort (TBB).
+   * \param range row/column range to work on.
    */
   void operator()(const Range2D& range) {
     
@@ -68,30 +80,34 @@ public:
   }
   
   /**
-   * Splitting (TBB) constructor
+   * Splitting (TBB) constructor.
+   * \param other object to split.
    */
-  ValueCount(ValueCount& other, split) : _candidates(other._candidates),
+  PointCount(PointCount& other, split) : _candidates(other._candidates),
       _mask(other._mask), nc(other.nc), count(0) { }
 
   /**
    * Joiner (TBB).
+   * \param other object to join.
    */
-  void join(const ValueCount& other) {
+  void join(const PointCount& other) {
     count += other.count;
   }
   
 };
+
+}
 
 /*****************************************************************************/
 
 void CowichanTBB::winnow(IntMatrix matrix, BoolMatrix mask,
     PointVector points) {
 
-  // count candidates in the matrix
-  ValueCount vc(matrix, mask, nc);
-  parallel_reduce(Range2D(0, nr, 1000, 0, nc, 1000), vc);
+  // count points to sort
+  PointCount pc(matrix, mask, nc);
+  parallel_reduce(Range2D(0, nr, 0, nc), pc, auto_partitioner());
 
-  index_t len = vc.getCount();
+  index_t len = pc.getCount();
 
   WeightedPointVector weightedPoints = NULL;
   try {

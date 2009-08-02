@@ -96,6 +96,9 @@ public:
   GameOfLife(BoolMatrix first, BoolMatrix second, index_t nr, index_t nc):
     _first(first), _second(second), nr(nr), nc(nc), aliveCount(0) { }
 
+  /**
+   * Swap the matrices.
+   */
   void swap() {
     BoolMatrix temp = _first;
     _first = _second;

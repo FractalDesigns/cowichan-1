@@ -1,10 +1,10 @@
-#include "cowichan_serial.hpp"
-
 /**
  * \file cowichan_serial/winnow.cpp
  * \brief Serial winnow implementation.
  * \see CowichanSerial::winnow
  */
+
+#include "cowichan_serial.hpp"
 
 namespace cowichan_serial
 {

@@ -1,0 +1,72 @@
+\hypertarget{class_game_of_life}{
+\section{GameOfLife Class Reference}
+\label{class_game_of_life}\index{GameOfLife@{GameOfLife}}
+}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hypertarget{class_game_of_life_7de73dfe2060ec6d0a5bab65cf771f63}{
+\textbf{GameOfLife} (\hyperlink{cowichan_8hpp_a64c8df2f1e9c8ea68a7bcc19aca683e}{BoolMatrix} first, \hyperlink{cowichan_8hpp_a64c8df2f1e9c8ea68a7bcc19aca683e}{BoolMatrix} second, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} nr, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} nc)}
+\label{class_game_of_life_7de73dfe2060ec6d0a5bab65cf771f63}
+
+\item 
+\hypertarget{class_game_of_life_3027e63b5ad8a3263023f3590caf1d2e}{
+void \textbf{swap} ()}
+\label{class_game_of_life_3027e63b5ad8a3263023f3590caf1d2e}
+
+\item 
+void \hyperlink{class_game_of_life_dfa4429cd90a9a8a7539ecb5a4617ae8}{operator()} (const \hyperlink{cowichan__tbb_8hpp_e591b8e6980ddc5982ee22655da2ab8e}{Range2D} \&range) const 
+\end{CompactItemize}
+\subsection*{Private Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} \hyperlink{class_game_of_life_df162a0c6062460fa658ae9b9cd457b6}{sumNeighbours} (\hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} x, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} y) const 
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+\hypertarget{class_game_of_life_8bdab545960821d63692c05b875199db}{
+\hyperlink{cowichan_8hpp_a64c8df2f1e9c8ea68a7bcc19aca683e}{BoolMatrix} \textbf{\_\-first}}
+\label{class_game_of_life_8bdab545960821d63692c05b875199db}
+
+\item 
+\hypertarget{class_game_of_life_d772ef5614e6b178fb8d653589f1f1f9}{
+\hyperlink{cowichan_8hpp_a64c8df2f1e9c8ea68a7bcc19aca683e}{BoolMatrix} \textbf{\_\-second}}
+\label{class_game_of_life_d772ef5614e6b178fb8d653589f1f1f9}
+
+\item 
+\hypertarget{class_game_of_life_5a16e4e2b0d83c5e3f0e84cc3ff4db5f}{
+\hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} \textbf{nr}}
+\label{class_game_of_life_5a16e4e2b0d83c5e3f0e84cc3ff4db5f}
+
+\item 
+\hypertarget{class_game_of_life_eda1db7eabff4386e01714cf621b072d}{
+\hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} \textbf{nc}}
+\label{class_game_of_life_eda1db7eabff4386e01714cf621b072d}
+
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+This class does the game of life, and facilitates a ping-pong memory model. 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_game_of_life_dfa4429cd90a9a8a7539ecb5a4617ae8}{
+\index{GameOfLife@{GameOfLife}!operator()@{operator()}}
+\index{operator()@{operator()}!GameOfLife@{GameOfLife}}
+\subsubsection[{operator()}]{\setlength{\rightskip}{0pt plus 5cm}void GameOfLife::operator() (const {\bf Range2D} \& {\em range}) const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{class_game_of_life_dfa4429cd90a9a8a7539ecb5a4617ae8}
+
+
+Performs the game of life operation over the given range. \hypertarget{class_game_of_life_df162a0c6062460fa658ae9b9cd457b6}{
+\index{GameOfLife@{GameOfLife}!sumNeighbours@{sumNeighbours}}
+\index{sumNeighbours@{sumNeighbours}!GameOfLife@{GameOfLife}}
+\subsubsection[{sumNeighbours}]{\setlength{\rightskip}{0pt plus 5cm}{\bf index\_\-t} GameOfLife::sumNeighbours ({\bf index\_\-t} {\em x}, \/  {\bf index\_\-t} {\em y}) const\hspace{0.3cm}{\tt  \mbox{[}inline, private\mbox{]}}}}
+\label{class_game_of_life_df162a0c6062460fa658ae9b9cd457b6}
+
+
+Calculate number of peers. 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+cowichan\_\-tbb/life.cpp\end{CompactItemize}

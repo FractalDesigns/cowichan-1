@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_openmp/thresh.cpp
+ * \brief OpenMP thresh implementation.
+ * \see CowichanOpenMP::thresh
+ */
+
 #include "cowichan_openmp.hpp"
 
 void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
