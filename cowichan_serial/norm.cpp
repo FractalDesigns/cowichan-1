@@ -72,3 +72,4 @@ void findMinMax(PointVector points, index_t n, Point* minPoint,
 }
 
 }
+
