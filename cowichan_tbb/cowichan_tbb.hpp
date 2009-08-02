@@ -43,7 +43,7 @@ using namespace cowichan_tbb;
  * Tags: shared memory, data parallel, task based.
  */
 class CowichanTBB : public Cowichan {
-protected: // chaining functions
+protected:
 
   void mandel(IntMatrix matrix);
   void randmat(IntMatrix matrix);
