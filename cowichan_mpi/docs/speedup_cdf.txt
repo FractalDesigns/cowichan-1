@@ -1,3 +1,0 @@
-Product:
-1 computer:  0.32 seconds
-8 computers: 0.05 seconds
