@@ -350,6 +350,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sort.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\winnow.cpp"
 				>
 			</File>
@@ -369,6 +373,10 @@
 			</File>
 			<File
 				RelativePath=".\cowichan_mpi.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sort.hpp"
 				>
 			</File>
 		</Filter>

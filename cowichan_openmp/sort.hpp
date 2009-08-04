@@ -20,6 +20,8 @@ namespace cowichan_openmp
 
 /**
  * This performs parallel histogram sort.
+ * \param vector vector to sort.
+ * \param len vector length.
  */
 void histogram_sort(WeightedPointVector vector, index_t len);
 
@@ -38,18 +40,24 @@ void histogram_sort(WeightedPointVector vector, index_t len);
 
 /**
  * This performs parallel quick sort.
+ * \param vector vector to sort.
+ * \param len vector length.
  */
 void quick_sort(WeightedPointVector vector, index_t len);
 
 /**
  * Partitions vector into points less than and greater than the pivot.
+ * \param vector vector to partition.
+ * \param len vector length.
+ * \param pivotIndex index to partition around.
+ * \return New pivot index.
  */
 index_t quick_sort_partition(WeightedPointVector vector, index_t len,
     index_t pivotIndex);
     
 #endif
 
-#endif
-
 }
+
+#endif
 
