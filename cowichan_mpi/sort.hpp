@@ -1,5 +1,5 @@
 /**
- * \file sort.hpp
+ * \file cowichan_mpi/sort.hpp
  * \brief Sorting algorithms that use MPI.
  *
  * One algorithms is included:
@@ -38,7 +38,7 @@ index_t power2(index_t n);
 
 /**
  * This performs parallel quick sort.
- * \param global communicator.
+ * \param world global communicator.
  * \param vector vector to sort.
  * \param len vector length.
  * \param level depth of recursion.

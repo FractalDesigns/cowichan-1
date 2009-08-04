@@ -1,5 +1,5 @@
 /**
- * \file sort.hpp
+ * \file cowichan_openmp/sort.hpp
  * \brief Sorting algorithms that use OpenMP.
  *
  * Two algorithms are included:
