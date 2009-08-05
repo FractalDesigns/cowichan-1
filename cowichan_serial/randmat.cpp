@@ -13,7 +13,7 @@ void CowichanSerial::randmat (IntMatrix matrix)
 
   for (c = 0; c < nc; c++) {
     for (r = 0; r < nr; r++) {
-      MATRIX_RECT(matrix, r, c) = v;
+      MATRIX_RECT(matrix, c, r) = v;
       v = (RANDMAT_A * v + RANDMAT_C) % RAND_M;
     }
   }

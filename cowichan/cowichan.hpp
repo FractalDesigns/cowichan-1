@@ -23,7 +23,8 @@
  * \subsection randmat_sec 2. Random Number Generation
  * This module fills a matrix with pseudo-random integers.
  * Note that, as in all problems, the output is required to be independent of
- * the number of processors used.
+ * the number of processors used. However, the matrices generated may be
+ * different in each implementation.
  * \see Cowichan::randmat
  *
  * \subsection half_sec 3. Two-Dimensional Shuffle
