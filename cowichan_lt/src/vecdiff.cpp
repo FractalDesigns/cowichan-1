@@ -14,7 +14,7 @@ real CowichanLinuxTuples::vecdiff(Vector actual, Vector computed) {
 	// calculate the 2D bounds of the point cloud
 	LTVecdiff program;
 	program.addInput(0, actual);
-	program.addInput(0, computed);
+	program.addInput(1, computed);
 	program.addOutput(0, &answer);
 	program.start(SERVER, PORT, NUM_WORKERS);
 
@@ -67,7 +67,7 @@ void LTVecdiff::work() {
 		size_t start = gotten->elements[1].data.i;
 		size_t stop = gotten->elements[2].data.i;
 
-		// perform the actual computation for these elements (/max)
+		// perform the actual computation for these elements (max)
 		real maximum = 0.0;
 		for (size_t pos = start; pos < stop; ++pos) {
 			real thisMaximum = (real) fabs(computed[pos] - actual[pos]);

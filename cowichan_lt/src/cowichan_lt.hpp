@@ -6,7 +6,6 @@
 #define __cowichan_lt_hpp__
 
 #include "../../cowichan/cowichan.hpp"
-#include <algorithm> // for std::min, std::max
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.

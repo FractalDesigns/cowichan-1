@@ -1,5 +1,5 @@
-#ifndef __VECDIFF_PRIVATE_HPP__
-#define __VECDIFF_PRIVATE_HPP__
+#ifndef __OUTER_PRIVATE_HPP__
+#define __OUTER_PRIVATE_HPP__
 
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
