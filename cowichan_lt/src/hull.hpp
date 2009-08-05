@@ -39,15 +39,16 @@
 		static const char* FLAG_OUTPUT;
 		static const char* FINISHED_MINMAX;
 
-		void split(const Point& p1, const Point& p2, index_t *order);
+		void split(const index_t p1, const index_t p2, index_t *order);
 
-		void computeCross(Point* p1, Point* p2, Point* maxPoint, real* maxCross);
-		void computeMinMax(Point* minPoint, Point* maxPoint);
+		void computeCross(index_t p1, index_t p2, index_t* maxPoint, real* maxCross);
+		void computeMinMax(index_t* minPoint, index_t* maxPoint);
 
 		void serviceMinMaxRequest(tuple* gotten);
 		void serviceCrossRequest(tuple* gotten);
 
 		bool isMasked(index_t position);
+		void mask(index_t position);
 
 	};
 

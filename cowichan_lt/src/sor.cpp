@@ -54,11 +54,11 @@ void LTSor::consumeInput() {
 			real sum = solutionSum(r);
 
 			// calculate new solution
-			real oldSolution = VECTOR(solution, r)
-			VECTOR(solution, r) = (real)
-				(1.0 - SOR_OMEGA) * oldSolution + SOR_OMEGA *
-				(VECTOR(target, r) - sum) / MATRIX_SQUARE_N(matrix, r, r, SOR_N)
-			;
+			real oldSolution = VECTOR(solution, r);
+			VECTOR(solution, r) = (real)(
+				(1.0 - SOR_OMEGA) * oldSolution +
+				SOR_OMEGA * (VECTOR(target, r) - sum) / MATRIX_SQUARE_N(matrix, r, r, SOR_N)
+			);
 
 			// refresh the solution vector in tuple-space
 			tuple *solutionBlank = make_tuple("s?", SOLUTION_VECTOR);

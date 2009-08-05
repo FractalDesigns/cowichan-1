@@ -42,11 +42,21 @@ void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
 
 	}
 
+	// connect to the tuple server again, for clean-up.
+	struct context ctx;
+	if (get_server_portnumber(&ctx)) {
+		strcpy(ctx.peername, SERVER);
+		ctx.portnumber = PORT;
+	}
+
 	// cleanup: delete all mask tuples
 	tuple* maskTemplate = make_tuple("s?", MASKED_POINT);
 	while (true) {
-		if (get_tuple_nb(masked, &ctx) == NULL) break;
+		tuple* masked = get_nb_tuple(maskTemplate, &ctx);
+		if (masked == NULL) break;
+		destroy_tuple(masked);
 	}
+	destroy_tuple(maskTemplate);
 
 }
 
@@ -64,8 +74,6 @@ void LTHull::consumeInput() {
 
 	// base case
 	if (numLeft == 1) {
-
-		PointVector pointsIn = (PointVector) inputs[0];
 
 		// search for the only point
 		index_t pos;
@@ -85,7 +93,7 @@ void LTHull::consumeInput() {
 	} else {
 
 		// figure out the points with minimum and maximum x values
-		Point minPoint, maxPoint;
+		index_t minPoint, maxPoint;
 		computeMinMax(&minPoint, &maxPoint);
 
 		// use these as initial pivots
@@ -153,12 +161,12 @@ void LTHull::computeCross(index_t p1, index_t p2, index_t *maxPoint, real* maxCr
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
-	size_t skip = (size_t) sqrt((real) HULL_N);
-	size_t numToReport = 0;
-	for (size_t pos = 0; pos < HULL_N; pos += skip) {
+	index_t skip = (size_t) sqrt((real) HULL_N);
+	index_t numToReport = 0;
+	for (index_t pos = 0; pos < HULL_N; pos += skip) {
 		++numToReport;
 		send->elements[2].data.i = pos;
-		send->elements[3].data.i = MIN(pos + skip, HULL_N);
+		send->elements[3].data.i = std::min(pos + skip, HULL_N);
 		put_tuple(send, &ctx);
 	}
 
@@ -191,12 +199,12 @@ void LTHull::computeMinMax(index_t *minPoint, index_t *maxPoint) {
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
-	size_t skip = (size_t) sqrt((real) HULL_N);
-	size_t numToReport = 0;
-	for (size_t pos = 0; pos < HULL_N; pos += skip) {
+	index_t skip = (size_t) sqrt((real) HULL_N);
+	index_t numToReport = 0;
+	for (index_t pos = 0; pos < HULL_N; pos += skip) {
 		++numToReport;
 		send->elements[2].data.i = pos;
-		send->elements[3].data.i = MIN(pos + skip, HULL_N);
+		send->elements[3].data.i = std::min(pos + skip, HULL_N);
 		put_tuple(send, &ctx);
 	}
 
@@ -275,6 +283,13 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 
 	}
 
+	// If first is still true, that means we did not look at any points.
+	// Don't go through the rest of the function.
+	if (first) return;
+
+	// ... which means at this point, minPoint and maxPoint are guaranteed
+	// to be valid unmasked indices into the input Point vector.
+
 	// Now, we combine the results from these points with the "world".
 	// enter the critical section
 	get_tuple(synchLock, &ctx);
@@ -284,7 +299,7 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 		tuple *tupleMin = get_nb_tuple(tmpMin, &ctx);
 		if (tupleMin != NULL) {
 			index_t worldMin = tupleMin->elements[1].data.i;
-			if (pointsIn[minPoint].x > pointsIn[worldMin]/x) {
+			if (pointsIn[minPoint].x > pointsIn[worldMin].x) {
 				minPoint = worldMin;
 			}
 			destroy_tuple(tupleMin);
@@ -342,7 +357,7 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 		// compute the signed distances from the line for each point
 		real currentCross = Point::cross(pointsIn[p1], pointsIn[p2], pointsIn[pos]);
 		if (currentCross > maxCross || maxPoint == NO_POINT) {
-			maxPoint = i;
+			maxPoint = pos;
 			maxCross = currentCross;
 		}
 
@@ -361,23 +376,27 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 
 		// figure out if we should combine our results with the world
 		tuple *tmpCross = make_tuple("s?", MAX_CROSS);
-		tuple *tupleMax = get_nb_tuple(tmpCross, &ctx);
-		if (tupleMax != NULL) {
-			real worldMax = tupleMin->elements[1].data.d;
+		tuple *tupleCross = read_nb_tuple(tmpCross, &ctx);
+		if (tupleCross != NULL) {
+			real worldMax = tupleCross->elements[1].data.d;
 			if (worldMax > maxCross) {
 				// don't update if the world has a farther point
 				updateWorldPoint = false;
 			}
-			destroy_tuple(tupleMax);
+			destroy_tuple(tupleCross);
 		}
 
 		// combine results with master copy (world)
 		if (updateWorldPoint) {
 			tuple *tmpPoint = make_tuple("s?", MAX_POINT);
 
-			// destroy the max point tuple if it already exists
-			tuple *tuplePoint = get_tuple_nb(tmpPoint, &ctx);
+			// get rid of the max point tuple if it already exists
+			tuple *tuplePoint = get_nb_tuple(tmpPoint, &ctx);
 			if (tuplePoint != NULL) destroy_tuple(tuplePoint);
+
+			// get rid of the max cross tuple if it already exists
+			tuple *tupleCross = get_nb_tuple(tmpCross, &ctx);
+			if (tupleCross != NULL) destroy_tuple(tupleCross);
 
 			// fill in tuple information
 			tmpPoint->elements[1].data.i = maxPoint;
@@ -404,7 +423,7 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 bool LTHull::isMasked(index_t position) {
 
 	tuple* masked = make_tuple("si", MASKED_POINT, position);
-	if (read_tuple_nb(masked, &ctx) != NULL) return true;
+	if (read_nb_tuple(masked, &ctx) != NULL) return true;
 	return false;
 
 }
@@ -419,7 +438,7 @@ void LTHull::mask(index_t position) {
 int LTHull::getNumPoints() {
 
 	tuple *templateOrder = make_tuple("s?", NUM_POINTS);
-	tuple *order = get_tuple(order, &ctx);
+	tuple *order = get_tuple(templateOrder, &ctx);
 
 	int ret = order->elements[1].data.i;
 
@@ -432,8 +451,9 @@ int LTHull::getNumPoints() {
 
 void LTHull::produceOutput() {
 
-	// grab output locally.
-	PointVector outPoints = (PointVector) outputs[0];
+	// grab pointers locally.
+	PointVector pointsIn = (PointVector) inputs[0];
+	PointVector pointsOut = (PointVector) outputs[0];
 
 	// wait for output flag
 	tuple *flag = make_tuple("s", FLAG_OUTPUT);
@@ -442,9 +462,9 @@ void LTHull::produceOutput() {
 	// bring in all of the emitted points in order
 	for (index_t i = 0;; ++i) {
 		tuple *emittedPoint = make_tuple("si?", HULL_POINT, i);
-		tuple *gottenPoint = get_tuple_nb(emittedPoint);
+		tuple *gottenPoint = get_nb_tuple(emittedPoint, &ctx);
 		if (gottenPoint == NULL) break; // no more points!
-		outPoints[i] = pointsIn[gottenPoint->elements[2].data.i];
+		pointsOut[i] = pointsIn[gottenPoint->elements[2].data.i];
 		mask(gottenPoint->elements[2].data.i);
 	}
 
