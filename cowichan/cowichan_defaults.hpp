@@ -160,7 +160,7 @@
 /**
  * Default number of life iterations.
  */
-#define LIFE_ITERATIONS 10
+#define LIFE_ITERATIONS 3
 
 // winnow
 /**
