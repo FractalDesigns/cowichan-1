@@ -1,6 +1,10 @@
 #include <iostream>
 #include <cstdio>
+#include <map>
 #include "thresh.hpp"
+
+const char* LTFrequency::SYNCH_LOCK = "thresh synch lock";
+const char* LTFrequency::ROWS_DONE = "thresh rows reporting";
 
 void CowichanLinuxTuples::thresh(IntMatrix matrix, BoolMatrix outMatrix) {
 
@@ -36,6 +40,8 @@ void LTFrequency::consumeInput() {
 
 void LTFrequency::work() {
 
+	IntMatrix matrix = (IntMatrix) inputs[0];
+
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	tuple *recv = make_tuple("s?", "thresh request");
@@ -47,8 +53,9 @@ void LTFrequency::work() {
 		size_t y = gotten->elements[1].data.i;
 
 		// perform the actual computation for this row (counting)
-		for (int x = 0; x < THRESH_NC; ++x) {
-			// TODO create a map starting at all 0s and increment frequency
+		std::map<INT_TYPE, size_t> freq;
+		for (index_t x = 0; x < THRESH_NC; ++x) {
+			++freq[MATRIX_RECT_NC(matrix, y,x, THRESH_NC)];
 		}
 
 		// purge local memory of the tuple we received
@@ -59,15 +66,16 @@ void LTFrequency::work() {
 		get_tuple(synchLock, &ctx);
 
 			// combine results with master copy
-			for (std::iterator on map returning pairs) {
-				tuple *templateHist = make_tuple("sii", "thresh hist", n);
+			std::map<INT_TYPE, size_t>::const_iterator it;
+			for (it = freq.begin(); it != freq.end(); ++it) {
+				tuple *templateHist = make_tuple("sii", "thresh hist", it->first);
 				tuple *hist = get_nb_tuple(templateHist, &ctx);
 				if (hist == NULL) {
 					// use only this row's frequency
-					templateHist->elements[2].data.i = freq[n];
+					templateHist->elements[2].data.i = it->second;
 				} else {
 					// combine this row's frequency and existing frequency
-					templateHist->elements[2].data.i = freq[n] + hist->elements[2].data.i;
+					templateHist->elements[2].data.i = it->second + hist->elements[2].data.i;
 					destroy_tuple(hist);
 				}
 				put_tuple(templateHist, &ctx);
@@ -93,19 +101,25 @@ void LTFrequency::produceOutput() {
 	tuple *allRowsReporting = make_tuple("si", ROWS_DONE, THRESH_NR);
 	get_tuple(allRowsReporting, &ctx);
 
+	// figure out when we have to stop.
+	index_t retain = (index_t)(THRESH_PERCENT * THRESH_NC * THRESH_NR);
+
 	// go through all tuple values until we have reached the threshold point
-	size_t freq = 0, n;
-	for (n = 0; n < MAX_INT; ++n) {
+	for (size_t n = 0; n < MAXIMUM_INT; ++n) {
 		tuple *templateHist = make_tuple("sii", "thresh hist", n);
 		tuple *hist = get_nb_tuple(templateHist, &ctx);
 		if (hist != NULL) {
-			freq += hist->elements[2].data.i;
+			retain -= hist->elements[2].data.i;
 		}
-		if (freq >= ...) break;
+		if (retain <= 0) {
+			retain = n;
+			break;
+		}
 	}
 
-	// n now holds the threshold point. communicate this into the tuple space
-	tuple *threshPoint = make_tuple(si, "thresh point", n);
+	// retain now holds the threshold point.
+	// communicate this into the tuple space
+	tuple *threshPoint = make_tuple("si", "thresh point", retain);
 	put_tuple(threshPoint, &ctx);
 
 	// remove the tuple synch lock from tuple space
@@ -141,8 +155,8 @@ void LTThresh::work() {
 	IntMatrix input = (IntMatrix) inputs[0];
 
 	// get the threshold point from the frequency calculation
-	tuple *templateThreshPoint = make_tuple(si, "thresh point");
-	tuple *threshPoint = get_tuple(threshPoint, &ctx);
+	tuple *templateThreshPoint = make_tuple("si", "thresh point");
+	tuple *threshPoint = get_tuple(templateThreshPoint, &ctx);
 	size_t threshold = threshPoint->elements[1].data.i;
 
 	// satisfy thresh requests.
@@ -161,8 +175,7 @@ void LTThresh::work() {
 
 		// perform the actual computation for this row.
 		for (int x = 0; x < THRESH_NC; ++x) {
-			buffer[x] =
-				MATRIX_RECT_NC(input, y,x, THRESH_NC) < threshold ? true : false;
+			buffer[x] = MATRIX_RECT_NC(input, y,x, THRESH_NC) > threshold;
 		}
 
 		// send off the new tuple and purge local memory of the one we got

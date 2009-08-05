@@ -4,8 +4,17 @@
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
 
+	#define NO_POINT -1
+
 	class LTHull: public TupleApplication {
+	public:
+
+		int getNumPoints();
+		LTHull(size_t numLeft);
+
 	protected:
+
+		size_t numLeft;
 
 		void consumeInput();
 		void work();
@@ -30,12 +39,14 @@
 		static const char* FLAG_OUTPUT;
 		static const char* FINISHED_MINMAX;
 
-		void computeMinMax(size_t n, Point* minPoint, Point* maxPoint);
-		void split(PointVector pointsIn, index_t n, index_t* hn, const Point& p1, const Point& p2);
+		void split(const Point& p1, const Point& p2, index_t *order);
+
+		void computeCross(Point* p1, Point* p2, Point* maxPoint, real* maxCross);
+		void computeMinMax(Point* minPoint, Point* maxPoint);
+
 		void serviceMinMaxRequest(tuple* gotten);
 		void serviceCrossRequest(tuple* gotten);
 
-		int getNumPoints();
 		bool isMasked(index_t position);
 
 	};

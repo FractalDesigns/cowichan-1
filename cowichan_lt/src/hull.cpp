@@ -17,20 +17,20 @@ const char* MAX_POINT = "hull furthest point";
 
 const char* HULL_POINT = "hull point";
 const char* MASKED_POINT = "hull masked point";
-const char* NUM_POINTS = "hull # of points in convex hull"
+const char* NUM_POINTS = "hull # of points in convex hull";
 
 const char* FLAG_OUTPUT = "hull flag output";
 const char* FINISHED_MINMAX = "hull finshed min/max";
 
 
 void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
-	real order = 0;
+	int order = 0;
 
 	// while not all points are used up then run quickhull on the rest of points
 	while (order < HULL_N) {
 
 		// Run quickhull on the decided points as a tuple-space problem.
-		LTHull app;
+		LTHull app(HULL_N - order);
 		app.addInput(0, pointsIn);
 		app.addOutput(0, pointsOut + order); // offset into the array
 		app.start(SERVER, PORT, NUM_WORKERS);
@@ -42,9 +42,17 @@ void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
 
 	}
 
+	// cleanup: delete all mask tuples
+	tuple* maskTemplate = make_tuple("s?", MASKED_POINT);
+	while (true) {
+		if (get_tuple_nb(masked, &ctx) == NULL) break;
+	}
+
 }
 
 //===========================================================================//
+
+LTHull::LTHull(size_t left): numLeft(left) { }
 
 void LTHull::consumeInput() {
 
@@ -55,23 +63,30 @@ void LTHull::consumeInput() {
 	put_tuple(synchLock, &ctx);
 
 	// base case
-	if (n == 1) {
+	if (numLeft == 1) {
+
+		PointVector pointsIn = (PointVector) inputs[0];
+
+		// search for the only point
+		index_t pos;
+		for (pos = 0; pos < HULL_N; ++pos) {
+			if (!isMasked(pos)) break;
+		}
 
 		// emit the only point
-		tuple* hullPoint = make_tuple("sis", HULL_POINT, (*order)++);
-		hullPoint->elements[2].data.s.len = sizeof(Point);
-		hullPoint->elements[2].data.s.ptr = &p1;
+		tuple* hullPoint = make_tuple("sii", HULL_POINT, 0);
+		hullPoint->elements[2].data.i = pos;
 		put_tuple(hullPoint, &ctx);
 
 		// put the number of points (1) in tuple space
-		tuple *order = make_tuple("si", NUM_POINTS, 1);
-		put_tuple(order, &ctx);
+		tuple *tOrder = make_tuple("si", NUM_POINTS, 1);
+		put_tuple(tOrder, &ctx);
 
 	} else {
 
 		// figure out the points with minimum and maximum x values
 		Point minPoint, maxPoint;
-		computeMinMax(n, &minPoint, &maxPoint);
+		computeMinMax(&minPoint, &maxPoint);
 
 		// use these as initial pivots
 		index_t order = 0;
@@ -79,8 +94,8 @@ void LTHull::consumeInput() {
 		split(maxPoint, minPoint, &order);
 
 		// put the number of points in tuple space
-		tuple *order = make_tuple("si", NUM_POINTS, order);
-		put_tuple(order, &ctx);
+		tuple *tOrder = make_tuple("si", NUM_POINTS, order);
+		put_tuple(tOrder, &ctx);
 
 	}
 
@@ -97,28 +112,16 @@ void LTHull::consumeInput() {
  * @param p1 boundary point #1.
  * @param p2 boundary point #2.
  */
-void LTHull::split(const Point& p1, const Point& p2, index_t *order) {
-
-	PointVector pointsIn = (PointVector) inputs[0];
-	size_t n = (size_t) inputs[1];
-
-	Point* maxPoint = NULL;
-	real maxCross;
+void LTHull::split(const index_t p1, const index_t p2, index_t *order) {
 
 	// compute the signed distances from the line for each point
-	for (index_t i = 0; i < n; i++) {
-		if (!isMasked(i)) {
-			real currentCross = Point::cross(p1, p2, pointsIn[i]);
-			if (maxPoint == NULL || currentCross > maxCross) {
-				maxPoint = &pointsIn[i];
-				maxCross = currentCross;
-			}
-		}
-	}
+	index_t maxPoint;
+	real maxCross;
+	computeCross(p1, p2, &maxPoint, &maxCross);
 
 	// is there a point in the positive half-space?
 	// if so, it has maximal distance, and we must recurse based on that point.
-	if (maxPoint != NULL && maxCross > 0.0) {
+	if (maxPoint != NO_POINT && maxCross > 0.0) {
 		// recurse on the new set with the given far point
 		split(p1, maxPoint, order);
 		split(maxPoint, p2, order);
@@ -130,16 +133,13 @@ void LTHull::split(const Point& p1, const Point& p2, index_t *order) {
 	// half-space. add the first point and return.
 
  	// emit p1 to tuple space using order index
-	tuple* hullPoint = make_tuple("sis", HULL_POINT, (*order)++);
-	hullPoint->elements[2].data.s.len = sizeof(Point);
-	hullPoint->elements[2].data.s.ptr = &p1;
+	tuple* hullPoint = make_tuple("sii", HULL_POINT, (*order)++);
+	hullPoint->elements[2].data.i = p1;
 	put_tuple(hullPoint, &ctx);
 
 }
 
-void LTHull::computeMinMax(size_t n, Point* minPoint, Point* maxPoint) {
-
-	PointVector pointsIn = (PointVector) inputs[0];
+void LTHull::computeCross(index_t p1, index_t p2, index_t *maxPoint, real* maxCross) {
 
 	// create a "points reporting" tuple, so that we
 	// know when the computation should end.
@@ -147,19 +147,61 @@ void LTHull::computeMinMax(size_t n, Point* minPoint, Point* maxPoint) {
 	put_tuple(pointsReporting, &ctx);
 
 	// tuple template.
-	tuple *send = make_tuple("ssiiss", REQUEST, REQUEST_MINMAX);
+	tuple *send = make_tuple("ssiiii", REQUEST, REQUEST_CROSS);
+	send->elements[4].data.i = p1;
+	send->elements[5].data.i = p2;
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
-	size_t skip = (size_t) sqrt((real) n);
-	for (size_t pos = 0; pos < NORM_N; pos += skip) {
-		send->elements[1].data.i = pos;
-		send->elements[2].data.i = MIN(pos + skip, n);
+	size_t skip = (size_t) sqrt((real) HULL_N);
+	size_t numToReport = 0;
+	for (size_t pos = 0; pos < HULL_N; pos += skip) {
+		++numToReport;
+		send->elements[2].data.i = pos;
+		send->elements[3].data.i = MIN(pos + skip, HULL_N);
 		put_tuple(send, &ctx);
 	}
 
-	// wait for all points to report
-	pointsReporting->elements[1].data.i = n;
+	// wait for all point clusters to report
+	pointsReporting->elements[1].data.i = numToReport;
+	destroy_tuple(get_tuple(pointsReporting, &ctx));
+
+	// grab the max-cross/max-point elements from tuple space
+	tuple *tmpCross = make_tuple("s?", MAX_CROSS);
+	tuple *tmpPoint = make_tuple("s?", MAX_POINT);
+	tuple *tupleCross = get_tuple(tmpCross, &ctx);
+	tuple *tuplePoint = get_tuple(tmpPoint, &ctx);
+	*maxCross = tupleCross->elements[1].data.d;
+	*maxPoint = tuplePoint->elements[1].data.i;
+	destroy_tuple(tmpCross);
+	destroy_tuple(tmpPoint);
+	destroy_tuple(tupleCross);
+	destroy_tuple(tuplePoint);
+}
+
+void LTHull::computeMinMax(index_t *minPoint, index_t *maxPoint) {
+
+	// create a "points reporting" tuple, so that we
+	// know when the computation should end.
+	tuple *pointsReporting = make_tuple("si", POINTS_DONE, 0);
+	put_tuple(pointsReporting, &ctx);
+
+	// tuple template.
+	tuple *send = make_tuple("ssiiii", REQUEST, REQUEST_MINMAX);
+
+	// split points, based on a cluster size of the square-root of the
+	// number of points given.
+	size_t skip = (size_t) sqrt((real) HULL_N);
+	size_t numToReport = 0;
+	for (size_t pos = 0; pos < HULL_N; pos += skip) {
+		++numToReport;
+		send->elements[2].data.i = pos;
+		send->elements[3].data.i = MIN(pos + skip, HULL_N);
+		put_tuple(send, &ctx);
+	}
+
+	// wait for all point clusters to report
+	pointsReporting->elements[1].data.i = numToReport;
 	destroy_tuple(get_tuple(pointsReporting, &ctx));
 
 	// grab the min-x/max-x points from tuple-space
@@ -167,8 +209,8 @@ void LTHull::computeMinMax(size_t n, Point* minPoint, Point* maxPoint) {
 	tuple *templateMin = make_tuple("s?", MIN_X_POINT);
 	tuple *tupleMax = get_tuple(templateMax, &ctx);
 	tuple *tupleMin = get_tuple(templateMin, &ctx);
-	*minPoint = *tupleMin->elements[1].data.ptr;
-	*maxPoint = *tupleMax->elements[1].data.ptr;
+	*minPoint = tupleMin->elements[1].data.i;
+	*maxPoint = tupleMax->elements[1].data.i;
 	destroy_tuple(templateMin);
 	destroy_tuple(templateMax);
 	destroy_tuple(tupleMin);
@@ -181,7 +223,8 @@ void LTHull::work() {
 	// tuple templates
 	tuple *recv = make_tuple("s?????", REQUEST);
 
-	while (!get_tuple_nb(finishedMinMax, &ctx)) {
+	// TODO later we can make it so we don't have to kill workers
+	while (true) {
 
 		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
@@ -213,18 +256,18 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 
 	// perform the actual computation for this row (min/max)
 	bool first = true;
-	Point minPoint, maxPoint;
+	index_t minPoint, maxPoint;
 	for (size_t pos = start; pos < stop; ++pos) {
 
 		// make sure we only look at non-masked points
 		if (isMasked(pos)) continue;
 
 		// figure out the points with minimum and maximum x values
-		if (minPoint.x > pointsIn[pos].x || first) {
-			minPoint = pointsIn[pos];
+		if (pointsIn[minPoint].x > pointsIn[pos].x || first) {
+			minPoint = pos;
 		}
-		if (maxPoint.x < pointsIn[pos].x || first) {
-			maxPoint = pointsIn[pos];
+		if (pointsIn[maxPoint].x < pointsIn[pos].x || first) {
+			maxPoint = pos;
 		}
 
 		// do not trigger the "first" rules again.
@@ -240,14 +283,13 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 		tuple *tmpMin = make_tuple("s?", MIN_X_POINT);
 		tuple *tupleMin = get_nb_tuple(tmpMin, &ctx);
 		if (tupleMin != NULL) {
-			Point* worldMin = (Point*) tupleMin->elements[1].data.s;
-			if (minPoint.x > worldMin->x) {
+			index_t worldMin = tupleMin->elements[1].data.i;
+			if (pointsIn[minPoint].x > pointsIn[worldMin]/x) {
 				minPoint = worldMin;
 			}
 			destroy_tuple(tupleMin);
 		}
-		tmpMin->elements[1].data.s.len = sizeof(Point);
-		tmpMin->elements[1].data.s.ptr = (char*) &minPoint;
+		tmpMin->elements[1].data.i = minPoint;
 		put_tuple(tmpMin, &ctx);
 		destroy_tuple(tmpMin);
 
@@ -255,21 +297,20 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 		tuple *tmpMax = make_tuple("s?", MAX_X_POINT);
 		tuple *tupleMax = get_nb_tuple(tmpMax, &ctx);
 		if (tupleMax != NULL) {
-			Point* worldMax = (Point*) tupleMax->elements[1].data.s;
-			if (maxPoint.x < worldMax->x) {
+			index_t worldMax = tupleMax->elements[1].data.i;
+			if (pointsIn[maxPoint].x < pointsIn[worldMax].x) {
 				maxPoint = worldMax;
 			}
 			destroy_tuple(tupleMax);
 		}
-		tmpMax->elements[1].data.s.len = sizeof(Point);
-		tmpMax->elements[1].data.s.ptr = (char*) &maxPoint;
+		tmpMax->elements[1].data.i = maxPoint;
 		put_tuple(tmpMax, &ctx);
 		destroy_tuple(tmpMax);
 
-		// record the number of points reporting
+		// record the number of point clusters reporting
 		tuple *templatePointsReporting = make_tuple("s?", POINTS_DONE);
 		tuple *pointsReporting = get_tuple(templatePointsReporting, &ctx);
-		pointssReporting->elements[1].data.i += (stop - start);
+		pointsReporting->elements[1].data.i++;
 		put_tuple(pointsReporting, &ctx);
 
 	// leave the critical section
@@ -287,11 +328,11 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 	// extract data from tuple
 	size_t start = gotten->elements[2].data.i;
 	size_t stop = gotten->elements[3].data.i;
-	Point* p1 = (Point*) gotten->elements[4].data.s.ptr;
-	Point* p2 = (Point*) gotten->elements[5].data.s.ptr;
+	index_t p1 = gotten->elements[4].data.i;
+	index_t p2 = gotten->elements[5].data.i;
 
 	// perform the actual computation for these elements
-	Point* maxPoint = NULL;
+	index_t maxPoint = NO_POINT;
 	real maxCross = MINIMUM_REAL;
 	for (size_t pos = start; pos < stop; ++pos) {
 
@@ -299,9 +340,9 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 		if (isMasked(pos)) continue;
 
 		// compute the signed distances from the line for each point
-		real currentCross = Point::cross(*p1, *p2, pointsIn[pos]);
-		if (currentCross > maxCross) {
-			maxPoint = &pointsIn[i];
+		real currentCross = Point::cross(pointsIn[p1], pointsIn[p2], pointsIn[pos]);
+		if (currentCross > maxCross || maxPoint == NO_POINT) {
+			maxPoint = i;
 			maxCross = currentCross;
 		}
 
@@ -312,6 +353,11 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 	get_tuple(synchLock, &ctx);
 
 		bool updateWorldPoint = true;
+
+		// don't update the world if we have nothing to update with!
+		if (maxPoint == NO_POINT) {
+			updateWorldPoint = false;
+		}
 
 		// figure out if we should combine our results with the world
 		tuple *tmpCross = make_tuple("s?", MAX_CROSS);
@@ -334,8 +380,7 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 			if (tuplePoint != NULL) destroy_tuple(tuplePoint);
 
 			// fill in tuple information
-			tmpPoint->elements[1].data.s.len = sizeof(Point);
-			tmpPoint->elements[1].data.s.ptr = maxPoint;
+			tmpPoint->elements[1].data.i = maxPoint;
 			tmpCross->elements[1].data.d = maxCross;
 
 			// put in tuples and remove from local memory
@@ -345,10 +390,10 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 			destroy_tuple(tmpPoint);
 		}
 
-		// record the number of elements reporting
+		// record the number of point clusters reporting
 		tuple *templatePointsReporting = make_tuple("s?", POINTS_DONE);
 		tuple *pointsReporting = get_tuple(templatePointsReporting, &ctx);
-		pointssReporting->elements[1].data.i += (stop - start);
+		pointsReporting->elements[1].data.i++;
 		put_tuple(pointsReporting, &ctx);
 
 	// leave the critical section
@@ -394,18 +439,13 @@ void LTHull::produceOutput() {
 	tuple *flag = make_tuple("s", FLAG_OUTPUT);
 	destroy_tuple(get_tuple(flag, &ctx));
 
-	// TODO bring in all of the emitted points in order
+	// bring in all of the emitted points in order
 	for (index_t i = 0;; ++i) {
 		tuple *emittedPoint = make_tuple("si?", HULL_POINT, i);
 		tuple *gottenPoint = get_tuple_nb(emittedPoint);
 		if (gottenPoint == NULL) break; // no more points!
-		outPoints[i] = *((Point*)gottenPoint->elements[2].data.s.ptr);
-	}
-
-	// delete all mask tuples
-	tuple* maskTemplate = make_tuple("s?", MASKED_POINT);
-	while (true) {
-		if (get_tuple_nb(masked, &ctx) == NULL) break;
+		outPoints[i] = pointsIn[gottenPoint->elements[2].data.i];
+		mask(gottenPoint->elements[2].data.i);
 	}
 
 	// remove the tuple synch lock from tuple space

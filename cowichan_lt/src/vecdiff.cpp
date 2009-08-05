@@ -3,16 +3,16 @@
 #include <cmath>
 #include "vecdiff.hpp"
 
-const char* LTVecDiff::SYNCH_LOCK = "vecdiff synch lock";
-const char* LTVecDiff::ELEMENTS_DONE = "vecdiff elements reporting";
-const char* LTVecDiff::MAX_DIFF = "vecdiff max difference";
+const char* LTVecdiff::SYNCH_LOCK = "vecdiff synch lock";
+const char* LTVecdiff::ELEMENTS_DONE = "vecdiff elements reporting";
+const char* LTVecdiff::MAX_DIFF = "vecdiff max difference";
 
 real CowichanLinuxTuples::vecdiff(Vector actual, Vector computed) {
 
 	real answer;
 
 	// calculate the 2D bounds of the point cloud
-	LTVecDiff program;
+	LTVecdiff program;
 	program.addInput(0, actual);
 	program.addInput(0, computed);
 	program.addOutput(0, &answer);
@@ -41,10 +41,10 @@ void LTVecdiff::consumeInput() {
 
 	// split points, based on a cluster size of the square-root of the
 	// number of elements in the given vectors.
-	size_t skip = (size_t) sqrt((real) VECDIFF_N);
-	for (size_t pos = 0; pos < VECDIFF_N; pos += skip) {
+	index_t skip = (size_t) sqrt((real) VECDIFF_N);
+	for (index_t pos = 0; pos < VECDIFF_N; pos += skip) {
 		send->elements[1].data.i = pos;
-		send->elements[2].data.i = min(pos + skip, VECDIFF_N);
+		send->elements[2].data.i = std::min(pos + skip, VECDIFF_N);
 		put_tuple(send, &ctx);
 	}
 
@@ -70,8 +70,8 @@ void LTVecdiff::work() {
 		// perform the actual computation for these elements (/max)
 		real maximum = 0.0;
 		for (size_t pos = start; pos < stop; ++pos) {
-			real thisMaximum = (real) fabs(input[pos] - actual[pos]);
-			maximum = max(thisMaximum, maximum);
+			real thisMaximum = (real) fabs(computed[pos] - actual[pos]);
+			maximum = std::max(thisMaximum, maximum);
 		}
 
 		// purge local memory of the tuple we received
@@ -85,7 +85,7 @@ void LTVecdiff::work() {
 			tuple *tmpMax = make_tuple("s?", MAX_DIFF);
 			tuple *tupleMax = get_nb_tuple(tmpMax, &ctx);
 			if (tupleMax != NULL) {
-				maximum = max(maximum, tupleMax->elements[1].data.d);
+				maximum = std::max(maximum, (real) tupleMax->elements[1].data.d);
 			}
 			tmpMax->elements[1].data.d = maximum;
 			put_tuple(tmpMax, &ctx);

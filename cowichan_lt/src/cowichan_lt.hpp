@@ -6,9 +6,7 @@
 #define __cowichan_lt_hpp__
 
 #include "../../cowichan/cowichan.hpp"
-
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#include <algorithm> // for std::min, std::max
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.

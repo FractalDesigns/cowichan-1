@@ -16,7 +16,7 @@ void LTProduct::consumeInput() {
 	tuple *send = make_tuple("si", "product request");
 
 	// send off a request for each grid row.
-	for (size_t y = 0; y < PRODUCT_NR; ++y) {
+	for (size_t y = 0; y < PRODUCT_N; ++y) {
 		send->elements[1].data.i = y;
 		put_tuple(send, &ctx);
 	}
@@ -48,8 +48,8 @@ void LTProduct::work() {
 
 		// perform and store the actual computation for this row.
 		real result = 0.0;
-		for (int c = 0; c < PRODUCT_NC; ++c) {
-			result += MATRIX_RECT_NC(matrix, r, c, PRODUCT_NC) * VECTOR(candidate, c);
+		for (int c = 0; c < PRODUCT_N; ++c) {
+			result += MATRIX_SQUARE_N(matrix, r, c, PRODUCT_N) * VECTOR(candidate, c);
 		}
 		send->elements[2].data.d = result;
 	
@@ -75,7 +75,7 @@ void LTProduct::produceOutput() {
 
 	// grab all of the computations from the workers,
 	// in an unspecified order.
-	int computations = PRODUCT_NR;
+	int computations = PRODUCT_N;
 	while (computations > 0) {
 
 		// get the tuple and copy it into the matrix.

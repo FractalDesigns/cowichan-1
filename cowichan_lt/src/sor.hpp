@@ -11,13 +11,13 @@
 		void work();
 		void produceOutput();
 
-		static const char* SYNCH_LOCK = "sor synch lock";
-		static const char* ROWS_DONE = "sor rows reporting";
+		static const char* SYNCH_LOCK;
+		static const char* ROWS_DONE;
 
-		static 	const char* SOLUTION_VECTOR = "sor solution row";
-		static const char* SOLUTION_SUM = "sor inner sum";
+		static const char* SOLUTION_VECTOR;
+		static const char* SOLUTION_SUM;
 
-		static const char* SOR_FLAG = "sor input consumed";
+		static const char* SOR_FLAG;
 
 		real solutionSum(index_t row);
 

@@ -12,12 +12,12 @@ void CowichanLinuxTuples::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
 /**
  * Calculate number of peers.
  */
-index_t LTLife::sumNeighbours(index_t x, index_t y) const {
+index_t LTLife::sumNeighbours(index_t y, index_t x) {
 
 	index_t peers = 0;
 
 	// grab pointers locally.
-	BoolMatrix input = (BoolMatrix) inputs[0];
+	BoolMatrix first = (BoolMatrix) inputs[0];
 
 	// calculate possible neighbour positions
 	bool l = (x > 0);
@@ -26,14 +26,14 @@ index_t LTLife::sumNeighbours(index_t x, index_t y) const {
 	bool d = (y < (LIFE_NR - 1));
 
 	// calculate no. of neighbours
-	if (l &&       MATRIX_RECT_NC(_first, y    , x - 1, LIFE_NC)) ++peers;
-	if (l && u &&  MATRIX_RECT_NC(_first, y - 1, x - 1, LIFE_NC)) ++peers;
-	if (u &&       MATRIX_RECT_NC(_first, y - 1, x    , LIFE_NC)) ++peers;
-	if (r && u &&  MATRIX_RECT_NC(_first, y - 1, x + 1, LIFE_NC)) ++peers;
-	if (r &&       MATRIX_RECT_NC(_first, y    , x + 1, LIFE_NC)) ++peers;
-	if (r && d &&  MATRIX_RECT_NC(_first, y + 1, x + 1, LIFE_NC)) ++peers;
-	if (d &&       MATRIX_RECT_NC(_first, y + 1, x    , LIFE_NC)) ++peers;
-	if (l && d &&  MATRIX_RECT_NC(_first, y + 1, x - 1, LIFE_NC)) ++peers;
+	if (l &&       MATRIX_RECT_NC(first, y    , x - 1, LIFE_NC)) ++peers;
+	if (l && u &&  MATRIX_RECT_NC(first, y - 1, x - 1, LIFE_NC)) ++peers;
+	if (u &&       MATRIX_RECT_NC(first, y - 1, x    , LIFE_NC)) ++peers;
+	if (r && u &&  MATRIX_RECT_NC(first, y - 1, x + 1, LIFE_NC)) ++peers;
+	if (r &&       MATRIX_RECT_NC(first, y    , x + 1, LIFE_NC)) ++peers;
+	if (r && d &&  MATRIX_RECT_NC(first, y + 1, x + 1, LIFE_NC)) ++peers;
+	if (d &&       MATRIX_RECT_NC(first, y + 1, x    , LIFE_NC)) ++peers;
+	if (l && d &&  MATRIX_RECT_NC(first, y + 1, x - 1, LIFE_NC)) ++peers;
 
 	return peers;
 
@@ -73,14 +73,14 @@ void LTLife::work() {
 		// a buffer for the results of the computation.
 		size_t y = gotten->elements[1].data.i;
 		send->elements[1].data.i = y;
-		bool* buffer = (bool*) malloc(sizeof(bool) * BOOL_NC);
-		send->elements[2].data.s.len = sizeof(bool) * BOOL_NC;
+		bool* buffer = (bool*) malloc(sizeof(bool) * LIFE_NC);
+		send->elements[2].data.s.len = sizeof(bool) * LIFE_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row.
 		for (int x = 0; x < LIFE_NC; ++x) {
 
-	        index_t peers = sumNeighbours(x, y);
+	        index_t peers = sumNeighbours(y, x);
 	        if (peers < 2 || peers > 3) {
 	          buffer[x] = false; // hunger/overcrowding
 	        } else if (peers == 3) {
@@ -103,7 +103,7 @@ void LTLife::work() {
 
 }
 
-void LTHalf::produceOutput() {
+void LTLife::produceOutput() {
 
 	// tuple template
 	tuple *recv = make_tuple("s??", "life done");

@@ -10,7 +10,7 @@
 		void work();
 		void produceOutput();
 
-		index_t sumNeighbours();
+		index_t sumNeighbours(index_t y, index_t x);
 	};
 
 #endif

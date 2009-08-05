@@ -45,10 +45,10 @@ void LTBounds::consumeInput() {
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
-	size_t skip = (size_t) sqrt((real) NORM_N);
-	for (size_t pos = 0; pos < NORM_N; pos += skip) {
+	index_t skip = (size_t) sqrt((real) NORM_N);
+	for (index_t pos = 0; pos < NORM_N; pos += skip) {
 		send->elements[1].data.i = pos;
-		send->elements[2].data.i = min(pos + skip, NORM_N);
+		send->elements[2].data.i = std::min(pos + skip, NORM_N);
 		put_tuple(send, &ctx);
 	}
 
@@ -75,10 +75,10 @@ void LTBounds::work() {
 		Point maxPoint = input[start];
 		for (size_t pos = start + 1; pos < stop; ++pos) {
 			Point &cur = input[pos];
-			minPoint.x = min(minPoint.x, cur.x);
-			minPoint.y = min(minPoint.y, cur.y);
-			maxPoint.x = max(maxPoint.x, cur.x);
-			maxPoint.y = max(maxPoint.y, cur.y);
+			minPoint.x = std::min(minPoint.x, cur.x);
+			minPoint.y = std::min(minPoint.y, cur.y);
+			maxPoint.x = std::max(maxPoint.x, cur.x);
+			maxPoint.y = std::max(maxPoint.y, cur.y);
 		}
 
 		// purge local memory of the tuple we received
@@ -92,9 +92,9 @@ void LTBounds::work() {
 			tuple *tmpMin = make_tuple("s?", MIN_POINT);
 			tuple *tupleMin = get_nb_tuple(tmpMin, &ctx);
 			if (tupleMin != NULL) {
-				Point* worldMin = (Point*) tupleMin->elements[1].data.s;
-				minPoint.x = min(minPoint.x, worldMin->x);
-				minPoint.y = min(minPoint.y, worldMin->y);
+				Point* worldMin = (Point*) tupleMin->elements[1].data.s.ptr;
+				minPoint.x = std::min(minPoint.x, worldMin->x);
+				minPoint.y = std::min(minPoint.y, worldMin->y);
 				destroy_tuple(tupleMin);
 			}
 			tmpMin->elements[1].data.s.len = sizeof(Point);
@@ -106,9 +106,9 @@ void LTBounds::work() {
 			tuple *tmpMax = make_tuple("s?", MAX_POINT);
 			tuple *tupleMax = get_nb_tuple(tmpMax, &ctx);
 			if (tupleMax != NULL) {
-				Point* worldMax = (Point*) tupleMax->elements[1].data.s;
-				maxPoint.x = max(maxPoint.x, worldMax->x);
-				maxPoint.y = max(maxPoint.y, worldMax->y);
+				Point* worldMax = (Point*) tupleMax->elements[1].data.s.ptr;
+				maxPoint.x = std::max(maxPoint.x, worldMax->x);
+				maxPoint.y = std::max(maxPoint.y, worldMax->y);
 				destroy_tuple(tupleMax);
 			}
 			tmpMax->elements[1].data.s.len = sizeof(Point);
@@ -119,8 +119,9 @@ void LTBounds::work() {
 			// record the number of points reporting
 			tuple *templatePointsReporting = make_tuple("s?", POINTS_DONE);
 			tuple *pointsReporting = get_tuple(templatePointsReporting, &ctx);
-			pointssReporting->elements[1].data.i += (stop - start);
+			pointsReporting->elements[1].data.i += (stop - start);
 			put_tuple(pointsReporting, &ctx);
+			destroy_tuple(templatePointsReporting);
 
 		// leave the critical section
 		put_tuple(synchLock, &ctx);
@@ -152,10 +153,10 @@ void LTNorm::consumeInput() {
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
-	size_t skip = (size_t) sqrt((real) NORM_N);
-	for (size_t pos = 0; pos < NORM_N; pos += skip) {
+	index_t skip = (size_t) sqrt((real) NORM_N);
+	for (index_t pos = 0; pos < NORM_N; pos += skip) {
 		send->elements[1].data.i = pos;
-		send->elements[2].data.i = min(pos + skip, NORM_N);
+		send->elements[2].data.i = std::min(pos + skip, NORM_N);
 		put_tuple(send, &ctx);
 	}
 
