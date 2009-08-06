@@ -1,6 +1,14 @@
+/**
+ * \file cowichan_lt/src/randmat.cpp
+ * \brief LinuxTuples randmat implementation.
+ * \see CowichanLinuxTuples::randmat
+ */
+
 #include <iostream>
 #include <cstdio>
 #include "randmat.hpp"
+
+const char* LTRandmat::REQUEST = "randmat request";
 
 void CowichanLinuxTuples::randmat(IntMatrix matrix) {
 	LTRandmat app;
@@ -32,7 +40,7 @@ void LTRandmat::setup() {
     cPrime = (cPrime * RANDMAT_C) % RAND_M;
 
     // emit the state vector to the tuple space.
-    tuple *init = make_tuple("ss", "randmat state");
+    tuple *init = make_tuple("ss", "randmat state", "");
     init->elements[1].data.s.len = sizeof(INT_TYPE) * RANDMAT_NR;
     init->elements[1].data.s.ptr = (char*) state;
     put_tuple(init, &ctx);
@@ -46,7 +54,7 @@ void LTRandmat::consumeInput() {
 	setup();
 
 	// tuple template
-	tuple *send = make_tuple("si", "randmat request");
+	tuple *send = make_tuple("si", REQUEST, 0);
 
 	// send off a request for each grid row.
 	for (size_t y = 0; y < RANDMAT_NR; ++y) {
@@ -61,8 +69,8 @@ void LTRandmat::consumeInput() {
 
 void LTRandmat::work() {
 
-	tuple *recv = make_tuple("s?", "randmat request");
-	tuple *send = make_tuple("sis", "randmat done");
+	tuple *recv = make_tuple("s?", REQUEST);
+	tuple *send = make_tuple("sis", "randmat done", 0, "");
 	tuple *tmpInit = make_tuple("s?", "randmat state");
 	tuple *init = NULL;
 	IntVector initVector = NULL;
@@ -128,6 +136,10 @@ void LTRandmat::produceOutput() {
 		destroy_tuple(received);
 
 	}
+
+	// get rid of randmat state from tuple space
+	tuple *tmpInit = make_tuple("s?", "randmat state");
+	destroy_tuple(get_tuple(tmpInit, &ctx));
 
 	// destroy the template tuple
 	destroy_tuple(recv);

@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/thresh.cpp
+ * \brief LinuxTuples thresh implementation.
+ * \see CowichanLinuxTuples::thresh
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <map>
@@ -5,6 +11,12 @@
 
 const char* LTFrequency::SYNCH_LOCK = "thresh synch lock";
 const char* LTFrequency::ROWS_DONE = "thresh rows reporting";
+const char* LTFrequency::REQUEST = "freq request";
+const char* LTFrequency::POINT = "thresh point";
+
+const char* LTThresh::REQUEST = "thresh request";
+const char* LTThresh::DONE = "thresh done";
+const char* LTThresh::POINT = "thresh point";
 
 void CowichanLinuxTuples::thresh(IntMatrix matrix, BoolMatrix outMatrix) {
 
@@ -34,7 +46,13 @@ void LTFrequency::consumeInput() {
 	tuple *rowsReporting = make_tuple("si", ROWS_DONE, 0);
 	put_tuple(rowsReporting, &ctx);
 
-	// TODO communicate all of the rows
+	// communicate all of the rows
+	tuple *send = make_tuple("s?", REQUEST);
+	for (size_t y = 0; y < THRESH_NR; ++y) {
+		send->elements[1].data.i = y;
+		put_tuple(send, &ctx);
+	}
+
 
 }
 
@@ -44,7 +62,7 @@ void LTFrequency::work() {
 
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
-	tuple *recv = make_tuple("s?", "thresh request");
+	tuple *recv = make_tuple("s?", REQUEST);
 
 	while (1) {
 
@@ -55,7 +73,7 @@ void LTFrequency::work() {
 		// perform the actual computation for this row (counting)
 		std::map<INT_TYPE, size_t> freq;
 		for (index_t x = 0; x < THRESH_NC; ++x) {
-			++freq[MATRIX_RECT_NC(matrix, y,x, THRESH_NC)];
+			freq[MATRIX_RECT_NC(matrix, y,x, THRESH_NC)] += 1;
 		}
 
 		// purge local memory of the tuple we received
@@ -68,7 +86,7 @@ void LTFrequency::work() {
 			// combine results with master copy
 			std::map<INT_TYPE, size_t>::const_iterator it;
 			for (it = freq.begin(); it != freq.end(); ++it) {
-				tuple *templateHist = make_tuple("sii", "thresh hist", it->first);
+				tuple *templateHist = make_tuple("si?", "thresh hist", it->first);
 				tuple *hist = get_nb_tuple(templateHist, &ctx);
 				if (hist == NULL) {
 					// use only this row's frequency
@@ -83,7 +101,7 @@ void LTFrequency::work() {
 			}
 
 			// record the number of rows reporting
-			tuple *templateRowsReporting = make_tuple("si", ROWS_DONE);
+			tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
 			tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
 			rowsReporting->elements[1].data.i += 1;
 			put_tuple(rowsReporting, &ctx);
@@ -117,9 +135,11 @@ void LTFrequency::produceOutput() {
 		}
 	}
 
+	// TODO get rid of all thresh hist tuples
+
 	// retain now holds the threshold point.
 	// communicate this into the tuple space
-	tuple *threshPoint = make_tuple("si", "thresh point", retain);
+	tuple *threshPoint = make_tuple("si", POINT, retain);
 	put_tuple(threshPoint, &ctx);
 
 	// remove the tuple synch lock from tuple space
@@ -133,7 +153,7 @@ void LTFrequency::produceOutput() {
 void LTThresh::consumeInput() {
 
 	// tuple template
-	tuple *send = make_tuple("si", "thresh request");
+	tuple *send = make_tuple("si", REQUEST);
 
 	// send off a request for each grid row.
 	for (size_t y = 0; y < THRESH_NR; ++y) {
@@ -148,15 +168,15 @@ void LTThresh::consumeInput() {
 
 void LTThresh::work() {
 
-	tuple *recv = make_tuple("s?", "thresh request");
-	tuple *send = make_tuple("sis", "thresh done");
+	tuple *recv = make_tuple("s?", REQUEST);
+	tuple *send = make_tuple("sis", DONE);
 
 	// grab pointers locally.
 	IntMatrix input = (IntMatrix) inputs[0];
 
 	// get the threshold point from the frequency calculation
-	tuple *templateThreshPoint = make_tuple("si", "thresh point");
-	tuple *threshPoint = get_tuple(templateThreshPoint, &ctx);
+	tuple *templateThreshPoint = make_tuple("s?", POINT);
+	tuple *threshPoint = read_tuple(templateThreshPoint, &ctx);
 	size_t threshold = threshPoint->elements[1].data.i;
 
 	// satisfy thresh requests.
@@ -167,15 +187,15 @@ void LTThresh::work() {
 
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
-		size_t y = gotten->elements[1].data.i;
+		index_t y = gotten->elements[1].data.i;
 		send->elements[1].data.i = y;
-		bool* buffer = (bool*) malloc(sizeof(bool) * THRESH_NC);
+		BoolVector buffer = (BoolVector) NEW_VECTOR_SZ(bool, THRESH_NC);
 		send->elements[2].data.s.len = sizeof(bool) * THRESH_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row.
-		for (int x = 0; x < THRESH_NC; ++x) {
-			buffer[x] = MATRIX_RECT_NC(input, y,x, THRESH_NC) > threshold;
+		for (index_t x = 0; x < THRESH_NC; ++x) {
+			buffer[x] = (MATRIX_RECT_NC(input, y,x, THRESH_NC) > threshold);
 		}
 
 		// send off the new tuple and purge local memory of the one we got
@@ -193,12 +213,12 @@ void LTThresh::work() {
 void LTThresh::produceOutput() {
 
 	// tuple template
-	tuple *recv = make_tuple("s??", "thresh done");
+	tuple *recv = make_tuple("s??", DONE);
 
 	// grab output pointer locally.
 	IntMatrix output = (IntMatrix) outputs[0];
 
-	// grab all of the mandelbrot computations from the workers,
+	// grab all of the threshold computations from the workers,
 	// in an unspecified order.
 	int computations = THRESH_NR;
 	while (computations > 0) {
@@ -210,7 +230,6 @@ void LTThresh::produceOutput() {
 			received->elements[2].data.s.ptr,
 			received->elements[2].data.s.len);
 		computations--;
-		destroy_tuple(received);
 
 	}
 

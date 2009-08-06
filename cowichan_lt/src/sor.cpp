@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/sor.cpp
+ * \brief LinuxTuples successive over-relaxation implementation.
+ * \see CowichanLinuxTuples::sor
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -10,7 +16,7 @@ const char* LTSor::SOLUTION_SUM = "sor inner sum";
 const char* LTSor::SOR_FLAG = "sor input consumed";
 
 void CowichanLinuxTuples::sor(Matrix matrix, Vector target, Vector solution) {
-
+	std::cout << "sor" << std::endl;
 	// calculate the 2D bounds of the point cloud
 	LTSor app;
 	app.addInput(0, matrix);

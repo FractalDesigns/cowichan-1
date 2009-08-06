@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/mandel.cpp
+ * \brief LinuxTuples mandelbrot set implementation.
+ * \see CowichanLinuxTuples::mandel
+ */
+
 #include <iostream>
 #include <cstdio>
 #include "mandel.hpp"

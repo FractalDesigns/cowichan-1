@@ -1,6 +1,6 @@
 /**
- * Datatypes and common routines for Cowichan programs.
- * LinuxTuples implementation.
+ * \file cowichan_lt/src/cowichan_lt.hpp
+ * \brief Datatypes and common routines for Cowichan programs; LinuxTuples implementation.
  */
 #ifndef __cowichan_lt_hpp__
 #define __cowichan_lt_hpp__
@@ -12,8 +12,19 @@
 class CowichanLinuxTuples : public Cowichan {
 public:
 
+	/**
+	 * The host where the LinuxTuples server can be found.
+	 */
 	static const char* SERVER;
+
+	/**
+	 * The port number the LinuxTuples server is running on.
+	 */
 	static const int PORT = 25000;
+
+	/**
+	 * The number of worker processes to spawn.
+	 */
 	static const int NUM_WORKERS = 2;
 
 protected: // chaining functions
@@ -37,9 +48,9 @@ protected:
 
   /**
    * Runs the cowichan problem set, chained together.
-   * @param use_randmat  true: generate a random matrix.
+   * \param use_randmat  true: generate a random matrix.
    *             false: use a window of the mandelbrot set.
-   * @param use_thresh  true: use image thresholding for int->bool.
+   * \param use_thresh  true: use image thresholding for int->bool.
    *            false: use invasion percolation for int->bool.
    */
   void chain(bool use_randmat, bool use_thresh);

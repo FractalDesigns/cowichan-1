@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/life.cpp
+ * \brief LinuxTuples life implementation.
+ * \see CowichanLinuxTuples::life
+ */
+
 #include <iostream>
 #include <cstdio>
 #include "life.hpp"

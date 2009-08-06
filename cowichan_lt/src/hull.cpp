@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/hull.cpp
+ * \brief LinuxTuples hull implementation.
+ * \see CowichanLinuxTuples::hull
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>

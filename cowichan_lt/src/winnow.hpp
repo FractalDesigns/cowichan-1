@@ -16,8 +16,8 @@
 		static const char* SYNCH_LOCK;
 		static const char* REQUEST;
 		static const char* WEIGHTED_POINT;
-		static const char* ROWS_REPORTING;
 		static const char* COUNT;
+		static const char* ROWS_DONE;
 
 	};
 

@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/norm.cpp
+ * \brief LinuxTuples norm implementation.
+ * \see CowichanLinuxTuples::norm
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>

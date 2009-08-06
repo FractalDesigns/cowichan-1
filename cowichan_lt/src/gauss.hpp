@@ -1,9 +1,19 @@
+/**
+ * \file cowichan_lt/src/gauss.hpp
+ * \brief LinuxTuples gauss header file.
+ * \see CowichanLinuxTuples::gauss
+ */
+
 #ifndef __GAUSS_PRIVATE_HPP__
 #define __GAUSS_PRIVATE_HPP__
 
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
 
+	/**
+	 * Forward-elimination tuple application. Performs
+	 * forward elimination on a square matrix in parallel.
+	 */
 	class LTForward: public TupleApplication {
 	protected:
 

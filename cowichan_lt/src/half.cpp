@@ -1,6 +1,16 @@
+/**
+ * \file cowichan_lt/src/half.cpp
+ * \brief LinuxTuples half implementation.
+ * \see CowichanLinuxTuples::half
+ */
+
+
 #include <iostream>
 #include <cstdio>
 #include "half.hpp"
+
+const char* LTHalf::REQUEST = "half request";
+const char* LTHalf::DONE = "half done";
 
 void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {
 	LTHalf app;
@@ -12,7 +22,7 @@ void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {
 void LTHalf::consumeInput() {
 
 	// tuple template
-	tuple *send = make_tuple("si", "half request");
+	tuple *send = make_tuple("si", REQUEST);
 
 	// send off a request for each grid row.
 	for (size_t y = 0; y < HALF_NR; ++y) {
@@ -27,8 +37,8 @@ void LTHalf::consumeInput() {
 
 void LTHalf::work() {
 
-	tuple *recv = make_tuple("s?", "half request");
-	tuple *send = make_tuple("sis", "half done");
+	tuple *recv = make_tuple("s?", REQUEST);
+	tuple *send = make_tuple("sis", DONE);
 	
 	// grab pointers locally.
 	IntMatrix input = (IntMatrix) inputs[0];
@@ -43,18 +53,20 @@ void LTHalf::work() {
 		// a buffer for the results of the computation.
 		size_t y = gotten->elements[1].data.i;
 		send->elements[1].data.i = y;
-		int* buffer = (int*) malloc(sizeof(int) * HALF_NC);
-		send->elements[2].data.s.len = sizeof(int) * HALF_NC;
+		IntVector buffer = NEW_VECTOR_SZ(INT_TYPE, HALF_NC);
+		send->elements[2].data.s.len = sizeof(INT_TYPE) * HALF_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row.
-		for (int x = 0; x < HALF_NC; ++x) {
-			buffer[x] = MATRIX_RECT_NC(input, (y^1),(x^1), HALF_NC);
+		#define FLIP(item) (item % 2 == 0 ? (item + 1) : (item - 1))
+		for (size_t x = 0; x < HALF_NC; ++x) {
+			buffer[x] = MATRIX_RECT_NC(input, FLIP(y),FLIP(x), HALF_NC);
 		}
 	
 		// send off the new tuple and purge local memory of the one we got
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		delete[] buffer;
 
 	}
 
@@ -67,7 +79,7 @@ void LTHalf::work() {
 void LTHalf::produceOutput() {
 
 	// tuple template
-	tuple *recv = make_tuple("s??", "half done");
+	tuple *recv = make_tuple("s??", DONE);
 
 	// grab output pointer locally.
 	IntMatrix output = (IntMatrix) outputs[0];

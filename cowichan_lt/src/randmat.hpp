@@ -32,6 +32,8 @@
 		 */
 		INT_TYPE next(INT_TYPE& current) const;
 
+		static const char *REQUEST;
+
 	};
 
 #endif

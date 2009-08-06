@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/vecdiff.cpp
+ * \brief LinuxTuples vecdiff implementation.
+ * \see CowichanLinuxTuples::vecdiff
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -8,7 +14,7 @@ const char* LTVecdiff::ELEMENTS_DONE = "vecdiff elements reporting";
 const char* LTVecdiff::MAX_DIFF = "vecdiff max difference";
 
 real CowichanLinuxTuples::vecdiff(Vector actual, Vector computed) {
-
+	std::cout << "vecdiff" << std::endl;
 	real answer;
 
 	// calculate the 2D bounds of the point cloud

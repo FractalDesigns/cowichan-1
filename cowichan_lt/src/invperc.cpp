@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/invperc.cpp
+ * \brief LinuxTuples (actually serial) invperc implementation.
+ * \see CowichanLinuxTuples::invperc
+ */
+
 #include "cowichan_lt.hpp"
 #include <queue>
 

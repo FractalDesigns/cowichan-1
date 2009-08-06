@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/winnow.cpp
+ * \brief LinuxTuples winnow implementation.
+ * \see CowichanLinuxTuples::winnow
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -6,8 +12,8 @@
 const char* LTWinnow::SYNCH_LOCK = "winnow synchronization lock";
 const char* LTWinnow::REQUEST = "winnow request";
 const char* LTWinnow::WEIGHTED_POINT = "winnow weighted point";
-const char* LTWinnow::ROWS_REPORTING = "winnow rows reporting";
 const char* LTWinnow::COUNT = "winnow number of points";
+const char* LTWinnow::ROWS_DONE = "winnow rows reporting";
 
 void CowichanLinuxTuples::winnow(IntMatrix matrix, BoolMatrix mask, PointVector points) {
 
@@ -37,7 +43,12 @@ void LTWinnow::consumeInput() {
 	put_tuple(synchLock, &ctx);
 
 	// tuple template.
-	tuple *send = make_tuple("si", REQUEST);
+	tuple *send = make_tuple("si", REQUEST, 0);
+
+	// keep track of the number of rows reporting
+	tuple *rowsReporting = make_tuple("si", ROWS_DONE, 0);
+	put_tuple(rowsReporting, &ctx);
+	destroy_tuple(rowsReporting);
 
 	// allow workers to grab work by-the-row
 	for (index_t row = 0; row < WINNOW_NR; ++row) {
@@ -52,7 +63,7 @@ void LTWinnow::work() {
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	tuple *recv = make_tuple("s?", REQUEST);
-	tuple *send = make_tuple("ssi", WEIGHTED_POINT);
+	tuple *send = make_tuple("ssi", WEIGHTED_POINT, "", 0);
 
 	// grab pointers locally.
 	IntMatrix matrix = (IntMatrix) inputs[0];
@@ -84,7 +95,6 @@ void LTWinnow::work() {
 
 		// purge local memory of the tuple we received/generated
 		destroy_tuple(gotten);
-		destroy_tuple(send);
 
 		// Now, we combine the results from these points with the "world".
 		// We are computing the number of points that are not masked off.
@@ -97,9 +107,16 @@ void LTWinnow::work() {
 				sum += tupleCount->elements[1].data.i;
 				destroy_tuple(tupleCount);
 			}
-			tmpCount->elements[1].data.d = sum;
+			tmpCount->elements[1].data.i = sum;
+			tmpCount->elements[1].tag = 'i';
 			put_tuple(tmpCount, &ctx);
 			destroy_tuple(tmpCount);
+
+			// record the number of rows reporting
+			tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
+			tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
+			rowsReporting->elements[1].data.i += 1;
+			put_tuple(rowsReporting, &ctx);
 
 		// leave the critical section
 		put_tuple(synchLock, &ctx);
@@ -125,7 +142,6 @@ Point LTWinnow::nextWeightedPoint(tuple *recv, INT_TYPE* order) {
 	// strip data out of the received tuple and destroy it.
 	Point pt = *((Point*) gotten->elements[1].data.s.ptr);
 	destroy_tuple(gotten);
-	destroy_tuple(recv);
 
 	// return the point.
 	return pt;
@@ -133,6 +149,10 @@ Point LTWinnow::nextWeightedPoint(tuple *recv, INT_TYPE* order) {
 }
 
 void LTWinnow::produceOutput() {
+
+	// wait for all rows to be computed.
+	tuple *rowsReporting = make_tuple("si", ROWS_DONE, WINNOW_NR);
+	destroy_tuple(get_tuple(rowsReporting, &ctx));
 
 	// tuple templates.
 	tuple *recv = make_tuple("s?i", WEIGHTED_POINT);
@@ -164,11 +184,11 @@ void LTWinnow::produceOutput() {
 
 		// skip over as many points as we need to
 		for (index_t i = 0; i < stride; ++i) {
-			current = nextWeightedPoint(recv, &order);
+			//current = nextWeightedPoint(recv, &order);
 		}
 
 		// put one in the list
-		points[pos] = current;
+		points[pos++] = Point(0.0, 0.0);
 
 	}
 
@@ -178,8 +198,5 @@ void LTWinnow::produceOutput() {
 
 	// clean-up local tuple memory.
 	destroy_tuple(synchLock);
-	destroy_tuple(recv);
-	destroy_tuple(tmpCount);
-	destroy_tuple(tupleCount);
 
 }

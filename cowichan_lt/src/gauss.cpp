@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/gauss.cpp
+ * \brief LinuxTuples gauss implementation.
+ * \see CowichanLinuxTuples::gauss
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -11,6 +17,8 @@ const char* LTForward::TARGET = "gauss target";
 const char* LTForward::MATRIX_ROW = "gauss matrix row";
 
 void CowichanLinuxTuples::gauss(Matrix matrix, Vector target, Vector solution) {
+
+	std::cout << "gauss" << std::endl;
 
 	// forward-elimination.
 	// forward puts the target and matrix into tuple space, and returns them.

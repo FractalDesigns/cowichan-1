@@ -1,8 +1,15 @@
+/**
+ * \file cowichan_lt/src/product.cpp
+ * \brief LinuxTuples product implementation.
+ * \see CowichanLinuxTuples::product
+ */
+
 #include <iostream>
 #include <cstdio>
 #include "product.hpp"
 
 void CowichanLinuxTuples::product(Matrix matrix, Vector candidate, Vector solution) {
+	std::cout << "product" << std::endl;
 	LTProduct app;
 	app.addInput(0, matrix);
 	app.addInput(1, candidate);

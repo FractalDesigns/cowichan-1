@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/outer.cpp
+ * \brief LinuxTuples outer implementation.
+ * \see CowichanLinuxTuples::outer
+ */
+
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -10,7 +16,7 @@ const char* LTOuter::MAX_DISTANCE = "outer max distance";
 const char* LTOuter::MATRIX_ENTRY = "outer matrix entry";
 
 void CowichanLinuxTuples::outer(PointVector points, Matrix matrix, Vector vector) {
-
+	std::cout << "outer" << std::endl;
 	// calculate the 2D bounds of the point cloud
 	LTOuter program;
 	program.addInput(0, points);

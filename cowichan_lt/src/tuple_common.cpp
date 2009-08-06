@@ -1,4 +1,10 @@
+/**
+ * \file cowichan_lt/src/tuple_common.cpp
+ * \brief Implementation of common tuple application logic.
+ */
+
 #include "tuple_common.hpp"
+#include <iostream>
 
 void TupleApplication::addInput(int name, void* data) {
 	inputs[name] = data;

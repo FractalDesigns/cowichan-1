@@ -9,6 +9,8 @@
 		void consumeInput();
 		void work();
 		void produceOutput();
+		static const char *REQUEST, *DONE;
+
 	};
 
 #endif
