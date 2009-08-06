@@ -40,19 +40,20 @@ void LTFrequency::consumeInput() {
 	// create a tuple synch lock
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	put_tuple(synchLock, &ctx);
+	destroy_tuple(synchLock);
 
 	// create a "rows reporting" tuple, so that we
 	// know when the computation should end.
 	tuple *rowsReporting = make_tuple("si", ROWS_DONE, 0);
 	put_tuple(rowsReporting, &ctx);
+	destroy_tuple(rowsReporting);
 
 	// communicate all of the rows
-	tuple *send = make_tuple("s?", REQUEST);
 	for (size_t y = 0; y < THRESH_NR; ++y) {
-		send->elements[1].data.i = y;
+		tuple *send = make_tuple("si", REQUEST, y);
 		put_tuple(send, &ctx);
+		destroy_tuple(send);
 	}
-
 
 }
 
@@ -63,6 +64,7 @@ void LTFrequency::work() {
 	// tuple templates
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	tuple *recv = make_tuple("s?", REQUEST);
+	tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
 
 	while (1) {
 
@@ -101,10 +103,10 @@ void LTFrequency::work() {
 			}
 
 			// record the number of rows reporting
-			tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
 			tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
 			rowsReporting->elements[1].data.i += 1;
 			put_tuple(rowsReporting, &ctx);
+			destroy_tuple(rowsReporting);
 
 		// leave the critical section
 		put_tuple(synchLock, &ctx);
@@ -117,7 +119,8 @@ void LTFrequency::produceOutput() {
 
 	// wait for all rows to be done.
 	tuple *allRowsReporting = make_tuple("si", ROWS_DONE, THRESH_NR);
-	get_tuple(allRowsReporting, &ctx);
+	destroy_tuple(get_tuple(allRowsReporting, &ctx));
+	destroy_tuple(allRowsReporting);
 
 	// figure out when we have to stop.
 	index_t retain = (index_t)(THRESH_PERCENT * THRESH_NC * THRESH_NR);
@@ -129,22 +132,34 @@ void LTFrequency::produceOutput() {
 		if (hist != NULL) {
 			retain -= hist->elements[2].data.i;
 		}
+		destroy_tuple(hist);
+		destroy_tuple(templateHist);
 		if (retain <= 0) {
 			retain = n;
 			break;
 		}
 	}
 
-	// TODO get rid of all thresh hist tuples
+	// get rid of all remaining "thresh hist" tuples
+	tuple *templateHist = make_tuple("s??", "thresh hist");
+	while (true) {
+		tuple *hist = get_nb_tuple(templateHist, &ctx);
+		if (!hist) break;
+		destroy_tuple(hist);
+
+	}
+	destroy_tuple(templateHist);
 
 	// retain now holds the threshold point.
 	// communicate this into the tuple space
 	tuple *threshPoint = make_tuple("si", POINT, retain);
 	put_tuple(threshPoint, &ctx);
+	destroy_tuple(threshPoint);
 
 	// remove the tuple synch lock from tuple space
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
-	get_tuple(synchLock, &ctx);
+	destroy_tuple(get_tuple(synchLock, &ctx));
+	destroy_tuple(synchLock);
 
 }
 
@@ -152,24 +167,18 @@ void LTFrequency::produceOutput() {
 
 void LTThresh::consumeInput() {
 
-	// tuple template
-	tuple *send = make_tuple("si", REQUEST);
-
 	// send off a request for each grid row.
 	for (size_t y = 0; y < THRESH_NR; ++y) {
-		send->elements[1].data.i = y;
+		tuple *send = make_tuple("si", REQUEST, y);
 		put_tuple(send, &ctx);
+		destroy_tuple(send);
 	}
-
-	// destroy the template tuple
-	destroy_tuple(send);
 
 }
 
 void LTThresh::work() {
 
 	tuple *recv = make_tuple("s?", REQUEST);
-	tuple *send = make_tuple("sis", DONE);
 
 	// grab pointers locally.
 	IntMatrix input = (IntMatrix) inputs[0];
@@ -188,7 +197,7 @@ void LTThresh::work() {
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		index_t y = gotten->elements[1].data.i;
-		send->elements[1].data.i = y;
+		tuple *send = make_tuple("sis", DONE, y, "");
 		BoolVector buffer = (BoolVector) NEW_VECTOR_SZ(bool, THRESH_NC);
 		send->elements[2].data.s.len = sizeof(bool) * THRESH_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
@@ -201,6 +210,7 @@ void LTThresh::work() {
 		// send off the new tuple and purge local memory of the one we got
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		delete[] buffer;
 
 	}
 
@@ -212,11 +222,8 @@ void LTThresh::work() {
 
 void LTThresh::produceOutput() {
 
-	// tuple template
-	tuple *recv = make_tuple("s??", DONE);
-
 	// grab output pointer locally.
-	IntMatrix output = (IntMatrix) outputs[0];
+	BoolMatrix output = (BoolMatrix) outputs[0];
 
 	// grab all of the threshold computations from the workers,
 	// in an unspecified order.
@@ -224,16 +231,17 @@ void LTThresh::produceOutput() {
 	while (computations > 0) {
 
 		// get the tuple and copy it into the matrix.
+		tuple *recv = make_tuple("s??", DONE);
 		tuple* received = get_tuple(recv, &ctx);
-		memcpy(
-			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, THRESH_NC),
-			received->elements[2].data.s.ptr,
-			received->elements[2].data.s.len);
+		BoolVector bv = (BoolVector) received->elements[2].data.s.ptr;
+		for (index_t x = 0; x < THRESH_NC; ++x) {
+			MATRIX_RECT_NC(output, received->elements[1].data.i, x, THRESH_NC) = bv[x];
+		}
+		destroy_tuple(recv);
+
+		// one more computation is complete.
 		computations--;
 
 	}
-
-	// destroy the template tuple
-	destroy_tuple(recv);
 
 }

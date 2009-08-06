@@ -70,7 +70,6 @@ void LTRandmat::consumeInput() {
 void LTRandmat::work() {
 
 	tuple *recv = make_tuple("s?", REQUEST);
-	tuple *send = make_tuple("sis", "randmat done", 0, "");
 	tuple *tmpInit = make_tuple("s?", "randmat state");
 	tuple *init = NULL;
 	IntVector initVector = NULL;
@@ -90,8 +89,8 @@ void LTRandmat::work() {
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		size_t row = gotten->elements[1].data.i;
-		send->elements[1].data.i = row;
-		int* buffer = (int*) malloc(sizeof(INT_TYPE) * RANDMAT_NC);
+		tuple *send = make_tuple("sis", "randmat done", row, "");
+		IntVector buffer = (IntVector) NEW_VECTOR_SZ(INT_TYPE, RANDMAT_NC);
 		send->elements[2].data.s.len = sizeof(INT_TYPE) * RANDMAT_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
@@ -104,11 +103,12 @@ void LTRandmat::work() {
 		// send off the new tuple and purge local memory of the one we got
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		destroy_tuple(send);
+		delete[] buffer;
 
 	}
 
 	// TODO destroy the template tuples; must send tuples for this
-//	destroy_tuple(send);
 //	destroy_tuple(recv);
 
 }

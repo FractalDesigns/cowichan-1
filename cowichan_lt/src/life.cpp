@@ -9,10 +9,19 @@
 #include "life.hpp"
 
 void CowichanLinuxTuples::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {
-	LTLife app;
-	app.addInput(0, matrixIn);
-	app.addOutput(0, matrixOut);
-	app.start(SERVER, PORT, NUM_WORKERS);
+
+	// overwrite the output matrix
+	memcpy(matrixOut, matrixIn,
+		sizeof(bool) * LIFE_NR * LIFE_NC);
+
+	// operate in-place on matrixOut the number of iterations we should.
+	for (size_t i = 0; i < LIFE_ITERATIONS; ++i) {
+		LTLife app;
+		app.addInput(0, matrixOut);
+		app.addOutput(0, matrixOut);
+		app.start(SERVER, PORT, NUM_WORKERS);
+	}
+
 }
 
 /**
@@ -64,7 +73,6 @@ void LTLife::consumeInput() {
 void LTLife::work() {
 
 	tuple *recv = make_tuple("s?", "life request");
-	tuple *send = make_tuple("sis", "life done");
 	
 	// grab pointers locally.
 	BoolMatrix input = (BoolMatrix) inputs[0];
@@ -78,8 +86,8 @@ void LTLife::work() {
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		size_t y = gotten->elements[1].data.i;
-		send->elements[1].data.i = y;
-		bool* buffer = (bool*) malloc(sizeof(bool) * LIFE_NC);
+		tuple *send = make_tuple("sis", "life done", y, "");
+		BoolVector buffer = (BoolVector) NEW_VECTOR_SZ(bool, LIFE_NC);
 		send->elements[2].data.s.len = sizeof(bool) * LIFE_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
@@ -100,19 +108,16 @@ void LTLife::work() {
 		// send off the new tuple and purge local memory of the one we got
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		destroy_tuple(send);
 
 	}
 
 	// TODO destroy the template tuples; must send tuples for this
-//	destroy_tuple(send);
 //	destroy_tuple(recv);
 
 }
 
 void LTLife::produceOutput() {
-
-	// tuple template
-	tuple *recv = make_tuple("s??", "life done");
 
 	// grab output pointer locally.
 	BoolMatrix output = (BoolMatrix) outputs[0];
@@ -123,6 +128,7 @@ void LTLife::produceOutput() {
 	while (computations > 0) {
 
 		// get the tuple and copy it into the matrix.
+		tuple *recv = make_tuple("s??", "life done");
 		tuple* received = get_tuple(recv, &ctx);
 		memcpy(
 			&MATRIX_RECT_NC(output, received->elements[1].data.i, 0, LIFE_NC),
@@ -130,11 +136,9 @@ void LTLife::produceOutput() {
 			received->elements[2].data.s.len);
 		computations--;
 		destroy_tuple(received);
+		destroy_tuple(recv);
 
 	}
-
-	// destroy the template tuple
-	destroy_tuple(recv);
 
 }
 

@@ -16,18 +16,14 @@ void CowichanLinuxTuples::mandel(IntMatrix matrix) {
 
 void LTMandel::consumeInput() {
 
-	// tuple template
-	tuple *send = make_tuple("si", "mandel request");
-
 	// send off a mandelbrot request for each grid row.
 	for (size_t y = 0; y < MANDEL_NR; ++y) {
+		tuple *send = make_tuple("si", "mandel request");
 		send->elements[1].data.i = y;
 		put_tuple(send, &ctx);
+		destroy_tuple(send);
 	}
 	
-	// destroy the template tuple
-	destroy_tuple(send);
-
 }
 
 int LTMandel::mandelCalc(real x, real y) {
@@ -59,7 +55,6 @@ int LTMandel::mandelCalc(real x, real y) {
 void LTMandel::work() {
 
 	tuple *recv = make_tuple("s?", "mandel request");
-	tuple *send = make_tuple("sis", "mandel done");
 	
 	// 2D delta between calculated points
 	real dX = MANDEL_DX / (MANDEL_NC - 1);
@@ -73,7 +68,7 @@ void LTMandel::work() {
 
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
-		send->elements[1].data.i = gotten->elements[1].data.i;
+		tuple *send = make_tuple("sis", "mandel done", gotten->elements[1].data.i, "");
 		int* buffer = (int*) malloc(sizeof(int) * MANDEL_NC);
 		send->elements[2].data.s.len = sizeof(int) * MANDEL_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
@@ -88,6 +83,7 @@ void LTMandel::work() {
 		// send off the new tuple and purge local memory of the one we gotten
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		destroy_tuple(send);
 
 	}
 

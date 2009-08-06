@@ -41,6 +41,7 @@ void LTWinnow::consumeInput() {
 	// create a tuple synch lock
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	put_tuple(synchLock, &ctx);
+	destroy_tuple(synchLock);
 
 	// tuple template.
 	tuple *send = make_tuple("si", REQUEST, 0);
@@ -55,6 +56,7 @@ void LTWinnow::consumeInput() {
 		send->elements[1].data.i = row;
 		put_tuple(send, &ctx);
 	}
+	destroy_tuple(send);
 
 }
 
@@ -64,6 +66,7 @@ void LTWinnow::work() {
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
 	tuple *recv = make_tuple("s?", REQUEST);
 	tuple *send = make_tuple("ssi", WEIGHTED_POINT, "", 0);
+	tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
 
 	// grab pointers locally.
 	IntMatrix matrix = (IntMatrix) inputs[0];
@@ -113,10 +116,10 @@ void LTWinnow::work() {
 			destroy_tuple(tmpCount);
 
 			// record the number of rows reporting
-			tuple *templateRowsReporting = make_tuple("s?", ROWS_DONE);
 			tuple *rowsReporting = get_tuple(templateRowsReporting, &ctx);
 			rowsReporting->elements[1].data.i += 1;
 			put_tuple(rowsReporting, &ctx);
+			destroy_tuple(rowsReporting);
 
 		// leave the critical section
 		put_tuple(synchLock, &ctx);
@@ -145,6 +148,7 @@ Point LTWinnow::nextWeightedPoint(INT_TYPE* order) {
 	// strip data out of the received tuple and destroy it.
 	Point pt = *((Point*) gotten->elements[1].data.s.ptr);
 	destroy_tuple(gotten);
+	destroy_tuple(recv);
 
 	// return the point.
 	return pt;
@@ -156,6 +160,7 @@ void LTWinnow::produceOutput() {
 	// wait for all rows to be computed.
 	tuple *rowsReporting = make_tuple("si", ROWS_DONE, WINNOW_NR);
 	destroy_tuple(get_tuple(rowsReporting, &ctx));
+	destroy_tuple(rowsReporting);
 
 	// grab output pointers locally.
 	PointVector points = (PointVector) outputs[0];
@@ -166,12 +171,16 @@ void LTWinnow::produceOutput() {
 	index_t count = tupleCount->elements[1].data.i;
 	if (count < WINNOW_N) {
 
+		std::cout << count << std::endl;
+
 		// error condition; flag caller.
 		bool* notEnoughPoints = (bool*) outputs[1];
 		*notEnoughPoints = true;
 		return;
 
 	}
+	destroy_tuple(tmpCount);
+	destroy_tuple(tupleCount);
 
 	// selection stride.
 	index_t stride = count / WINNOW_N;
@@ -184,19 +193,17 @@ void LTWinnow::produceOutput() {
 
 		// skip over as many points as we need to
 		for (index_t i = 0; i < stride; ++i) {
-			current = nextWeightedPoint(&order);
+			//current = nextWeightedPoint(&order);
 		}
 
 		// put one in the list
-		points[pos++] = current;
+		points[pos++] = Point(0, 0); // current;
 
 	}
 
 	// remove the tuple synch lock from tuple space
 	tuple *synchLock = make_tuple("s", SYNCH_LOCK);
-	get_tuple(synchLock, &ctx);
-
-	// clean-up local tuple memory.
+	destroy_tuple(get_tuple(synchLock, &ctx));
 	destroy_tuple(synchLock);
 
 }

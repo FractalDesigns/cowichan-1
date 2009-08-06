@@ -21,24 +21,18 @@ void CowichanLinuxTuples::half(IntMatrix matrixIn, IntMatrix matrixOut) {
 
 void LTHalf::consumeInput() {
 
-	// tuple template
-	tuple *send = make_tuple("si", REQUEST);
-
 	// send off a request for each grid row.
 	for (size_t y = 0; y < HALF_NR; ++y) {
-		send->elements[1].data.i = y;
+		tuple *send = make_tuple("si", REQUEST, y);
 		put_tuple(send, &ctx);
+		destroy_tuple(send);
 	}
 	
-	// destroy the template tuple
-	destroy_tuple(send);
-
 }
 
 void LTHalf::work() {
 
 	tuple *recv = make_tuple("s?", REQUEST);
-	tuple *send = make_tuple("sis", DONE);
 	
 	// grab pointers locally.
 	IntMatrix input = (IntMatrix) inputs[0];
@@ -52,7 +46,7 @@ void LTHalf::work() {
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		size_t y = gotten->elements[1].data.i;
-		send->elements[1].data.i = y;
+		tuple *send = make_tuple("sis", DONE, y, "");
 		IntVector buffer = NEW_VECTOR_SZ(INT_TYPE, HALF_NC);
 		send->elements[2].data.s.len = sizeof(INT_TYPE) * HALF_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
@@ -66,12 +60,12 @@ void LTHalf::work() {
 		// send off the new tuple and purge local memory of the one we got
 		put_tuple(send, &ctx);
 		destroy_tuple(gotten);
+		destroy_tuple(send);
 		delete[] buffer;
 
 	}
 
 	// TODO destroy the template tuples; must send tuples for this
-//	destroy_tuple(send);
 //	destroy_tuple(recv);
 
 }
