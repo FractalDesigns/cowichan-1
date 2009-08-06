@@ -1,0 +1,9 @@
+Throw out LinuxTuples and replace it with a better tuple-space implementation
+(good luck finding one!)
+ - Winnow only works with extremely small data sets (e.g. n around 10)
+   due to the problems with LinuxTuples at this point. 
+
+Evaluate performance concerns in thresh and winnow (large loops over potential
+tuples).
+
+
