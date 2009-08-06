@@ -12,6 +12,9 @@
 		int getNumPoints();
 		LTHull(size_t numLeft);
 
+		// public, so we can clean-up outside of LTHull's tuple app.
+		static const char* MASKED_POINT;
+
 	protected:
 
 		size_t numLeft;
@@ -33,7 +36,6 @@
 		static const char* MAX_POINT;
 
 		static const char* HULL_POINT;
-		static const char* MASKED_POINT;
 		static const char* NUM_POINTS;
 
 		static const char* FLAG_OUTPUT;

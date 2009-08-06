@@ -3,24 +3,24 @@
 #include <cmath>
 #include "hull.hpp"
 
-const char* REQUEST = "hull request";
-const char* REQUEST_MINMAX = "hull request min/max";
-const char* REQUEST_CROSS = "hull request cross-product";
+const char* LTHull::REQUEST = "hull request";
+const char* LTHull::REQUEST_MINMAX = "hull request min/max";
+const char* LTHull::REQUEST_CROSS = "hull request cross-product";
 
-const char* SYNCH_LOCK = "hull synch lock";
-const char* POINTS_DONE = "hull points reporting";
+const char* LTHull::SYNCH_LOCK = "hull synch lock";
+const char* LTHull::POINTS_DONE = "hull points reporting";
 
-const char* MIN_X_POINT = "hull minPoint";
-const char* MAX_X_POINT = "hull maxPoint";
-const char* MAX_CROSS = "hull max cross-product";
-const char* MAX_POINT = "hull furthest point";
+const char* LTHull::MIN_X_POINT = "hull minPoint";
+const char* LTHull::MAX_X_POINT = "hull maxPoint";
+const char* LTHull::MAX_CROSS = "hull max cross-product";
+const char* LTHull::MAX_POINT = "hull furthest point";
 
-const char* HULL_POINT = "hull point";
-const char* MASKED_POINT = "hull masked point";
-const char* NUM_POINTS = "hull # of points in convex hull";
+const char* LTHull::HULL_POINT = "hull point";
+const char* LTHull::MASKED_POINT = "hull masked point";
+const char* LTHull::NUM_POINTS = "hull # of points in convex hull";
 
-const char* FLAG_OUTPUT = "hull flag output";
-const char* FINISHED_MINMAX = "hull finshed min/max";
+const char* LTHull::FLAG_OUTPUT = "hull flag output";
+const char* LTHull::FINISHED_MINMAX = "hull finshed min/max";
 
 
 void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
@@ -50,7 +50,7 @@ void CowichanLinuxTuples::hull(PointVector pointsIn, PointVector pointsOut) {
 	}
 
 	// cleanup: delete all mask tuples
-	tuple* maskTemplate = make_tuple("s?", MASKED_POINT);
+	tuple* maskTemplate = make_tuple("s?", LTHull::MASKED_POINT);
 	while (true) {
 		tuple* masked = get_nb_tuple(maskTemplate, &ctx);
 		if (masked == NULL) break;
@@ -264,7 +264,7 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 
 	// perform the actual computation for this row (min/max)
 	bool first = true;
-	index_t minPoint, maxPoint;
+	index_t minPoint = -1, maxPoint = -1;
 	for (size_t pos = start; pos < stop; ++pos) {
 
 		// make sure we only look at non-masked points

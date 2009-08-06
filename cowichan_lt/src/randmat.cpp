@@ -5,11 +5,45 @@
 void CowichanLinuxTuples::randmat(IntMatrix matrix) {
 	LTRandmat app;
 	app.addOutput(0, matrix);
-	app.setup(); // create the first, seed column
 	app.start(SERVER, PORT, NUM_WORKERS);
 }
 
+inline INT_TYPE LTRandmat::next(INT_TYPE& current) const {
+	return (RANDMAT_A * current + RANDMAT_C) % RAND_M;
+}
+
+void LTRandmat::setup() {
+
+    IntVector state = NEW_VECTOR_SZ(INT_TYPE, RANDMAT_NR);
+
+    // generate first column values
+    VECTOR(state, 0) = RAND_SEED % RAND_M;
+    for (index_t row = 1; row < RANDMAT_NR; ++row) {
+      VECTOR(state, row) = next(VECTOR(state, row - 1));
+    }
+
+    // generate the A and C values for the next(k) method.
+    aPrime = RANDMAT_A;
+    cPrime = 1;
+    for (index_t i = 1; i < RANDMAT_NR; ++i) {
+      cPrime = (cPrime + aPrime) % RAND_M;
+      aPrime = (aPrime * RANDMAT_A) % RAND_M;
+    }
+    cPrime = (cPrime * RANDMAT_C) % RAND_M;
+
+    // emit the state vector to the tuple space.
+    tuple *init = make_tuple("ss", "randmat state");
+    init->elements[1].data.s.len = sizeof(INT_TYPE) * RANDMAT_NR;
+    init->elements[1].data.s.ptr = (char*) state;
+    put_tuple(init, &ctx);
+    destroy_tuple(init);
+
+}
+
 void LTRandmat::consumeInput() {
+
+	// create the first, seed column
+	setup();
 
 	// tuple template
 	tuple *send = make_tuple("si", "randmat request");
@@ -29,26 +63,32 @@ void LTRandmat::work() {
 
 	tuple *recv = make_tuple("s?", "randmat request");
 	tuple *send = make_tuple("sis", "randmat done");
+	tuple *tmpInit = make_tuple("s?", "randmat state");
+	tuple *init = NULL;
+	IntVector initVector = NULL;
 	
-	// grab output pointer locally.
-	IntMatrix output = (IntMatrix) outputs[0];
-
 	// satisfy randmat requests.
 	while (1) {
 
 		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
 
+		// grab a copy of the initializer, tuple if we haven't already
+		if (!init) {
+			init = read_tuple(tmpInit, &ctx);
+			initVector = (IntVector) init->elements[1].data.s.ptr;
+		}
+
 		// copy over row co-ordinate of the computation; create
 		// a buffer for the results of the computation.
 		size_t row = gotten->elements[1].data.i;
 		send->elements[1].data.i = row;
-		int* buffer = (int*) malloc(sizeof(int) * RANDMAT_NC);
-		send->elements[2].data.s.len = sizeof(int) * RANDMAT_NC;
+		int* buffer = (int*) malloc(sizeof(INT_TYPE) * RANDMAT_NC);
+		send->elements[2].data.s.len = sizeof(INT_TYPE) * RANDMAT_NC;
 		send->elements[2].data.s.ptr = (char*) buffer;
 
 		// perform the actual computation for this row.
-		buffer[0] = MATRIX_RECT_NC(output, row, 0, RANDMAT_NC);
+		buffer[0] = VECTOR(initVector, row);
 		for (int x = 1; x < RANDMAT_NC; ++x) {
 			buffer[x] = (aPrime * buffer[x-1] + cPrime) % RAND_M;
 		}
