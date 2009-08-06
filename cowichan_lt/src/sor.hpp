@@ -1,3 +1,9 @@
+/**
+ * \file cowichan_lt/src/sor.hpp
+ * \brief LinuxTuples successive over-relaxation header file.
+ * \see CowichanLinuxTuples::sor
+ */
+
 #ifndef __SOR_PRIVATE_HPP__
 #define __SOR_PRIVATE_HPP__
 
@@ -19,6 +25,11 @@
 
 		static const char* SOR_FLAG;
 
+		/**
+		 * Performs the sum portion of the SOR processor.
+		 * \param row the row to perform on.
+		 * \return the sum.
+		 */
 		real solutionSum(index_t row);
 
 	};

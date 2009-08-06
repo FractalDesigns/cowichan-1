@@ -10,7 +10,7 @@
  */
 int main(int argc, char* argv[]) {
 	Cowichan* linuxTuples = new CowichanLinuxTuples();
-	linuxTuples->main(argc, argv, false, false);
+	linuxTuples->main(argc, argv, false, true);
 	return 0;
 }
 

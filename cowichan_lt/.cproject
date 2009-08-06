@@ -35,13 +35,15 @@
 <option id="gnu.c.compiler.exe.debug.option.debugging.level.697732835" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.370495000" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1208583825" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
+<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1208583825" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
+<option id="gnu.c.link.option.shared.260537404" superClass="gnu.c.link.option.shared"/>
+</tool>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.62246633" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
-<option id="gnu.cpp.link.option.paths.927308399" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<option id="gnu.cpp.link.option.paths.927308399" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/linuxtuples-1.03}&quot;"/>
 </option>
-<option id="gnu.cpp.link.option.shared.1653039376" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
-<option id="gnu.cpp.link.option.libs.1130893169" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<option id="gnu.cpp.link.option.shared.1653039376" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
+<option id="gnu.cpp.link.option.libs.1130893169" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 <listOptionValue builtIn="false" value="linuxtuples"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2051334843" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
@@ -597,7 +599,7 @@
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1974066613" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
 <option id="gnu.cpp.compiler.exe.release.option.optimization.level.40379171" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.exe.release.option.debugging.level.146311148" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.include.paths.2030071487" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<option id="gnu.cpp.compiler.option.include.paths.2030071487" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/linuxtuples-1.03}&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.878600871" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -609,11 +611,11 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1801208752" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.219235789" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
-<option id="gnu.cpp.link.option.paths.823716904" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+<option id="gnu.cpp.link.option.paths.823716904" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/linuxtuples-1.03}&quot;"/>
 </option>
-<option id="gnu.cpp.link.option.shared.1956030325" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
-<option id="gnu.cpp.link.option.libs.826706909" superClass="gnu.cpp.link.option.libs" valueType="libs">
+<option id="gnu.cpp.link.option.shared.1956030325" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
+<option id="gnu.cpp.link.option.libs.826706909" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 <listOptionValue builtIn="false" value="linuxtuples"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.116281939" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">

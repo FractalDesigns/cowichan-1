@@ -128,6 +128,8 @@ void LTHull::consumeInput() {
  */
 void LTHull::split(const index_t p1, const index_t p2, index_t *order) {
 
+	std::cout << "split " << p1 << "," << p2 << std::endl;
+
 	// compute the signed distances from the line for each point
 	index_t maxPoint;
 	real maxCross;
@@ -201,7 +203,7 @@ void LTHull::computeMinMax(index_t *minPoint, index_t *maxPoint) {
 	put_tuple(pointsReporting, &ctx);
 
 	// tuple template.
-	tuple *send = make_tuple("ssiiii", REQUEST, REQUEST_MINMAX);
+	tuple *send = make_tuple("ssiiii", REQUEST, REQUEST_MINMAX, 0, 0, 0, 0);
 
 	// split points, based on a cluster size of the square-root of the
 	// number of points given.
@@ -239,6 +241,8 @@ void LTHull::work() {
 
 	// TODO later we can make it so we don't have to kill workers
 	while (true) {
+
+		std::cout << "here" << std::endl;
 
 		// block until we receive a tuple.
 		tuple* gotten = get_tuple(recv, &ctx);
@@ -311,6 +315,7 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 			destroy_tuple(tupleMin);
 		}
 		tmpMin->elements[1].data.i = minPoint;
+		tmpMin->elements[1].tag = 'i';
 		put_tuple(tmpMin, &ctx);
 		destroy_tuple(tmpMin);
 
@@ -325,13 +330,15 @@ void LTHull::serviceMinMaxRequest(tuple* gotten) {
 			destroy_tuple(tupleMax);
 		}
 		tmpMax->elements[1].data.i = maxPoint;
+		tmpMax->elements[1].tag = 'i';
 		put_tuple(tmpMax, &ctx);
 		destroy_tuple(tmpMax);
 
 		// record the number of point clusters reporting
 		tuple *templatePointsReporting = make_tuple("s?", POINTS_DONE);
 		tuple *pointsReporting = get_tuple(templatePointsReporting, &ctx);
-		pointsReporting->elements[1].data.i++;
+		pointsReporting->elements[1].data.i += 1;
+		pointsReporting->elements[1].tag = 'i';
 		put_tuple(pointsReporting, &ctx);
 
 	// leave the critical section
@@ -406,7 +413,9 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 
 			// fill in tuple information
 			tmpPoint->elements[1].data.i = maxPoint;
+			tmpPoint->elements[1].tag = 'i';
 			tmpCross->elements[1].data.d = maxCross;
+			tmpCross->elements[1].tag = 'd';
 
 			// put in tuples and remove from local memory
 			put_tuple(tmpPoint, &ctx);
@@ -418,7 +427,8 @@ void LTHull::serviceCrossRequest(tuple* gotten) {
 		// record the number of point clusters reporting
 		tuple *templatePointsReporting = make_tuple("s?", POINTS_DONE);
 		tuple *pointsReporting = get_tuple(templatePointsReporting, &ctx);
-		pointsReporting->elements[1].data.i++;
+		pointsReporting->elements[1].data.i += 1;
+		pointsReporting->elements[1].tag = 'i';
 		put_tuple(pointsReporting, &ctx);
 
 	// leave the critical section

@@ -125,7 +125,10 @@ void LTWinnow::work() {
 
 }
 
-Point LTWinnow::nextWeightedPoint(tuple *recv, INT_TYPE* order) {
+Point LTWinnow::nextWeightedPoint(INT_TYPE* order) {
+
+	// tuple templates.
+	tuple *recv = make_tuple("s?i", WEIGHTED_POINT);
 
 	// Grab the next weighted point from tuple space.
 	tuple* gotten = NULL;
@@ -154,9 +157,6 @@ void LTWinnow::produceOutput() {
 	tuple *rowsReporting = make_tuple("si", ROWS_DONE, WINNOW_NR);
 	destroy_tuple(get_tuple(rowsReporting, &ctx));
 
-	// tuple templates.
-	tuple *recv = make_tuple("s?i", WEIGHTED_POINT);
-
 	// grab output pointers locally.
 	PointVector points = (PointVector) outputs[0];
 
@@ -184,11 +184,11 @@ void LTWinnow::produceOutput() {
 
 		// skip over as many points as we need to
 		for (index_t i = 0; i < stride; ++i) {
-			//current = nextWeightedPoint(recv, &order);
+			current = nextWeightedPoint(&order);
 		}
 
 		// put one in the list
-		points[pos++] = Point(0.0, 0.0);
+		points[pos++] = current;
 
 	}
 

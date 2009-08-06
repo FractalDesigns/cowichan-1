@@ -182,8 +182,8 @@ void LTNorm::work() {
 	// get the min/max points from the bounds computation
 	tuple *tmpMin = make_tuple("s?", MIN_POINT);
 	tuple *tmpMax = make_tuple("s?", MAX_POINT);
-	tuple *tupleMin = get_tuple(tmpMin, &ctx);
-	tuple *tupleMax = get_tuple(tmpMax, &ctx);
+	tuple *tupleMin = read_tuple(tmpMin, &ctx);
+	tuple *tupleMax = read_tuple(tmpMax, &ctx);
 	Point minPoint = *((Point*) tupleMin->elements[1].data.s.ptr);
 	Point maxPoint = *((Point*) tupleMax->elements[1].data.s.ptr);
 
