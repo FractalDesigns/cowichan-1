@@ -28,10 +28,25 @@
 		 */
 		Point nextWeightedPoint(INT_TYPE* order);
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * Request to perform computation on a matrix row.
+		 */
 		static const char* REQUEST;
+		/**
+		 * A weighted point in the tuple space.
+		 */
 		static const char* WEIGHTED_POINT;
+		/**
+		 * The number of weighted points in the tuple space.
+		 */
 		static const char* COUNT;
+		/**
+		 * The number of rows that have had their computation finish.
+		 */
 		static const char* ROWS_DONE;
 
 	};

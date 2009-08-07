@@ -10,6 +10,11 @@
 	#include "tuple_common.hpp"
 	#include "cowichan_lt.hpp"
 
+	/**
+	 * Performs a successive over-relaxation to solve a matrix
+	 * problem Ax = b. The solution is approximate, but it can be made
+	 * arbitrarily accurate. The computation is done in tuple space.
+	 */
 	class LTSor: public TupleApplication {
 	protected:
 

@@ -19,7 +19,16 @@
 		void consumeInput();
 		void work();
 		void produceOutput();
-		static const char *REQUEST, *DONE;
+
+		/**
+		 * A request to perform computation on a row of the matrix.
+		 */
+		static const char *REQUEST;
+
+		/**
+		 * Done with the halving shuffle.
+		 */
+		static const char *DONE;
 
 	};
 

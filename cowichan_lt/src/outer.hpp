@@ -20,10 +20,22 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * Request to compute for one vector.
+		 */
 		static const char* REQUEST;
 
+		/**
+		 * The maximum length of any vector.
+		 */
 		static const char* MAX_DISTANCE;
+		/**
+		 * An entry in the matrix, to be stored in the output.
+		 */
 		static const char* MATRIX_ENTRY;
 
 	};

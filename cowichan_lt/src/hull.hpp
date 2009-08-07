@@ -15,6 +15,14 @@
 	 */
 	#define NO_POINT -1
 
+	/**
+	 * Performs an iterative convex hull in tuple space.
+	 * Iterative convex hull means that the output contains the convex hull of
+	 * all points, followed by the convex hull of those points not on the first
+	 * convex hull, followed by the convex hull of those points not on the first
+	 * or second, etc. etc. until no points remain. Thus the iterative convex hull
+	 * can be seen as a spiralling shape, or a permutation of the input points.
+	 */
 	class LTHull: public TupleApplication {
 	public:
 

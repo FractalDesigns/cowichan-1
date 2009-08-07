@@ -22,9 +22,21 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * Number of rows computed for.
+		 */
 		static const char* ROWS_DONE;
+		/**
+		 * A request to compute a row.
+		 */
 		static const char* REQUEST;
+		/**
+		 * The breaking-point for the thresholding process.
+		 */
 		static const char* POINT;
 
 	};
@@ -41,9 +53,18 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * A request to compute a row.
+		 */
 		static const char* REQUEST;
-		static const char* DONE;
+		/**
+		 * The breaking-point for the thresholding process.
+		 */
 		static const char* POINT;
+		/**
+		 * Flagged when finished.
+		 */
+		static const char* DONE;
 
 	};
 

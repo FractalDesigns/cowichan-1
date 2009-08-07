@@ -22,9 +22,21 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * Number of points that have been processed.
+		 */
 		static const char* POINTS_DONE;
+		/**
+		 * The smallest point (in x and y) found
+		 */
 		static const char* MIN_POINT;
+		/**
+		 * The largest point (in x and y) found
+		 */
 		static const char* MAX_POINT;
 
 	};
@@ -40,7 +52,13 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * The smallest point (in x and y) found
+		 */
 		static const char* MIN_POINT;
+		/**
+		 * The largest point (in x and y) found
+		 */
 		static const char* MAX_POINT;
 
 	};

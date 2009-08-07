@@ -1,2 +1,2 @@
-g++ -Wall -m64 -fopenmp -O2 -D WIN64 -c ../cowichan/cowichan.cpp
-g++ -Wall -m64 -fopenmp -O2 -D WIN64 -o cowichan_openmp *.cpp cowichan.o
+g++ -Wall -m64 -Os -Iinclude -c ../cowichan/cowichan.cpp
+g++ -Wall -m64 -Os -llinuxtuples -Wno-write-strings -I../linuxtuples-1.03 -o cowichan_lt src/*.cpp cowichan.o

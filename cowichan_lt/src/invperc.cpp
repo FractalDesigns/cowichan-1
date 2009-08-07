@@ -7,6 +7,9 @@
 #include "cowichan_lt.hpp"
 #include <queue>
 
+/**
+ * Point that also stores matrix value at its given row and column.
+ */
 class PercPoint {
 public:
 

@@ -19,6 +19,13 @@
 		void consumeInput();
 		void work();
 		void produceOutput();
+
+		/**
+		 * Computes a part of the mandelbrot set.
+		 * \param x x co-ordinate to compute for.
+		 * \param y y co-ordinate to compute for.
+		 * \return the computed value at (x,y) on the mandelbrot set.
+		 */
 		int mandelCalc(real x, real y);
 	};
 

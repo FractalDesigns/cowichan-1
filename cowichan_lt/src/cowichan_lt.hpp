@@ -9,6 +9,9 @@
 
 // COWICHAN DEFINITIONS =====================================================//
 // aka. "inputs" to the toys, and chaining functions.
+/**
+ * The LinuxTuples implementation of the Cowichan problem set.
+ */
 class CowichanLinuxTuples : public Cowichan {
 public:
 

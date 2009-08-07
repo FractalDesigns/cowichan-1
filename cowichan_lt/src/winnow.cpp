@@ -193,11 +193,11 @@ void LTWinnow::produceOutput() {
 
 		// skip over as many points as we need to
 		for (index_t i = 0; i < stride; ++i) {
-			//current = nextWeightedPoint(&order);
+			current = nextWeightedPoint(&order);
 		}
 
 		// put one in the list
-		points[pos++] = Point(0, 0); // current;
+		points[pos++] = current;
 
 	}
 

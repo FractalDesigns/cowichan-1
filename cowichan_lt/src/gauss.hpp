@@ -21,11 +21,26 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Number of rows computed.
+		 */
 		static const char* ROWS_DONE;
+		/**
+		 * Is forward-elimination complete?
+		 */
 		static const char* FORWARD_DONE;
+		/**
+		 * A matrix row computation request.
+		 */
 		static const char* REQUEST;
 
+		/**
+		 * The target vector stored in the tuple space.
+		 */
 		static const char* TARGET;
+		/**
+		 * One of the matrix rows, stored in the tuple space.
+		 */
 		static const char* MATRIX_ROW;
 
 	};
