@@ -13,19 +13,38 @@
 class PercPoint {
 public:
 
+  /**
+   * Location on the matrix.
+   */
   Point point;
+  /**
+   * Matrix to draw values from.
+   */
   IntMatrix matrix;
+  /**
+   * Number of columns in the given matrix.
+   */
   index_t nc;
 
 public:
 
+  /**
+   * Construct with matrix location.
+   * \param point place on the matrix to "claim"
+   */
   PercPoint(Point point): point(point) { }
 
-  // we want to extract lowest values.
+  /**
+   * we want to extract lowest values.
+   */
   bool operator<(const PercPoint &other) const {
     return value() > other.value();
   }
 
+  /**
+   * Figure out matrix value at the point's position.
+   * \return the value of the given matrix at this position.
+   */
   INT_TYPE value() const {
     return MATRIX_RECT(matrix, (index_t)point.y, (index_t)point.x);
   }

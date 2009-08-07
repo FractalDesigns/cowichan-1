@@ -20,8 +20,17 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * The number of differences already accomplished.
+		 */
 		static const char* ELEMENTS_DONE;
+		/**
+		 * The maximum difference found, so far.
+		 */
 		static const char* MAX_DIFF;
 
 	};

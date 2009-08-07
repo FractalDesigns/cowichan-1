@@ -120,11 +120,9 @@ void LTHull::consumeInput() {
 
 /**
  * Compute hull on one side of the splitting line.
- * @param pointsIn hull input points.
- * @param n number of input points.
- * @param pointsOut hull output points.
- * @param p1 boundary point #1.
- * @param p2 boundary point #2.
+ * \param p1 boundary point #1.
+ * \param p2 boundary point #2.
+ * \param order the ordering number of the next hull point to emit.
  */
 void LTHull::split(const index_t p1, const index_t p2, index_t *order) {
 

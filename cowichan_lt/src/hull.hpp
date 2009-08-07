@@ -33,37 +33,82 @@
 
 		/**
 		 * Constructor.
-		 * \param numLeft the number of points left out of the original batch.
+		 * \param numLeft the number of points left unmasked in the input.
 		 */
 		LTHull(size_t numLeft);
 
-		// public, so we can clean-up outside of LTHull's tuple app.
+		/**
+		 * The index of a point that is masked off (i.e. already selected) in the input.
+		 * This is public so we can access it from CowichanLinuxTuples::hull(...).
+		 */
 		static const char* MASKED_POINT;
 
 	protected:
 
+		/**
+		 * The number of points left unmasked in the input.
+		 */
 		size_t numLeft;
 
 		void consumeInput();
 		void work();
 		void produceOutput();
 
+		/**
+		 * Generic request for work to be done.
+		 */
 		static const char* REQUEST;
+		/**
+		 * Specific work: min-max request over a length of points.
+		 */
 		static const char* REQUEST_MINMAX;
+		/**
+		 * Specific work: cross-product request over a length of points.
+		 */
 		static const char* REQUEST_CROSS;
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * The number of points that have been computed for.
+		 */
 		static const char* POINTS_DONE;
 
+		/**
+		 * The point with lowest x value, unmasked.
+		 */
 		static const char* MIN_X_POINT;
+		/**
+		 * The point with highest x value, unmasked.
+		 */
 		static const char* MAX_X_POINT;
+		/**
+		 * The cross product value of the "furthest" point.
+		 */
 		static const char* MAX_CROSS;
+		/**
+		 * The "furthest" point found.
+		 */
 		static const char* MAX_POINT;
 
+		/**
+		 * A point on the hull, ordered.
+		 */
 		static const char* HULL_POINT;
+		/**
+		 * The number of points in this convex hull.
+		 */
 		static const char* NUM_POINTS;
 
+		/**
+		 * Should the output producer run now?
+		 */
 		static const char* FLAG_OUTPUT;
+		/**
+		 * The min-max process mandated has been finished.
+		 */
 		static const char* FINISHED_MINMAX;
 
 		/**

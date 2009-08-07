@@ -14,7 +14,11 @@
 	class LTRandmat: public TupleApplication {
 	protected:
 
-		INT_TYPE aPrime, cPrime;
+		/**
+		 * A and C values to use for the next-K parallel randmat computation.
+		 */
+		INT_TYPE aPrime;
+		INT_TYPE cPrime;
 
 		void consumeInput();
 		void work();
@@ -32,6 +36,9 @@
 		 */
 		INT_TYPE next(INT_TYPE& current) const;
 
+		/**
+		 * Request for a grid row to be generated.
+		 */
 		static const char *REQUEST;
 
 	};

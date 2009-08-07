@@ -22,12 +22,27 @@
 		void work();
 		void produceOutput();
 
+		/**
+		 * Synchronization lock (critical section).
+		 */
 		static const char* SYNCH_LOCK;
+		/**
+		 * The number of rows done in the middle SOR section.
+		 */
 		static const char* ROWS_DONE;
 
+		/**
+		 * The vector of the solution in tuple space
+		 */
 		static const char* SOLUTION_VECTOR;
+		/**
+		 * The on-going sum of the solution.
+		 */
 		static const char* SOLUTION_SUM;
 
+		/**
+		 * Should we flag the output producer?
+		 */
 		static const char* SOR_FLAG;
 
 		/**
