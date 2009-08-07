@@ -15,9 +15,12 @@
 	protected:
 
 		/**
-		 * A and C values to use for the next-K parallel randmat computation.
+		 * A value to use for the next-K parallel randmat computation.
 		 */
 		INT_TYPE aPrime;
+		/**
+		 * C value to use for the next-K parallel randmat computation.
+		 */
 		INT_TYPE cPrime;
 
 		void consumeInput();
