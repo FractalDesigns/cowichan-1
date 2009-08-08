@@ -31,7 +31,6 @@ void CowichanMPI::mandel(IntMatrix matrix) {}
 void CowichanMPI::randmat(IntMatrix matrix) {}
 void CowichanMPI::half(IntMatrix matrixIn, IntMatrix matrixOut) {}
 void CowichanMPI::invperc(IntMatrix matrix, BoolMatrix mask) {}
-void CowichanMPI::thresh(IntMatrix matrix, BoolMatrix mask) {}
 void CowichanMPI::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {}
 void CowichanMPI::norm(PointVector pointsIn, PointVector pointsOut) {}
 void CowichanMPI::hull(PointVector pointsIn, PointVector pointsOut) {}

@@ -358,6 +358,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\thresh.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\winnow.cpp"
 				>
 			</File>
