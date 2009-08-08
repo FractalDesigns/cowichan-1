@@ -36,7 +36,6 @@ void CowichanMPI::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {}
 void CowichanMPI::norm(PointVector pointsIn, PointVector pointsOut) {}
 void CowichanMPI::hull(PointVector pointsIn, PointVector pointsOut) {}
 void CowichanMPI::outer(PointVector points, Matrix matrix, Vector vector) {}
-void CowichanMPI::gauss(Matrix matrix, Vector target, Vector solution) {}
 void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution) {}
 void CowichanMPI::product(Matrix matrix, Vector candidate, Vector solution) {}
 real CowichanMPI::vecdiff(Vector actual, Vector computed) {return 0.0;}
