@@ -6,6 +6,9 @@
 
 #include "cowichan_serial.hpp"
 
+/**
+ * Works only on positive input.
+ */
 void CowichanSerial::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   index_t* hist = NULL; // histogram

@@ -260,6 +260,9 @@ public:
 
 /*****************************************************************************/
 
+/**
+ * Works only on positive input.
+ */
 void CowichanTBB::thresh(IntMatrix matrix, BoolMatrix mask) {
   
   // get the maximum value in the matrix (need 0-that number of bins)

@@ -70,11 +70,10 @@
  * This module simulates the evolution of Conway's Game of Life, a
  * two-dimensional cellular automaton.
  * At each time step, this module must count the number of live (true)
- * neighbors of each cell, using both orthogonal and diagonal connectivity and
- * circular boundary conditions. The update rule is simple: if a cell has 3
- * live neighbors, or has 2 live neighbors and is already alive, it is alive in
- * the next generation. In any other situation, the cell becomes, or stays,
- * dead.
+ * neighbors of each cell, using both orthogonal and diagonal connectivity. The
+ * update rule is simple: if a cell has 3 live neighbors, or has 2 live
+ * neighbors and is already alive, it is alive in the next generation. In any
+ * other situation, the cell becomes, or stays, dead.
  * \see Cowichan::life
  *
  * \subsection winnow_sec 7. Weighted Point Selection
@@ -844,15 +843,20 @@ public:
       for (c = 0; c < nc; c++) {
         std::cout << MATRIX_RECT(matrix, r, c) << "\t";
       }
-      std::cout << "\n";
+      std::cout << std::endl;
     }
-    std::cout << "\n";
+    std::cout << std::endl;
   }
 #else
   template <typename T>
   void print_rect_matrix(T* /* matrix */) { }
 #endif
 
+  /**
+   * DEBUGGING FUNCTION: Print a rectangular boolean matrix on std::cout.
+   * \param matrix matrix to print.
+   */
+  void print_bool_rect_matrix(BoolMatrix matrix);
 
   /**
    * DEBUGGING FUNCTION: Print a square matrix on std::cout.
@@ -868,9 +872,9 @@ public:
       for (c = 0; c < n; c++) {
         std::cout << MATRIX_SQUARE(matrix, r, c) << "\t";
       }
-      std::cout << "\n";
+      std::cout << std::endl;
     }
-    std::cout << "\n";
+    std::cout << std::endl;
   }
 #else
   template <typename T>
@@ -888,9 +892,9 @@ public:
     index_t r;
 
     for (r = 0; r < n; r++) {
-      std::cout << VECTOR(vector, r) << "\n";
+      std::cout << VECTOR(vector, r) << std::endl;
     }
-    std::cout << "\n";
+    std::cout << std::endl;
   }
 #else
   template <typename T>

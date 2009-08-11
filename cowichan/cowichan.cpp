@@ -33,12 +33,36 @@ void Cowichan::print_vector(PointVector points)
   index_t r;
 
   for (r = 0; r < n; r++) {
-    std::cout << "[" << points[r].x << ", " << points[r].y << "]\n";
+    std::cout << "[" << points[r].x << ", " << points[r].y << "]" << std::endl;
   }
-  std::cout << "\n";
+  std::cout << std::endl;
 }
 #else
 void Cowichan::print_vector(PointVector /* points */) { }
+#endif
+
+#ifdef OUTPUT_DATA
+  void Cowichan::print_bool_rect_matrix(BoolMatrix matrix)
+  {
+    index_t r, c;
+
+    for (r = 0; r < nr; r++) {
+      for (c = 0; c < nc; c++) {
+        if (MATRIX_RECT(matrix, r, c))
+        {
+          std::cout << "x";
+        }
+        else
+        {
+          std::cout << " ";
+        }
+      }
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+  }
+#else
+  void Cowichan::print_bool_rect_matrix(BoolMatrix /* matrix */) { }
 #endif
 
 /*****************************************************************************/
@@ -227,7 +251,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       invperc (matrix, mask);
       timeInfo(&start, &end, INVPERC);
-      print_rect_matrix<bool> (mask);
+      print_bool_rect_matrix (mask);
 
       // clean up
       delete [] matrix;
@@ -262,7 +286,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       thresh (matrix, mask);
       timeInfo(&start, &end, THRESH);
-      print_rect_matrix<bool> (mask);
+      print_bool_rect_matrix (mask);
 
       // clean up
       delete [] matrix;
@@ -297,7 +321,7 @@ void Cowichan::main (int argc, char* argv[], bool use_randmat, bool use_thresh)
       end = get_ticks ();
       life (matrixIn, matrixOut);
       timeInfo(&start, &end, LIFE);
-      print_rect_matrix<bool> (matrixOut);
+      print_bool_rect_matrix (matrixOut);
 
       // clean up
       delete [] matrixIn;
@@ -692,7 +716,7 @@ void Cowichan::chain(bool use_randmat, bool use_thresh)
     end = get_ticks ();
     thresh (matrix2, mask1);
     timeInfo(&start, &end, THRESH);
-    print_rect_matrix<bool> (mask1);
+    print_bool_rect_matrix (mask1);
   }
   else {
     // fill mask with false.
@@ -709,7 +733,7 @@ void Cowichan::chain(bool use_randmat, bool use_thresh)
     end = get_ticks ();
     invperc (matrix2, mask1);
     timeInfo(&start, &end, INVPERC);
-    print_rect_matrix<bool> (mask1);
+    print_bool_rect_matrix (mask1);
   }
 
   // STEP 4: life
@@ -729,7 +753,7 @@ void Cowichan::chain(bool use_randmat, bool use_thresh)
   end = get_ticks ();
   life (mask1, mask2);
   timeInfo(&start, &end, LIFE);
-  print_rect_matrix<bool> (mask2);
+  print_bool_rect_matrix (mask2);
 
   // clean up
   delete [] mask1;

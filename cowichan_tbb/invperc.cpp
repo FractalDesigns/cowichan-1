@@ -77,7 +77,7 @@ void CowichanTBB::invperc(IntMatrix matrix, BoolMatrix mask) {
   // "seed" with the middle value; start a priority queue.
   std::vector<PercPoint> points;
 
-  PercPoint initialPoint(Point((real) (nr / 2), (real) (nc / 2)));
+  PercPoint initialPoint(Point((real) (nc / 2), (real) (nr / 2)));
   initialPoint.matrix = matrix;
   initialPoint.nc = nc;
   points.push_back(initialPoint);

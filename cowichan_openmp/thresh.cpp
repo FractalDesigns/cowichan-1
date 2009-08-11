@@ -6,6 +6,9 @@
 
 #include "cowichan_openmp.hpp"
 
+/**
+ * Works only on positive input.
+ */
 void CowichanOpenMP::thresh(IntMatrix matrix, BoolMatrix mask) {
 
   index_t* hist = NULL; // histogram

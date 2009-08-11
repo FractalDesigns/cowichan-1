@@ -1,0 +1,39 @@
+\hypertarget{cowichan__mpi_8hpp}{
+\section{cowichan\_\-mpi/cowichan\_\-mpi.hpp File Reference}
+\label{cowichan__mpi_8hpp}\index{cowichan\_\-mpi/cowichan\_\-mpi.hpp@{cowichan\_\-mpi/cowichan\_\-mpi.hpp}}
+}
+Boost Message Passing Interface (MPI) implementation of \hyperlink{class_cowichan}{Cowichan} problems.  
+
+
+{\tt \#include \char`\"{}../cowichan/cowichan.hpp\char`\"{}}\par
+{\tt \#include $<$boost/mpi.hpp$>$}\par
+\subsection*{Classes}
+\begin{CompactItemize}
+\item 
+class \hyperlink{class_cowichan_m_p_i}{CowichanMPI}
+\begin{CompactList}\small\item\em Boost Message Passing Interface (MPI) implementation. \item\end{CompactList}\end{CompactItemize}
+\subsection*{Namespaces}
+\begin{CompactItemize}
+\item 
+namespace \hyperlink{namespacecowichan__mpi}{cowichan\_\-mpi}
+\begin{CompactList}\small\item\em Additional classes and functions specific to mpi implementation. \item\end{CompactList}
+
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+bool \hyperlink{namespacecowichan__mpi_bb7c07d8b23660efe06c7ee12d60bbdc}{cowichan\_\-mpi::get\_\-block} (const mpi::communicator \&world, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} lo, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} hi, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} $\ast$start, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} $\ast$end)
+\item 
+bool \hyperlink{namespacecowichan__mpi_413bf41c8bf73b560d1c16a8e5206e5f}{cowichan\_\-mpi::get\_\-block} (const mpi::communicator \&world, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} lo, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} hi, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} $\ast$start, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} $\ast$end, \hyperlink{cowichan_8hpp_5b04577d5d21124855deaad298595371}{index\_\-t} rank)
+\item 
+{\footnotesize template$<$class Archive $>$ }\\void \hyperlink{namespaceboost_1_1serialization_214544bc307816738f05752310ed7336}{boost::serialization::serialize} (Archive \&ar, \hyperlink{class_weighted_point}{WeightedPoint} \&p, const unsigned int version)
+\item 
+{\footnotesize template$<$class Archive $>$ }\\void \hyperlink{namespaceboost_1_1serialization_899888015920ed0de50a4ec4786a4d5d}{boost::serialization::serialize} (Archive \&ar, \hyperlink{class_point}{Point} \&p, const unsigned int version)
+\end{CompactItemize}
+
+
+\label{_details}
+\hypertarget{_details}{}
+\subsection{Detailed Description}
+Boost Message Passing Interface (MPI) implementation of \hyperlink{class_cowichan}{Cowichan} problems. 
+
