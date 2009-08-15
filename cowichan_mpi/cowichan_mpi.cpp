@@ -24,20 +24,10 @@ int main(int argc, char* argv[])
   mpi->main(argc, argv, false, true);
 
   return 0;
+
 }
 
-
-void CowichanMPI::mandel(IntMatrix matrix) {}
-void CowichanMPI::randmat(IntMatrix matrix) {}
-void CowichanMPI::half(IntMatrix matrixIn, IntMatrix matrixOut) {}
-void CowichanMPI::invperc(IntMatrix matrix, BoolMatrix mask) {}
-void CowichanMPI::life(BoolMatrix matrixIn, BoolMatrix matrixOut) {}
-void CowichanMPI::norm(PointVector pointsIn, PointVector pointsOut) {}
 void CowichanMPI::hull(PointVector pointsIn, PointVector pointsOut) {}
-void CowichanMPI::outer(PointVector points, Matrix matrix, Vector vector) {}
-void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution) {}
-void CowichanMPI::product(Matrix matrix, Vector candidate, Vector solution) {}
-real CowichanMPI::vecdiff(Vector actual, Vector computed) {return 0.0;}
 
 CowichanMPI::CowichanMPI(const mpi::communicator& world) : world(world)
 {

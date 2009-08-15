@@ -12,12 +12,36 @@
 #include <boost/mpi.hpp>
 namespace mpi = boost::mpi;
 
-
 /**
  * \brief Additional classes and functions specific to mpi implementation.
  */
 namespace cowichan_mpi
 {
+
+/**
+ * Initialise the random state.
+ * \param seed seed value
+ * \param width number of participants
+ * \param state per-thread state vector
+ * \param aPrime new multiplicative
+ * \param cPrime new additive value
+ */
+void
+randStateInit(
+  unsigned int		seed,			/* RNG seed */
+  int		width,			/* number of participants */
+  unsigned int	      * state,			/* per-thread state vector */
+  unsigned int	      * aPrime,			/* new multiplicative */
+  unsigned int	      * cPrime			/* new additive value */
+);
+
+/**
+ * Calculate a point in the mandelbrot set.
+ * \param x x co-ordinate in the mandelbrot set.
+ * \param y y co-ordinate in the mandelbrot set.
+ * \return lesser of number of iterations to diverge and maximum iterations.
+ */
+INT_TYPE mandel_calc (real x, real y);
 
 /**
  * Get a block (start, end) to work on in the range (lo, hi) for the current
