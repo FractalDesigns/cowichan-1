@@ -27,8 +27,6 @@ int main(int argc, char* argv[])
 
 }
 
-void CowichanMPI::hull(PointVector pointsIn, PointVector pointsOut) {}
-
 CowichanMPI::CowichanMPI(const mpi::communicator& world) : world(world)
 {
 }
