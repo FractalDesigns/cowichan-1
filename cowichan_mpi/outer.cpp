@@ -7,12 +7,12 @@
 #include "cowichan_mpi.hpp"
 void CowichanMPI::outer(PointVector points, Matrix matrix, Vector vector)
 {
-  index_t	lo, hi;		/* work controls */
-  index_t	r, c;			/* loop indices */
-  real		d;			/* distance */
+  index_t  lo, hi;    /* work controls */
+  index_t  r, c;      /* loop indices */
+  real    d;      /* distance */
   real d_max_local = -1.0; // maximum distance
   real d_max; // maximum distance
-  bool		work;			/* do useful work? */
+  bool    work;      /* do useful work? */
   index_t i, j;
 
   /* all elements except matrix diagonal */
@@ -45,10 +45,10 @@ void CowichanMPI::outer(PointVector points, Matrix matrix, Vector vector)
   // broadcast matrix, realVec
   for (i = 0; i < world.size (); i++) {
     if (get_block (world, 0, n, &lo, &hi, i)) {
-      broadcast (world, &vector[lo], hi - lo, i);
+      broadcast (world, &vector[lo], (int)(hi - lo), (int)i);
       // broadcast row by row since n may be smaller than MAXEXT
       for (j = lo; j < hi; j++) {
-        broadcast (world, &MATRIX(matrix, j, 0), n, i);
+        broadcast (world, &MATRIX(matrix, j, 0), (int)n, (int)i);
       }
     }
   }
@@ -60,6 +60,6 @@ void CowichanMPI::outer(PointVector points, Matrix matrix, Vector vector)
     }
   }
 
-  /* return */	
+  /* return */  
 }
 

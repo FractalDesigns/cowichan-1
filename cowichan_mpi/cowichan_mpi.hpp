@@ -26,14 +26,8 @@ namespace cowichan_mpi
  * \param aPrime new multiplicative
  * \param cPrime new additive value
  */
-void
-randStateInit(
-  unsigned int		seed,			/* RNG seed */
-  int		width,			/* number of participants */
-  unsigned int	      * state,			/* per-thread state vector */
-  unsigned int	      * aPrime,			/* new multiplicative */
-  unsigned int	      * cPrime			/* new additive value */
-);
+void randStateInit(INT_TYPE seed, index_t width, IntVector state,
+    INT_TYPE* aPrime, INT_TYPE* cPrime);
 
 /**
  * Calculate a point in the mandelbrot set.

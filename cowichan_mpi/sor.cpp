@@ -17,7 +17,7 @@ void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution)
   for (r = 0; r < n; r++){
     solution[r] = 1.0;
   }
-  dmax = 2 * SOR_TOLERANCE; // to forestall early exit
+  dmax = (real)(2 * SOR_TOLERANCE); // to forestall early exit
 
   // work
   work = get_block (world, 0, n, &lo, &hi);
@@ -36,8 +36,8 @@ void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution)
 
         // compute difference
         old = solution[r];
-        solution[r] = (1.0 - SOR_OMEGA) * old
-          + SOR_OMEGA * (target[r] - sum) / MATRIX(matrix, r, r);
+        solution[r] = (real)((1.0 - SOR_OMEGA) * old
+          + SOR_OMEGA * (target[r] - sum) / MATRIX(matrix, r, r));
         d = (real)fabs((double)(old - solution[r]));
         if (d > dmax_local) {
           dmax_local = d;
@@ -47,7 +47,7 @@ void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution)
     // broadcast next answer
     for (i = 0; i < world.size (); i++) {
       if (get_block (world, 0, n, &blo, &bhi, i)) {
-        broadcast (world, &solution[blo], bhi - blo, i);
+        broadcast (world, &solution[blo], (int)(bhi - blo), (int)i);
       }
     }
 
@@ -56,6 +56,6 @@ void CowichanMPI::sor(Matrix matrix, Vector target, Vector solution)
 
   }
 
-  /* return */	
+  /* return */  
 }
 

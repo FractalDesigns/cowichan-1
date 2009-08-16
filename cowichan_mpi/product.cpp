@@ -7,8 +7,8 @@
 #include "cowichan_mpi.hpp"
 void CowichanMPI::product(Matrix matrix, Vector vector, Vector result)
 {
-  index_t	lo, hi;		/* work controls */
-  index_t	r, c;		/* loop indices */ 
+  index_t  lo, hi;    /* work controls */
+  index_t  r, c;    /* loop indices */ 
   int rank;
 
   // work
@@ -26,7 +26,7 @@ void CowichanMPI::product(Matrix matrix, Vector vector, Vector result)
   // broadcast result
   for (rank = 0; rank < world.size (); rank++) {
     if (get_block (world, 0, nr, &lo, &hi, rank)) {
-      broadcast (world, &result[lo], hi - lo, rank);
+      broadcast (world, &result[lo], (int)(hi - lo), rank);
     }
   }
 

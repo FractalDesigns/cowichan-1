@@ -7,9 +7,9 @@
 #include "cowichan_mpi.hpp"
 real CowichanMPI::vecdiff(Vector left, Vector right)
 {
-  index_t	lo, hi;		/* work controls */
-  index_t	i;			/* loop index */
-  real		d;			/* difference */
+  index_t  lo, hi;    /* work controls */
+  index_t  i;      /* loop index */
+  real    d;      /* difference */
   real max_d;           // maximum difference
 
   max_d = (real) fabs(left[0] - right[0]);

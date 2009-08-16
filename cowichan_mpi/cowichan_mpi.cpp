@@ -47,7 +47,7 @@ bool get_block(const mpi::communicator& world, index_t lo, index_t hi,
   index_t size = world.size();
   
   index_t nl;    // number of elements
-  index_t num;	 // number to do
+  index_t num;   // number to do
   index_t extra; // spillage
 
   nl    = hi - lo;

@@ -6,9 +6,9 @@
 
 #include "cowichan_mpi.hpp"
 void CowichanMPI::mandel(IntMatrix matrix) {
-  int		r, c;			/* row and column indices */
-  real		dx, dy;			/* per-step deltas */
-  int row_count = 0;
+  index_t r, c; // row and column indices
+  real dx, dy; // per-step deltas
+  index_t row_count = 0;
   int i;
   mpi::status status;
   int source;
@@ -40,7 +40,8 @@ void CowichanMPI::mandel(IntMatrix matrix) {
       }
       // receive results
       for (r = 0; r < nr; r++) {
-        world.recv (mpi::any_source, r + 1, &MATRIX(matrix, r, 0), nc);
+        world.recv (mpi::any_source, (int)(r + 1), &MATRIX_RECT(matrix, r, 0),
+            (int)nc);
       }
     }
     else {
@@ -51,11 +52,12 @@ void CowichanMPI::mandel(IntMatrix matrix) {
         world.recv (0, WORK_RESPONSE_TAG, r);
         if (r != NO_MORE_WORK) {
           for (c = 0; c < nc; c++) {
-            MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (c * dx), mandelY0 + (r * dy));
+            MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (c * dx),
+                mandelY0 + (r * dy));
           }
           processed_rows++;
           // send results
-          world.isend (0, r + 1, matrix[r], nc);
+          world.isend (0, (int)(r + 1), &MATRIX_RECT(matrix, r, 0), (int)nc);
         }
         else {
           break;
@@ -67,14 +69,15 @@ void CowichanMPI::mandel(IntMatrix matrix) {
     }
     // broadcast matrix
     for (r = 0; r < nr; r++) {
-      broadcast (world, matrix[r], nc, 0);
+      broadcast (world, &MATRIX_RECT(matrix, r, 0), (int)nc, 0);
     }
   }
   else {
     // compute serially, as we only have one process
     for (r = 0; r < nr; r++) {
       for (c = 0; c < nc; c++) {
-        MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (c * dx), mandelY0 + (r * dy));
+        MATRIX_RECT(matrix, r, c) = mandel_calc (mandelX0 + (c * dx),
+            mandelY0 + (r * dy));
       }
     }
   }
