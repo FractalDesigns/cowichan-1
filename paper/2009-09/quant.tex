@@ -1,108 +1,74 @@
 \section{Quantifying the Importance of Usability\label{s:quant}}
 
 According to Amdahl's Law,
-the time $t$ required to execute a program has two components:
-$t_{seq}$, representing sequential operations that cannot be parallelized,
-and $t_{par}$, representing those operations which can.
-If we let $\sigma$ be the ``serial fraction'' of the program,
-so that $t_{seq} = {\sigma}t$ and $t_{par} = (1-{\sigma})t$,
-then the speedup which can be achieved using $P$ processors is:
+if $t(n)$ is an algorithm's running time on $n$ processors
+and $\sigma$ is the algorithm's serial fraction
+(i.e., the fraction of the algorithm that cannot be parallelized),
+then:
 \begin{eqnarray*}
-s(P)	& =	& \frac{t(1)}{t(P)}	\\
-	& =	& \frac{t}{{{\sigma}t} + {{(1-{\sigma})t}}/{P}}
+t(p) & = & {\sigma}t(1) + (1 - {\sigma})t(1)/p
 \end{eqnarray*}
-As $P{\rightarrow}{\infty}$,
-the potential speedup is bounded by $1/{\sigma}$.
+The speedup on $p$ processors is therefore:
+\begin{eqnarray*}
+s(p) & = & t(1)/t(p) \\
+     & = & t(1)/({\sigma}t(1) + (1 - {\sigma})t(1)/p) \\
+     & = & 1/({\sigma} + (1 - {\sigma})/p)
+\end{eqnarray*}
+As $p{\leftarrow}{\infty}$, the speedup is bounded by $1/{\sigma}$.
+This makes intuitive sense:
+if 10\% of an algorithm can't be parallelized,
+then even with infinite hardware,
+the program can only be made to run 10 times faster.
 
-What is not usually acknowledged is
-the influence of programming system usability on
-the potential speedup of sequential programs.
-As stated above, Amdahl's Law applies only to a single run of a program.
-In the real world, programs are first developed, and then run many times.
-If we let $T$ be the total running time of a program over its lifetime,
-$D_{seq}$ be the time required to develop the sequential components of a program,
-and $D_{par}$ be the time required to develop the parallel components
-(or parallelize the sequential components),
-then the lifetime speedup we can achieve is given by:
+But software doesn't just happen:
+it has to be written and debugged,
+and these activities usually aren't made faster by parallel hardware\footnote{In fact,
+most programmers believe that doing parallel programming is harder and slower than doing it sequentially.}.
+If we let $T$ and $S$ be the equivalents of $t$ and $s$ over the program's whole lifetime,
+and $D$ be its total development time,
+then:
 \begin{eqnarray*}
-S(P)	& =	& \frac{D_{seq} + T(1)}{D_{seq} + D_{par} + T(P)}	\\
-	& =	& \frac{D_{seq} + T}{D_{seq} + D_{par} + {{\sigma}T} + {{(1-{\sigma})T}}/{P}}
+T(p) & = & {\sigma}T(1) + (1 - {\sigma})t(1)/p + D
 \end{eqnarray*}
-Assume that we are parallelizing a ``dusty deck'',
-i.e.\ that the time $D_{seq}$ has already been invested.
-If we let $\phi = D_{par}/T$ be the ratio of parallelization time to total program runtime,
-then achievable speedup is limited by:
+The achievable \emph{lifetime} speedup is then:
 \begin{eqnarray*}
-S_{legacy}(P)	& =	& \frac{T}{D_{par} + {\sigma}T}		\\
-		& =	& \frac{1}{{\phi} + {\sigma}}
+S(\infty) & = & 1/({\sigma} + D/T(1))
 \end{eqnarray*}
-The time required to parallelize a program can therefore be seen
-as increasing that program's effective serial fraction.
+
+The ratio of development time to (sequential) running time is therefore as important to speedup
+as the serial fraction of the algorithm.
+Put another way,
+the time required to parallelize a program effectively increases the program's effective serial fraction.
 Unless parallelization time can be substantially reduced,
-massively-parallel computing is likely to remain attractive only in those cases in which:
+parallel programming will only be cost-effective when:
 \begin{itemize}
-\item	the application is trivially parallel (e.g.\ task-farming a rendering calculation);
+\item	the application is trivially parallel (e.g., task-farming a rendering calculation);
 \item	the expected total program runtime is very large
-	(i.e.\ the program is a package used extensively in a field
+	(i.e., the program is a package used extensively in a field
 	such as computational chemistry or vehicle crash simulation);
 	or
-\item	cost is not an obstacle (i.e.\ the customer is the NSA).
+\item	cost is not an obstacle (i.e., the customer is Disney or the NSA).
 \end{itemize}
+
+The aim of this problem suite is to capture enough information about $D$
+to allow competing parallel programming systems to be ranked and compared.
 
 \subsection{Previous Work\label{s:previous}}
 
-In a 1981 survey article \cite{b:psych-prog-survey}, B.~A.\ Sheil observed that:
-\begin{quote}
-As practiced by computer science,
-the study of programming is an unholy mixture of mathematics,
-literary criticism,
-and folklore.
-\end{quote}
-Little has changed since.
-Computer scientists pay lip service to the importance of usability,
-but are strangely reluctant to try to quantify it,
-particularly with respect to the tools they use themselves.
-Religious debates about the ``right'' first-year teaching language
-or the ``best'' GUI toolkit are common;
-systematic use of the experimental method is not.
-
-Most of the experiments which have been done have concentrated on ``programming in the small'' issues,
-such as readability and code-pattern recognition
-\cite{b:reverse-parsing-2,b:cloze-program-1,b:prog-comprehension-1}.
-The little work that has been done on ``programming in the large'' has been anecdotal,
-such as \cite{b:compare-ada-c-pascal}.
-This book presented various authors' impressions of Pascal, C, and Ada
-(before any complete Ada implementations existed).
-Its editors formulated a list of questions to use in comparing languages,
-but did not use it themselves.
-A modified version of this questionnaire,
-tailored for parallel programming languages,
-is given in Appendix~\ref{s:questions},
-and will be used as a guideline in our work.
-
 Two comparative efforts in parallel programming are \cite{b:babb-cases} and \cite{b:salishan}.
 The first presented implementations of a simple numerical quadrature program
-in more than a dozen different parallel languages
-in use on mid-1980s hardware.
+in more than a dozen different parallel languages used on mid-1980s hardware.
 The second presented implementations of
 the Salishan Problems---Hamming number generation,
 isomer enumeration,
 skyline matrix reduction,
 and a simple discrete event simulator---in
-C* \cite{b:dataparallel-c}, Occam~\cite{b:occam}, Ada~\cite{b:ada},
-and a variety of dataflow and functional languages.
-Both of these books convey the flavor of the languages they describe,
-but neither made any effort to compare languages or problem implementations directly.
+C*~\cite{b:dataparallel-c}, Occam~\cite{b:occam}, Ada~\cite{b:ada},
+and several dataflow and functional languages.
+Both books conveyed the flavor of the languages they describe,
+but neither compared languages or problem implementations directly.
 
-Inspired by the Salishan Problems,
-the first author developed a suite of seven problems \cite{b:cowichan-1}
-in order to test the limits of parallel programming systems.
-Individual problems were badly load-balanced,
-manipulated irregular pointer-based structures,
-and so on.
-Our experience implementing them was extremely valuable,
-as it uncovered many bugs in the programming system used,
-and revealed several shortcomings of the system's design.
-However,
-we also discovered that implementing each problem takes six to eight weeks,
-which we feel is prohibitive at this exploratory stage.
+More recently,
+Lutz has explored quantitative comparison of the relative productivity
+of different programming languages \cite{b:prechelt-languages,b:prechelt-platforms}.
+Our long-term aim is to replicate his work in the domain of parallel programming.
