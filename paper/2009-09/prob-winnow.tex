@@ -1,0 +1,30 @@
+\subsection{{\tt{winnow}}:
+	Weighted Point Selection
+	\label{s:toys-winnow}}
+
+This module converts a matrix of integer values
+to a vector of points,
+represented as $x$ and $y$ coordinates.
+Its inputs are:
+\begin{description}
+\item[{\tt{matrix}}:]
+	an integer matrix, whose values are used as masses.
+\item[{\tt{mask}}:]
+	a Boolean matrix showing which points are eligible for consideration.
+\item[{\tt{nrows, ncols}}:]
+	the number of rows and columns in the matrix.
+\item[{\tt{nelts}}:]
+	the number of points to select.
+\end{description}
+Its output is:
+\begin{description}
+\item[{\tt{points}}:]
+	a vector of $(x,y)$ points.
+\end{description}
+Each location where {\tt{mask}} is {\tt{true}}
+becomes a candidate point,
+with a weight equal to the integer value in {\tt{matrix}} at that location
+and $x$ and $y$ coordinates
+equal to its row and column indices.
+These candidate points are then sorted into increasing order by weight,
+and {\tt{nelts}} evenly-spaced points selected to create the result vector.

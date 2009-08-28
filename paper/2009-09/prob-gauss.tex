@@ -1,0 +1,24 @@
+\subsection{{\tt{gauss}}:
+	Gaussian Elimination
+	\label{s:toys-gauss}}
+
+This module solves a matrix equation $AX=V$ for
+a dense, symmetric, diagonally dominant matrix $A$
+and an arbitrary vector non-zero $V$
+using explicit reduction.
+(Matrices are required to be symmetric and diagonally dominant in order to guarantee that
+there is a well-formed solution to the equation.)
+Inputs are:
+\begin{description}
+\item[{\tt{matrix}}:]
+	the real matrix $A$.
+\item[{\tt{target}}:]
+	the real vector $V$.
+\item[{\tt{nelts}}:]
+	the number of values in each vector, and the size of the matrix along each axis.
+\end{description}
+Its output is:
+\begin{description}
+\item[{\tt{solution}}:]
+	a real vector containing the solution $X$.
+\end{description}

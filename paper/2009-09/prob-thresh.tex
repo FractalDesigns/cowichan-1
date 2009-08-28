@@ -1,0 +1,29 @@
+\subsection{{\tt{thresh}}:
+	Histogram Thresholding
+	\label{s:toys-thresh}}
+
+This module performs histogram thresholding on an image.
+Given an integer image $I$ and a target percentage $p$,
+it constructs a binary image $B$
+such that $B_{i,j}$ is set
+if no more than $p$ percent of the pixels in $I$ are brighter than $I_{i,j}$.
+The general idea is that an image's histogram should have 2 peaks,
+one centered around the average foreground intensity,
+and one centered around the average background intensity.
+This program attempts to set
+a threshold between the two peaks in the histogram
+and select the pixels above the threshold.
+This module's inputs are:
+\begin{description}
+\item[{\tt{matrix}}:]
+	the integer matrix to be thresholded.
+\item[{\tt{nrows, ncols}}:]
+	the number of rows and columns in the matrix and mask.
+\item[{\tt{percent}}:]
+	the minimum percentage of cells to retain.
+\end{description}
+Its output is:
+\begin{description}
+\item[{\tt{mask}}:]
+	a Boolean matrix filled with {\tt{true}} (showing a cell that is kept) or {\tt{false}} (showing a cell that is discarded).
+\end{description}

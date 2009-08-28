@@ -1,0 +1,228 @@
+\section{Comparing Parallel Programming Systems\label{s:questions}}
+
+This list of questions is a modified version of the one presented in \cite{b:compare-ada-c-pascal}.
+It is presented here as an organizational aid;
+when describing the PPS they have used,
+implementors are encouraged to use the order and terminology of this list where appropriate.
+We acknowledge that many of these questions will not apply to particular systems,
+and encourage implementors to ask questions which we have left out.
+
+\begin{enumerate}
+\item History and Philosophy
+  \begin{enumerate}
+  \item For whom and for what purpose was the language designed?
+  \end{enumerate}
+\item Syntax
+  \begin{enumerate}
+  \item Model implemented (Figure~\ref{f:taxonomy})
+  \item Class
+    \begin{enumerate}
+    \item library called from existing sequential language?
+    \item syntactic extensions to existing sequential language?
+    \item new language in Backus (Fortran/Algol/C) tradition?
+    \item new (non-Backus) language?
+    \end{enumerate}
+  \item Concurrency mechanisms adhere to same philosophy as original
+	language (where appropriate)?
+  \item Readability?  Syntactic consistency?  Conciseness?
+	(on an APL-to-Modula scale)
+  \item Common errors (e.g.\ confusing {\tt{=}} and {\tt{==}} in C)?
+  \end{enumerate}
+\item Type Philosophy and Data Types
+  \begin{enumerate}
+  \item What primitive types does the language support?
+  \item How are new types created?
+  \item What intrinsic operations are defined on user-defined types?
+  \item How strict is typing?
+	How is type conversion done?
+  \item Can type information be inspected at run-time?
+  \item What concurrent operations on aggregates
+	(such as lists and arrays) are intrinsic?
+	What kinds of concurrent aggregate operations can users define?
+  \item How are aggregates defined (e.g.\ by index set, by shape)?
+	Can new kinds of aggregates (e.g.\ templates for arrays)
+	be defined?
+  \item How strict is typing during communication?
+  \item What support is there for communication or manipulation
+	of data of non-scalar or non-intrinsic types?
+  \item Can structural information about aggregates
+	(e.g.\ number of elements in a set, dimension of an array)
+	be inspected at run-time?
+  \item What built-in support is there for object classes and inheritance?
+	For polymorphism?
+	For class (as opposed to instance) data?
+  \item Are functions first-class?
+  \item Are continuations supported?  Are they first-class?
+  \item Is dynamically-allocated memory supported?
+	Is it done automatically?
+	Is garbage-collection done automatically?
+	Can a program ever create a dangling pointer?
+	An alias?
+  \end{enumerate}
+\item Operators
+  \begin{enumerate}
+  \item What intrinsic operators are provided (brief list)?
+	How strongly do these type-check their arguments?
+  \item How are new operators defined?
+  \item Are the precedence rules straightforward?
+  \item Are side-effects/mutation allowed inside non-call expressions
+	(e.g.\ C's side-effecting \verb`i++` construct)?
+  \item Are their results platform-independent?
+  \item Are the results of intrinsic parallel operations reproducible?
+	Are they platform-independent?
+  \item Are heterogeneous operations on aggregates allowed
+	(e.g.\ every element of a list of polygons calculates its
+	center of mass)?
+	If so, how are these described, and how are they implemented?
+  \item Which of the operators in Section~\ref{s:cliche-ops} are supported?
+  \end{enumerate}
+\item Control Flow
+  \begin{enumerate}
+  \item What synchronization is automatically imposed during execution
+	(i.e.\ at what points can definite assertions about the state
+	of the running program be made)?
+  \item What control constructs does the language support?  Encourage?
+  \item How is concurrency expressed?  How structured is this mechanism?
+  \item Can the degree of concurrency be throttled (limited)?
+	Is this done by the system, or by the user?
+  \item How are exceptions handled/reported?
+	Is it different for intrinsic operations and user-defined operations?
+  \end{enumerate}
+\item Subroutines, Scope, and Modularization
+  \begin{enumerate}
+  \item How efficient is subroutine call compared to in-line execution
+	(i.e.\ how expensive are parameter passing and non-local control flow)?
+  \item How much information about parameters is available (required)
+	inside called subroutine
+	(e.g.\ whether object is shared with other processes or private
+	to executing process)?
+  \item Are side-effecting procedures allowed?
+  \item Can generic routines be written
+	(e.g.\ to work on different types or array shapes)?
+  \item Is there a restriction on return values (e.g.\ can a function return
+	any object which could be declared)?
+  \item Are there levels of scope?
+	If multiple levels are permitted, how are references to stale scopes
+	handled or prevented?
+	Can information for declarations (such as size) be inherited (dynamically)
+	from higher scopes?
+  \item What synchronization requirements (if any) are imposed during calls
+	(i.e.\ do all processes (in a group?) have to enter/exit the same subroutine
+	at the same time)?
+  \item What support is there for modularization?
+	For hiding implementation details?
+	For sharing such information?
+	For detecting and resolving name clashes?
+  \end{enumerate}
+\item Concurrent Programming Facilities
+  \begin{enumerate}
+  \item At what level(s) is the system concurrent?
+    \begin{enumerate}
+    \item implicit (the user shouldn't ask such things)
+    \item operational (e.g.\ data-parallel addition)
+    \item program counter (single executable, multiple states)
+    \item procedural (heterogeneous control parallelism)
+      \begin{enumerate}
+      \item one execution thread per address space
+      \item multiple threads per address space
+      \end{enumerate}
+    \end{enumerate}
+  \item What mutual exclusion and synchronization primitives are provided?
+  \item At what level(s) is data sharing visible to the programmer?
+    \begin{enumerate}
+    \item sequential consistency
+    \item sequential consistency within processor clusters
+    \item object-level consistency
+    \item there is no sharing
+    \end{enumerate}
+  \item What is the conceptual granularity of operations?
+    \begin{enumerate}
+    \item synchronization after atomic instruction
+    \item homogeneous operations with large-grain synchronization
+    \item heterogeneous operations with large-grain synchronization
+    \item completely asynchronous execution
+    \end{enumerate}
+  \item How do processes communicate data values?
+	How do they synchronize?
+	Are non-blocking operations (ones in which buffers might be
+	in a visibly volatile state) allowed?
+	How are they checked for termination?
+  \item If data are communicated explicitly,
+	how does the receiver choose what to accept?
+    \begin{enumerate}
+    \item by address (e.g.\ channel or port)
+    \item by pattern matching on contents
+    \item by explicit message tagging
+    \item by provision of a typed buffer
+    \item by provision of an untyped (byte-block) buffer
+    \item in FIFO order
+    \end{enumerate}
+  \item How do users specify the number of processors on which to run?
+	Must this be built into the program,
+	or can it be decided at run-time?
+	Is there support for executing on heterogeneous processors?
+  \item Can the user specify the mapping of processes to processors?
+	If so, how?
+	How tightly coupled are the mapping of processes to processors,
+	and the mapping of distributed data structures (if supported)?
+  \item Can the user specify the mapping of data structures to processors?
+        Can data structures be decomposed or partitioned?
+  \item What support is there for operations on groups of processes, such as:
+    \begin{enumerate}
+    \item broadcast
+    \item multicast (partial broadcast)
+    \item barrier synchronization
+    \end{enumerate}
+  \item Can arbitrary process groups be created,
+	or must they be structured in some way
+	(e.g.\ as logical mesh)?
+	Can operations involving disjoint groups be executed concurrently
+	(e.g.\ a broadcast within one group,
+	and a barrier within another)?
+  \end{enumerate}
+\item Input/Output
+  \begin{enumerate}
+  \item Is simple sequential (single-process) I/O simple to write?
+  \item Is concurrent I/O supported?  If so, which flavours:
+    \begin{enumerate}
+    \item single-reader-broadcast/collect-single-writer
+    \item homogeneously-sized or -strided segments
+    \item heterogeneously-sized or -strided segments
+    \item arbitrary independent operations
+    \end{enumerate}
+  \item What types can be read/written intrinsically?
+	E.g.\ can an entire record (or array, or list)
+	be read or written in a single operation?
+  \end{enumerate}
+\item Access to Routines in Other Languages and to the Hardware
+  \begin{enumerate}
+  \item Can subroutines written in other languages be called?
+        Can subroutines in this language be called from other languages?
+  \item Are there ways to access the run-time system directly,
+	or similar low-level facilities?
+  \item Is there high-level access to physical addresses and devices?
+  \end{enumerate}
+\item Practical Considerations
+  \begin{enumerate}
+  \item Are both batch and interactive processing supported?
+  \item How reliable and efficient are existing implementations?
+	How fast is it (i.e.\ how quickly does code compile and load)?
+	Is it supported (who fixes it if it breaks)?
+  \item Is there a standard for the system (from some standards organization)?
+  \item Is the documentation adequate? For whom (CS graduates, computer-literate
+	users, the general population)? Is training available?	Consulting?
+  \item How much code has been written (lines of code or weeks of effort)?
+        By whom (computer science undergraduates, professional engineers, etc.)?
+  \item How long does it take the compiler to generate a ``small'' executable
+        (such as {\tt{"hello, world"}})?
+  \item How large is a ``small'' executable?
+        How long does it take to load such an executable?
+  \end{enumerate}
+\item Supporting Tools
+  \begin{enumerate}
+  \item What is the development environment like?
+        Can code be developed on a workstation and then moved to a parallel platform?
+  \item Are there debugging aids, performance analysers, and management tools?
+  \item How much help do these really provide?
+  \end{enumerate}
+\end{enumerate}

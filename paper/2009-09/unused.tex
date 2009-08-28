@@ -1,0 +1,43 @@
+\section{A Critique of the C Implementation\label{s:critique}}
+
+This section is a critique of the ANSI~C reference implementation of the problem suite.
+It is intended to serve as a model for (self-)criticism of other programming systems.
+
+\begin{itemize}
+\item	C's support for multi-dimensional arrays (MDAs) is very weak.
+	There is no way to dynamically allocate an MDA in a single go---one must either
+	allocate a block of the same size as the desired array,
+	and then do indexing calculations by hand,
+	or allocate a vector of pointers to allocated vectors of pointers to{\ldots}to vectors holding data.
+	MDAs do not carry dimension information with them,
+	so it is impossible to determine the size of an array parameter within a function.
+	Finally,
+	C does not treat all axes of an array equally:
+	while it is trivial to take a slice out of a 2-dimensional array along the most-significant axis,
+	it is impossible to slice it along the other axis.
+\item	C does not distinguish between Boolean and integer types.
+	As a result,
+	the {\tt{matrix}} and {\tt{mask}} arguments to the invasion percolation problem
+	can be passed in reverse order without a type error.
+	Using {\tt{typedef}} to create a Boolean type name does not solve this
+	(at least, not in {\tt{gcc}} V2.5.8).
+\item	Union types cannot be safely initialized.
+	This complicated the implementation of the graphics interface,
+	where it would have been much more elegant to define a union type,
+	each of whose variants held parameter specifications for a single toy.
+	The code in the graphics module {\tt{gfx.c}} relies instead on arrays of {\tt{int}}s and {\tt{float}}s,
+	initializing some and filling other with don't-care values.
+	This is neither safe nor elegant.
+\item	Parameter values cannot be used in the initialization of local variables inside functions.
+	In particular,
+	it is not possible to create a local vector with a length specified by an input parameter.
+	Such a facility would be useful in the {\tt{winnow}} toy,
+	where we have instead allocated local temporaries of the maximum possible size.
+\item	The automatic conversion of floats to doubles across function calls can quite often be a nuisance.
+	For example, the ``fail()'' error-handling routine was buggy because
+	all \verb`real` arguments were being automatically converted to doubles,
+	but were being taken off the stack as floats.
+\item	no intrinsic notion of group ID/self ID in threads
+\item	packaging parameters for threads
+\item	pointers to array vs.\ arrays themselves (semantics of definition depends upon context)
+\end{itemize}

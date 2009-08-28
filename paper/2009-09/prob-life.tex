@@ -1,0 +1,41 @@
+\subsection{{\tt{life}}:
+	Game of Life
+	\label{s:toys-life}}
+
+\begin{figure}
+\begin{center}
+% {\epsfxsize=0.2\textwidth\framebox{\epsffile{fig/life1.ps}}}
+% {\epsfxsize=0.2\textwidth\framebox{\epsffile{fig/life2.ps}}}
+% {\epsfxsize=0.2\textwidth\framebox{\epsffile{fig/life3.ps}}}
+% {\epsfxsize=0.2\textwidth\framebox{\epsffile{fig/life4.ps}}}
+\end{center}
+\caption{Snapshots from the Game of Life\label{f:life}}
+\end{figure}
+
+This module simulates the evolution of Conway's Game of Life,
+a two-dimensional cellular automaton (Figure~\ref{f:life}).
+Its inputs are:
+\begin{description}
+\item[{\tt{matrix}}:]
+	a Boolean matrix representing the Life world.
+\item[{\tt{nrows, ncols}}:]
+	the number of rows and columns in the matrix.
+\item[{\tt{numgen}}:]
+	the number of generations to simulate.
+\end{description}
+Its output is:
+\begin{description}
+\item[{\tt{matrix}}:]
+	a Boolean matrix representing the world after simulation.
+\end{description}
+At each time step,
+this module must count the number of live ({\tt{true}}) neighbors
+of each cell,
+using both orthogonal and diagonal connectivity
+and circular boundary conditions.
+The update rule is simple:
+if a cell has 3 live neighbors,
+or has 2 live neighbors and is already alive,
+it is alive in the next generation.
+In any other situation,
+the cell becomes, or stays, dead.
