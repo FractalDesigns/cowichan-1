@@ -1,118 +1,54 @@
 \section{Introduction\label{s:intro}}
 
+In the late 1980s and early 1990s,
+many people (including the first author of this paper)
+were convinced that programming was about to ``go parallel'' in a big way.
+Those same predictions are being made again today:
+fans of GPUs, multicore CPUs, and cloud computing all claim
+that programmers can no longer afford to \emph{not} think about parallelism,
+and that we will have to rethink programming from the ground up
+to take advantage of all that shiny new hardware.
+
+But how?
+And how will we know if we're on the right track?
 Twenty years ago,
-Bal {\em{et~al.}\/} listed more than 300 parallel programming systems \cite{b:par-lang-survey}.
-A similar survey today could well uncover twice as many,
-but a poll of application programmers would probably find that
-only a handful are in general use.
+a survey by Bal \emph{et~al.} listed more than 300 parallel programming systems \cite{b:par-lang-survey}.
+Only a handful have survived,
+all of them very conservative extensions to, or libraries for, mainstream languages.
+If Erlang, Haskell, ML, F\#, or other exotic languages are to gain ground,
+their advocates must convince a sceptical audience
+that they actually can solve real problems more easily than existing alternatives.
 
-The reasons why so many of these PPSs are only used by their developers (if at all) are murkier.
-Part of the blame undoubtedly lies with the diversity of hardware,
-and the attendant lack of portability,
-alluded to above.
-A second reason is that an academic researcher's principal interest is developing new languages,
-not supporting existing ones.
-By the time a system is 90\% complete,
-its author is already thinking about its successor.
-Few application programmers are willing to invest effort porting codes
-to systems which are not properly supported,
-and liable to change or evaporate without notice.
-Third,
-many research groups have chosen to explore the potential of parallelism
-without consideration for compatibility with older languages.
-Application programmers must therefore face the prospect of completely re-writing their programs,
-rather than simply porting them.
-As the next section argues,
-this can obviate any performance that might be gained from parallelization.
-Finally,
-many PPSs simply cannot support the software engineering load of large applications.
-Many provide only a single global namespace,
-do not include I/O capabilities,
-require users to marshal and unmarshal data explicitly,
-or do not permit hardware to be timeshared.
-
-The net result is that many PPSs are never used for anything more complicated than
-generating the Mandelbrot Set,
-simulating the Game of Life,
-multiplying dense matrices,
-or finding all solutions to the $N$-queens problem for some small $N$.
-Lacking the feedback that comes from more demanding use,
-few systems are improvements over their predecessors
-in the way that successive versions of operating systems have improved on one another,
-or the languages in the Algol$\rightarrow$Modula-$n$ family
-have become both more powerful and more secure.
-Most applications programmers therefore choose to play it safe
-and stick to parallel programming's lowest common denominators:
-data-parallel Fortran,
-and message-passing libraries.
-
-The historical reasons for tolerating this situation are becoming less valid with each passing year.
-When only a few parallel computers existed,
-and these were of widely different types,
-software standardization simply didn't make sense.
-Similarly,
-when supercomputers were very expensive,
-the cost of software development seemed relatively smaller,
-and the requirement for maximum performance relatively greater,
-than in sequential computing.
-As \cite{b:social-limits-speed} points out,
-however, these arguments are losing force.
-Now,
-as in sequential computing,
-the first question is not ``How do I write programs for this machine?'',
-but ``Will this machine run my programs?''
-As microprocessor-based MIMD hardware comes to dominate massively-parallel computing,
-we see increasing emphasis on standards such as High-Performance Fortran (HPF) \cite{b:hpf-overview},
-and the Message-Passing Interface (MPI) \cite{b:mpi-overview}.
-
-But herein lies a danger.
-History shows that it is extremely difficult
-to displace a programming language or system once it becomes established.
-Cobol and MS-DOS are the most frequently cited examples,
-but many systems which should have been superceded long ago have managed
-not only to cling to life,
-but to grow in influence.
-(The fact that the mail signature
-``The last good thing written in C was Schubert's Ninth Symphony''
-can elicit smiles simply proves that even the truth can be funny.)
-Established systems evolve slowly, if at all.
-It would therefore seem that the best time to guarantee ourselves
-a good parallel programming paradigm is right now,
-before a large number of large applications are created and take on lives of their own.
-
-We therefore propose to use a set of simple programming problems to compare
-the usability of parallel programming systems.
+We propose using a suite of simple problems
+to compare the usability of parallel programming systems.
 Competent programmers, fluent in a specific system,
 will implement solutions to these problems and report their experiences
-in terms of development time, code size and clarity, and runtime efficiency.
-These problems are on the scale of the toy applications described several paragraphs ago
-both to keep implementation time low
-and because we feel that any PPS produced today ought to be able to support such simple programs.
-As the second author put it,
-``We're all sick of seeing these,
-but maybe if we all catch the disease at the same time we'll finally build up some immunity to it.''
-One significant innovation in this work is that
-we also require implementations of our suite to chain problems together,
-so that the output of one problem is the input to another.
-This will allow us to assess how well each PPS supports modularization and code re-use
-(or, more realistically, how much extra effort programmers must invest
-to achieve these goals when using a particular PPS).
+in terms of development time, code clarity, and runtime performance.
+These problems are individually very simple,
+but together cover a broad range of scientific domains.
 
-Section~\ref{s:corollary} motivates this work by showing
-how poor usability can limit the realizable parallelism in a program.
-Section~\ref{s:previous} surveys previous work on the comparison of parallel programming systems,
-while Section~\ref{s:method} outlines our choice of methods, and the constraints on our work.
-Section~\ref{s:toys} then presents the suite of problems we intend to use.
-In recognition of the original work done by Feo and others on
-the Salishan Problems~\cite{b:salishan}, this suite is called
-the Cowichan Problems\footnote{\noindent Pronounced {\em{Cow}\/}-i-chun.
-	Like Salishan, the word is a Northwest Coast Indian place name.}.
+One significant innovation in this work is that
+we also require implementors to chain applications together,
+so that the output of one is an input to another.
+This will allow us to assess how well each language or library supports modularization and re-use.
+It is also more realistic than having each application run in isolation,
+since large scientific codes are usually composed of modules
+that have different ``best'' data layouts and parallelization strategies.
+
+Section~\ref{s:quant} motivates this work by showing how poor usability reduces realizable performance.
+Section~\ref{s:method} outlines our method;
+Section~\ref{s:toys} presents our benchmark suite,
+Section~\ref{s:issues} discusses outstanding issues,
+and Section~\ref{s:concl} summarizes the project's current status.
 
 \subsection*{History and Acknowledgments}
 
 The first author originally developed this suite in the mid-1990s,
-inspired both by \cite{b:salishan} and by
-discussions with R.\ Bruce Irvin (then at the University of Wisconsin),
-Henri Bal (Vrije Universiteit, Amsterdam),
-and others.
+inspired by discussions with R.\ Bruce Irvin (then at the University of Wisconsin)
+and Henri Bal (Vrije Universiteit, Amsterdam),
+and by the work of Feo and others on the Salishan Problems~\cite{b:salishan}.
+In recognition of the latter,
+this suite is called
+the Cowichan\footnote{\noindent Pronounced {\em{Cow}\/}-i-chun.
+	Like Salishan, the word is a Northwest Coast native place name.} Problems.
 Early experiences were described in \cite{b:cowichan-ifip} and \cite{b:cowichan-orca}.

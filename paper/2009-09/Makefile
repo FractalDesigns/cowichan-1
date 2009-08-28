@@ -10,4 +10,4 @@ tidy :
 	@rm -f *~
 
 clean : tidy
-	@rm -f *.ps *.aux *.dvi *.log *.bbl *.blg
+	@rm -f *.pdf *.aux *.dvi *.log *.bbl *.blg
