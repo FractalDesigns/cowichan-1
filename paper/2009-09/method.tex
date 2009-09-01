@@ -91,10 +91,10 @@ it must at least use an intermediate model (which might be called \emph{slushy})
 in which the maximum size of individual problems is specified during compilation,
 but the actual size of a problem is only determined when the toy begins to execute.
 
-\subsection{Assessing Complexity\label{s:method-complex}}
+\subsection{Assessing Usability\label{s:method-assess}}
 
-There are at least two different ways in which usability could be compared.
-One would be to measure the performance achieved by an ``average'' programmer
+One way to compare the usability of parallel programming systems would be
+to measure the performance achieved by an ``average'' programmer
 as a function of time on each toy.
 By analogy with Hockney's $n_{1/2}$ measure \cite{b:hockney-perfparam},
 we could in principle find the value of $p_{1/2}$---the programming time required to achieve
@@ -103,18 +103,19 @@ half of a machine's peak performance\footnote{Note that
 	it is unlikely that the halfway mark would ever be reached.}
 for a particular combination of programming system and problem type.
 However,
-the number of implementors is likely to be too small for averages to be meaningful.
+the number of implementors required is much greater than the number we can reasonably expect.
 
 Alternatively,
 we could use code metrics
 to compare implementations of various toys.
 This is also dubious,
-as \cite{b:el-emam-metrics} has shown that code metrics do little more than measure lines of code.
+both because \cite{b:el-emam-metrics} has shown that most metrics do little more than measure lines of code,
+and because of the difficulty of comparing metric values between languages.
 
-We therefore intend to compare implementations through group consensus,
+The best we can hope for now is therefore qualitative consensus,
 e.g.,
-through interviews with implementors
-and by asking other programmers who are familiar with the base languages used
+to interview implementors about their experiences
+and ask other programmers who are familiar with the base languages used
 to read and comment on the parallel versions of the toys.
 We will also compare the length of code in parallel and sequential implementations,
 though we realize that this can exaggerate the impact of parallelization.
