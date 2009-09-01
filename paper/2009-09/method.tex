@@ -12,7 +12,7 @@ we refer to them as ``toys''.
 
 Our criteria for including toys are:
 
-\begin{enumerate}
+\begin{itemlist}
 
 \item	Each toy should require no more than an hour
 	to write and test in a well-supported sequential language.
@@ -50,7 +50,7 @@ Our criteria for including toys are:
 	should expect to be criticized for doing so;
 	see Section~\ref{s:toys-invperc} for more discussion of this.
 
-\end{enumerate}
+\end{itemlist}
 
 \subsection{Software Engineering Issues\label{s:method-softeng}}
 
@@ -135,33 +135,3 @@ This suite should also be useful for education,
 since toys will be small enough to be understood quickly,
 and parallelizing them should be a suitable classroom exercise
 in a senior undergraduate course on parallel computing.
-
-\subsection{Some Criticisms\label{s:method-criticism}}
-
-\noindent {\em{Why not use an existing benchmark suite for this purpose?}\/}
-
-Implementations of benchmark suites have usually been coded for absolute speed.
-They are not representative of ``normal'' practice,
-in which reasonable performance is the usual goal,
-and so are inappropriate for this work.
-In addition,
-most existing benchmark suites are too large to be implemented or ported quickly
-(e.g.\ SPEC~\cite{b:bench-over}),
-over-specified (e.g.\ the Livermore Loops~\cite{b:livermore-loops}),
-or concerned with a limited range of applications.
-Finally,
-most exist only in C or Fortran (or both);
-many interesting parallel programming systems are built on top of other languages.
-We do not want the effort required to translate several large programs
-to discourage researchers from participating in this exercise.
-
-\noindent {\em{Won't the results depend primarily on programmer ability?}\/}
-
-Yes,
-but no more than the results from performance benchmarks.
-A longer answer is that
-since we intend to measure the combination of code complexity and performance achieved,
-rather than performance as a function of development time,
-programmers will be allowed to revise and improve their implementations when and as desired.
-We hope this will encourage the evolutionary improvement seen in some online programming contests,
-e.g., \cite{b:gulley-contest}.

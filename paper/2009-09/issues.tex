@@ -12,7 +12,7 @@ The chained implementation of these toys executes in the order shown below.
 Because of choices in steps~\ref{e:chain-choice-1} and~\ref{e:chain-choice-2},
 there are four possible chained sequences.
 
-\begin{enumerate}
+\begin{itemlist}
 
 \item	An integer matrix $I$ with $r$ rows and $c$ columns is created
 	either by using the Mandelbrot Set algorithm (Section~\ref{s:toys-mandel})
@@ -48,7 +48,7 @@ there are four possible chained sequences.
 \item	The norm-1 distance between $V_{gauss}$ and $V_{sor}$ (i.e., the greatest element-wise absolute difference) is calculated.
 	This measures the agreement between the solutions found by the two methods.
 
-\end{enumerate}
+\end{itemlist}
 
 \subsection{Input and Output\label{s:issues-io}}
 
@@ -59,28 +59,12 @@ the chained version must be able to checkpoint intermediate results between toys
 Finally,
 implementors are strongly encouraged to include some means of visualizing the output or evolution of individual toys.
 
-The file formats used in the Cowichan Problems are shown in Figure~\ref{f:io-formats}.
-A file containing a vector begins with a single positive integer,
-which specifies the number of elements in the vector;
-a file containing a matrix begins with a pair of positive integers,
-which specify the number of rows and columns in the matrix respectively\footnote{Note
-that this means the first number is the Y extent, and the second number is the X extent.}.
-Elements of the vector or matrix then appear one per line,
-from least-indexed to greatest-indexed
-(and in row-major order for matrices).
-
-The formats described above are required to be human-readable.
-Implementations may also include I/O using ``raw'' files,
-i.e., binary data dumps rather than formatted ASCII,
-using whatever file formats are convenient.
+The file formats used in the Cowichan Problems are shown in Appendix~\ref{s:formats}.
+Files are required to be human-readable (i.e., to use ASCII text).
+Implementations may also include I/O using binary (non-ASCII) files
+in whatever file formats are convenient.
 This will allow programmers to demonstrate the ``natural'' I/O capabilities of particular systems
 which most probably be used for checkpointing intermediate results in real programs.
-
-\begin{figure}
-% \epsfxsize=0.75\textwidth
-% \begin{center}\mbox{\epsffile{fig/file-formats.eps}}\end{center}
-\caption{Cowichan File Formats\label{f:io-formats}}
-\end{figure}
 
 \subsection{Reproducibility\label{s:issues-reproduce}}
 
