@@ -1,6 +1,4 @@
-\subsection{{\tt{half}}:
-	Two-Dimensional Shuffle
-	\label{s:toys-half}}
+\subsection{{\tt{half}}: Two-Dimensional Shuffle\label{s:toys-half}}
 
 This module divides the values in a rectangular two-dimensional integer matrix into two halves along one axis,
 shuffles them,
@@ -26,14 +24,15 @@ e & g & f & h
 Note that how an array element is moved depends only on whether its location index is odd or even,
 not on whether its value is odd or even.
 
-The inputs to this module are:
+{\inputspec}
+
 \begin{description}
 \item[{\tt{matrix}}:]
 	an integer matrix.
-\item[{\tt{nrows, ncols}}:]
-	the number of rows and columns in the matrix.
 \end{description}
-Its output is:
+
+{\outputspec}
+
 \begin{description}
 \item[{\tt{matrix}}:]
 	an integer matrix containing shuffled values.

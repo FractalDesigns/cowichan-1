@@ -1,24 +1,23 @@
-\subsection{{\tt{randmat}}:
-	Random Number Generation
-	\label{s:toys-rng}}
+\subsection{{\tt{randmat}}: Random Number Generation\label{s:toys-rng}}
 
 This module fills a matrix with pseudo-random integers.
-The inputs to this module are:
+
+{\inputspec}
+
 \begin{description}
 \item[{\tt{nrows, ncols}}:]
-	the number of rows and columns in the matrix.
+	the number of rows and columns in the output matrix.
 \item[{\tt{s}}:]
 	the random number generation seed.
 \end{description}
-Its output is:
+
+{\outputspec}
+
 \begin{description}
 \item[{\tt{matrix}}:]
 	an integer matrix filled with random values.
 \end{description}
-Note that,
-as in all problems,
-the output is required to be independent of the number of processors used.
-Generating new seed values from the given seed,
-and running one copy of the random number generator
-on each processor,
-is therefore unlikely to qualify as a solution.
+
+If possible,
+the values produced should depend only on the size of the matrix and the seed,
+\emph{not} on the number of processors or threads used.

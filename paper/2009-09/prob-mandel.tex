@@ -1,26 +1,20 @@
-\subsection{{\tt{mandel}}:
-	Mandelbrot Set Generation
-	\label{s:toys-mandel}}
+\subsection{{\tt{mandel}}: Mandelbrot Set Generation\label{s:toys-mandel}}
 
-\begin{figure}
-% \begin{center}\framebox{\epsffile{fig/mandel.ps}}\end{center}
-\caption{The Mandelbrot Set\label{f:mandel}}
-\end{figure}
+This module generates the Mandelbrot Set for a specified region of the complex plane.
 
-This module generates the Mandelbrot Set
-for a specified region of the complex plane
-(Figure~\ref{f:mandel}).
-The inputs to this module are:
+{\inputspec}
+
 \begin{description}
 \item[{\tt{nrows, ncols}}:]
-	the number of rows and columns in the matrix.
+	the number of rows and columns in the output matrix.
 \item[{\tt{x0, y0}}:]
-	the real coordinates of the lower-left corner
-	of the region to be generated.
+	the real coordinates of the lower-left corner of the region to be generated.
 \item[{\tt{dx, dy}}:]
 	the extent of the region to be generated.
 \end{description}
-Its output is:
+
+{\outputspec}
+
 \begin{description}
 \item[{\tt{matrix}}:]
 	an integer matrix containing the iteration count at each point in the region.
@@ -38,9 +32,7 @@ The iteration limit used in this module is 150 steps;
 divergence occurs when $x^2 + y^2$ becomes 2.0 or greater.
 The integer value of each element of the matrix is
 the number of iterations done.
-Note that,
-as in all problems,
-the output is required to be
-independent of the number of processors used.
-This requires programmers to be careful about
-floating-point roundoff effects.
+
+If possible,
+the values produced should depend only on the size of the matrix and the seed,
+\emph{not} on the number of processors or threads used.

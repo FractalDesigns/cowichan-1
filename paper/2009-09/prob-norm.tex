@@ -1,20 +1,21 @@
-\subsection{{\tt{norm}}:
-	Point Location Normalization
-	\label{s:toys-norm}}
+\subsection{{\tt{norm}}: Point Location Normalization\label{s:toys-norm}}
 
 This module normalizes point coordinates so that all points lie within the unit square $[0{\ldots}1]{\times}[0{\ldots}1]$.
-Its inputs are:
+
+{\inputspec}
+
 \begin{description}
 \item[{\tt{points}}:]
 	a vector of point locations.
-\item[{\tt{nelts}}:]
-	the number of elements in the point vector.
 \end{description}
-Its output is:
+
+{\outputspec}
+
 \begin{description}
 \item[{\tt{points}}:]
 	a vector of normalized point locations.
 \end{description}
+
 If $x_{min}$ and $x_{max}$ are the minimum and maximum $x$ coordinate values in the input vector,
 then the normalization equation is:
 \[	x_{i}^{\prime} = \frac{x_i - x_{min}}{x_{max} - x_{min}}	\]
