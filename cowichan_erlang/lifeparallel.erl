@@ -1,21 +1,29 @@
--module(lifeparallel).
--export([life/4]).
--compile([export_all]).
+% Conway's Game of Life in Erlang, parallel.
 
--define(Nprocs, 5).
+-module(lifeparallel).
+-export([life/4, life/5]).
+-compile(export_all).
+
+-define(Nprocs, 4).
 
 
 % Top-level public function
 
+% Returns the result of iterating Conway's Game of Life Numgen times on Matrix.
+% Matrix is an Array2D value. Nrows is the height of Matrix, and Ncols is the
+% width of Matrix.
 life(Matrix, Nrows, Ncols, Numgen)
         when Nrows >=0, Ncols >=0, Numgen >= 0 ->
     lifemaster:main(Matrix, Numgen, ?Nprocs).
 
 
-
+% Computes the Game of Life with Nprocs processes.
 life(Matrix, Nrows, Ncols, Numgen, Nprocs)
         when Nrows >=0, Ncols >=0, Numgen >= 0 ->
     lifemaster:main(Matrix, Numgen, Nprocs).
+
+
+% Scrap functions
 
 glider() -> setcells(array2d:new(8,6,0), [{1,0},{2,1},{0,2},{1,2},{2,2}]).
 

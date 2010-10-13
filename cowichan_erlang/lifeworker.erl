@@ -42,11 +42,14 @@ unpadMatrix(Matrix) ->
     array2d:getRect(Matrix, 1, 1, Width - 2, Height - 2).
 
 
+% Receives the two neighbor PIDs.
 getNeighbors() ->
     receive
         {neighbors, LeftNeigh, RightNeigh} -> {LeftNeigh, RightNeigh}
     end.
 
+% Receives the left and right edges and returns a new matrix with that data
+% overwriting the old edges of the specified matrix.
 receiveEdges(Matrix) ->
     receive
         {leftEdge, LeftEdge} ->
@@ -57,6 +60,8 @@ receiveEdges(Matrix) ->
     end.
 
 
+% Iterates Game of Life Numgen times on the specified padded matrix, with the
+% specified neighbor PIDs.
 iterate(_, Matrix, 0) ->
     Matrix;
 iterate(Neighs={LeftNeigh, RightNeigh}, Matrix, Numgen) ->
@@ -67,45 +72,34 @@ iterate(Neighs={LeftNeigh, RightNeigh}, Matrix, Numgen) ->
     iterate(Neighs, NewMatrix, Numgen - 1).
 
 
+% Returns the result of computing one iteration of Life on the specified matrix,
+% but with the border cells are unchanged.
 compute(Matrix) ->
-    mapArray2D(Matrix,
-        fun(Mat, W, H, X, Y) when X =:= 0; X =:= W - 1; Y =:= 0; Y =:= H - 1
-               -> array2d:get(Mat, X, Y);
-           (Mat, _, _, X, Y)
-               -> Self = array2d:get(Mat, X, Y),
-                  Neighs = array2d:get(Mat, X - 1, Y - 1)
-                         + array2d:get(Mat, X - 1, Y + 0)
-                         + array2d:get(Mat, X - 1, Y + 1)
-                         + array2d:get(Mat, X + 0, Y - 1)
-                         + array2d:get(Mat, X + 0, Y + 1)
-                         + array2d:get(Mat, X + 1, Y - 1)
-                         + array2d:get(Mat, X + 1, Y + 0)
-                         + array2d:get(Mat, X + 1, Y + 1),
-                  lifeOrDeath(Self, Neighs)
-        end
-    ).
+    array2d:mapIndex(Matrix, computeCellFunction(array2d:width(Matrix), array2d:height(Matrix))).
+
+computeCellFunction(Width, Height) ->
+    fun(Mat, X, Y) when X =:= 0; X =:= Width - 1; Y =:= 0; Y =:= Height - 1 ->  % Skip updating the border cells, to prevent indexing out of bounds
+           array2d:get(Mat, X, Y);
+       (Mat, X, Y) ->
+           Self = array2d:get(Mat, X, Y),
+           Neighs = array2d:get(Mat, X - 1, Y - 1)
+                  + array2d:get(Mat, X - 1, Y + 0)
+                  + array2d:get(Mat, X - 1, Y + 1)
+                  + array2d:get(Mat, X + 0, Y - 1)
+                  + array2d:get(Mat, X + 0, Y + 1)
+                  + array2d:get(Mat, X + 1, Y - 1)
+                  + array2d:get(Mat, X + 1, Y + 0)
+                  + array2d:get(Mat, X + 1, Y + 1),
+           lifeOrDeath(Self, Neighs)
+    end.
 
 
+% Computes the next state of the given cell, given the state of the current cell
+% and the number of live neighbors it has. The first argument is whether the
+% current cell is alive (0 or 1). The second argument is the number of live
+% neighbors the cell has (0 to 8).
 lifeOrDeath(0, 3) -> 1;
 lifeOrDeath(0, _) -> 0;
 lifeOrDeath(1, 2) -> 1;
 lifeOrDeath(1, 3) -> 1;
 lifeOrDeath(1, _) -> 0.
-
-
-mapArray2D(Matrix, Fun) ->
-    Width = array2d:width(Matrix),
-    Height = array2d:height(Matrix),
-    mapArray2D(Matrix, array2d:new(Width, Height, 0), Width, Height, Fun, 0).
-
-mapArray2D(_, NewMatrix, _, Height, _, Height) ->
-    NewMatrix;
-mapArray2D(OldMatrix, NewMatrix, Width, Height, Fun, Y) ->
-    Temp = mapArray2DRow(OldMatrix, NewMatrix, Width, Height, Fun, 0, Y),
-    mapArray2D(OldMatrix, Temp, Width, Height, Fun, Y + 1).
-
-mapArray2DRow(_, NewMatrix, Width, _, _, Width, _) ->
-    NewMatrix;
-mapArray2DRow(OldMatrix, NewMatrix, Width, Height, Fun, X, Y) ->
-    Temp = array2d:set(NewMatrix, X, Y, Fun(OldMatrix, Width, Height, X, Y)),
-    mapArray2DRow(OldMatrix, Temp, Width, Height, Fun, X + 1, Y).
