@@ -1,5 +1,6 @@
 -module(multilists).
--export([zeroes/1, get/2, set/3, print/1, pmap/2, persistent_pmap/2]).
+-define(MAX_LOAD, 1000).
+-compile(export_all).
 
 % Multi-d arrays implemented using nested lists (indexing is from 1 right now, but should probably be changed)
 
@@ -25,10 +26,46 @@ list_to_str([X|Rem]) -> list_to_str(X) ++ list_to_str(Rem).
 
 print(Arr) -> io:format(list_to_str(Arr)).
 
+pmap_binary(Fun, Deeplist) -> Parent = self(),
+    Arr = lists:append(Deeplist),
+    Halfway = length(Arr) div 2,
+    Firsthalf = lists:sublist(Arr, Halfway),
+    Secondhalf = lists:sublist(Arr, Halfway+1, Halfway+1),
+    Firstkid = spawn(multilists, pmap_binary_f, [Parent, Fun, Firsthalf]),
+    Secondkid = spawn(multilists, pmap_binary_f, [Parent, Fun, Secondhalf]),
+    binary_gather([Firstkid, Secondkid]).
+    
+pmap_binary_f(Parent, Fun, Arr) when length(Arr) < ?MAX_LOAD -> Parent ! {self(), lists:map(Fun, Arr)};
+pmap_binary_f(Parent, Fun, Arr) ->
+    Halfway = length(Arr) div 2,
+    Firsthalf = lists:sublist(Arr, Halfway),
+    Secondhalf = lists:sublist(Arr, Halfway+1, Halfway+1),
+    Firstkid = spawn(multilists, pmap_binary_f, [self(), Fun, Firsthalf]),
+    Secondkid = spawn(multilists, pmap_binary_f, [self(), Fun, Secondhalf]),
+    Parent ! {self(), binary_gather([Firstkid, Secondkid])}.
+    
+binary_gather([A, B]) ->
+    receive
+        {A, Ret} -> receive {B, Ret2} -> Ret ++ Ret2 end;
+        {B, Ret2} -> receive {A, Ret} -> Ret ++ Ret2 end
+    end.
+
 % parallel 2-d map
 pmap(Fun, Arr) -> Parent = self(),
     Pids = lists:map(fun(Ele) -> spawn(fun() -> pmap_f(Parent, Fun, Ele) end) end, Arr),
     pmap_gather(Pids).
+    
+% parallel 2-d map with one process per cell
+pmap_one(Fun, Arr) -> Parent = self(),
+    Pids = lists:map(fun(Ele) -> spawn(fun() -> pmap_f_one(Parent, Fun, Ele) end) end, Arr),
+    pmap_gather(Pids).
+    
+
+pmap_f_one(Parent, Fun, Element) when is_list(Element) -> Subparent = self(),
+    Grandpids = lists:map(fun(Ele) -> spawn(fun() -> pmap_f_one(Subparent, Fun, Ele) end) end, Element), % Please forgive me for this pun
+    Parent ! {self(), pmap_gather(Grandpids)};
+
+pmap_f_one(Parent, Fun, Element) -> Parent ! {self(), Fun(Element)}.
     
 pmap_f(Parent, Fun, Element) -> Parent ! {self(), lists:map(Fun, Element)}.
 
@@ -37,7 +74,7 @@ pmap_gather([H|T]) ->
         {H, Ret} -> [Ret|pmap_gather(T)]
     end;
 pmap_gather([]) -> [].
-    
+
 % parallel 2-d map with process restarting
 persistent_pmap(Fun, Arr) -> Parent = self(),
     Pids = lists:map(fun(Ele) -> spawn(fun() -> pmap_f(Parent, Fun, Ele) end) end, Arr),
