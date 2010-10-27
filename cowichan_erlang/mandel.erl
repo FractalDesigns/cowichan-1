@@ -23,6 +23,10 @@ sequential_mandel(Nrows, Ncols, X0, Y0, Dx, Dy) ->
     Mat = init_matrix(Nrows, Ncols, X0, Y0, Dx, Dy),
     lists:map( fun(Sublist) -> lists:map(fun(X) -> mandel_number(X) end, Sublist) end, Mat).
     
+monitored_mandel(Nrows, Ncols, X0, Y0, Dx, Dy) ->
+    Mat = init_matrix(Nrows, Ncols, X0, Y0, Dx, Dy),
+    multilists:pmap_monitor(fun mandel:mandel_number/1, Mat).
+    
 parallel_mandel(Nrows, Ncols, X0, Y0, Dx, Dy) ->
     Mat = init_matrix(Nrows, Ncols, X0, Y0, Dx, Dy),
     multilists:pmap(fun mandel:mandel_number/1, Mat).
