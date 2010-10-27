@@ -11,9 +11,10 @@ main(Matrix, Numgen, Nprocs) ->
     Stride = (Width + Nprocs - 1) div Nprocs,  % Divide and round up. Note: Stride * Nprocs >= Width.
     
     % Spawn worker processes
+    process_flag(trap_exit, true),
     WorkerPids = mySpawn(Matrix, Stride, Numgen, 0, Nprocs, array:new(Nprocs + 2)),
-    LeftBlankPid = spawn(lifeworker, blankMain, [Height, Numgen, array:get(1, WorkerPids), leftEdge]),
-    RightBlankPid = spawn(lifeworker, blankMain, [Height, Numgen, array:get(Nprocs, WorkerPids), rightEdge]),
+    LeftBlankPid = spawn_link(lifeworker, blankMain, [Height, Numgen, array:get(1, WorkerPids), leftEdge]),
+    RightBlankPid = spawn_link(lifeworker, blankMain, [Height, Numgen, array:get(Nprocs, WorkerPids), rightEdge]),
     TempPids = array:set(0, LeftBlankPid, WorkerPids),
     AllPids = array:set(Nprocs + 1, RightBlankPid, TempPids),
     
@@ -32,7 +33,7 @@ mySpawn(Matrix, Stride, Numgen, ProcIndex, Nprocs, Pids) ->
     Height = array2d:height(Matrix),
     Offset = min(ProcIndex * Stride, Width),
     Slice = array2d:getRect(Matrix, Offset, 0, min(Stride, Width - Offset), Height),
-    Pid = spawn(lifeworker, main, [self(), ProcIndex, Slice, Numgen]),
+    Pid = spawn_link(lifeworker, main, [self(), ProcIndex, Slice, Numgen]),
     NewPids = array:set(ProcIndex + 1, Pid, Pids),
     mySpawn(Matrix, Stride, Numgen, ProcIndex + 1, Nprocs, NewPids).
 
@@ -44,5 +45,9 @@ myJoin(Nprocs, Stride, Matrix) ->
         {done, ProcIndex, Mat} ->
             Offset = min(ProcIndex * Stride, array2d:width(Matrix)),
             NewMatrix = array2d:setRect(Matrix, Offset, 0, Mat),
-            myJoin(Nprocs - 1, Stride, NewMatrix)
+            myJoin(Nprocs - 1, Stride, NewMatrix);
+        {'EXIT', _, normal} ->
+            myJoin(Nprocs, Stride, Matrix);
+        {'EXIT', _, Reason} ->
+            {error, Reason}
     end.
