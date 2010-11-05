@@ -27,6 +27,7 @@ main(MasterPid, ProcIndex, Matrix, Numgen) ->
     Neighs = getNeighbors(),
     PaddedMatrix = padMatrix(Matrix),
     NewMatrix = iterate(Neighs, PaddedMatrix, Numgen),
+    utils:randomDie(0.2),
     MasterPid ! {done, ProcIndex, unpadMatrix(NewMatrix)}.
 
 

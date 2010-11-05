@@ -5,6 +5,7 @@
 -compile(export_all).
 
 -define(Nprocs, 4).
+-define(NumgenPerSpawn, 5).
 
 
 % Top-level public function
@@ -14,13 +15,25 @@
 % width of Matrix.
 life(Matrix, Nrows, Ncols, Numgen)
         when Nrows >=0, Ncols >=0, Numgen >= 0 ->
-    lifemaster:main(Matrix, Numgen, ?Nprocs).
+    life(Matrix, Nrows, Ncols, Numgen, ?Nprocs).
 
 
 % Computes the Game of Life with Nprocs processes.
+life(Matrix, _, _, 0, _) ->
+    Matrix;
+
 life(Matrix, Nrows, Ncols, Numgen, Nprocs)
         when Nrows >=0, Ncols >=0, Numgen >= 0 ->
-    lifemaster:main(Matrix, Numgen, Nprocs).
+    Gen = min(Numgen, ?NumgenPerSpawn),
+    Self = self(),
+    spawn(fun() -> lifemaster:main(Matrix, Gen, Nprocs, Self) end),
+    receive
+        {life, error, _} ->
+            io:format("recover~n"),
+            life(Matrix, Nrows, Ncols, Numgen, Nprocs);
+        {life, NewMatrix} ->
+            life(NewMatrix, Nrows, Ncols, Numgen - Gen, Nprocs)
+    end.
 
 
 % Scrap functions

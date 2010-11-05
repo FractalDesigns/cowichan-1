@@ -1,11 +1,11 @@
 -module(lifemaster).
--export([main/3]).
+-export([main/4]).
 
 
 % Master function (spawns workers, hands out work, joins them, merges results)
 
-main(Matrix, Numgen, Nprocs) ->
-	% Get a few numbers
+main(Matrix, Numgen, Nprocs, Parent) ->
+    % Get a few numbers
     Width = array2d:width(Matrix),
     Height = array2d:height(Matrix),
     Stride = (Width + Nprocs - 1) div Nprocs,  % Divide and round up. Note: Stride * Nprocs >= Width.
@@ -23,7 +23,7 @@ main(Matrix, Numgen, Nprocs) ->
         || I <- lists:seq(1, Nprocs)],
     
     % Collect data from Nprocs processes
-    myJoin(Nprocs, Stride, array2d:new(Width, Height, -1)).
+    myJoin(Nprocs, Stride, array2d:new(Width, Height, -1), Parent).
 
 
 mySpawn(_, _, _, Nprocs, Nprocs, Pids) ->
@@ -38,16 +38,16 @@ mySpawn(Matrix, Stride, Numgen, ProcIndex, Nprocs, Pids) ->
     mySpawn(Matrix, Stride, Numgen, ProcIndex + 1, Nprocs, NewPids).
 
 
-myJoin(0, _, Matrix) ->
-    Matrix;
-myJoin(Nprocs, Stride, Matrix) ->
+myJoin(0, _, Matrix, Parent) ->
+    Parent ! {life, Matrix};
+myJoin(Nprocs, Stride, Matrix, Parent) ->
     receive
         {done, ProcIndex, Mat} ->
             Offset = min(ProcIndex * Stride, array2d:width(Matrix)),
             NewMatrix = array2d:setRect(Matrix, Offset, 0, Mat),
-            myJoin(Nprocs - 1, Stride, NewMatrix);
+            myJoin(Nprocs - 1, Stride, NewMatrix, Parent);
         {'EXIT', _, normal} ->
-            myJoin(Nprocs, Stride, Matrix);
+            myJoin(Nprocs, Stride, Matrix, Parent);
         {'EXIT', _, Reason} ->
-            {error, Reason}
+            Parent ! {life, error, Reason}
     end.
