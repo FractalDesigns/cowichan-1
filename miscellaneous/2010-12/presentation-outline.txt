@@ -10,11 +10,13 @@ What is Erlang?
 * Pattern matching
 * Dynamically typed
 * No global variables
+* Single assignment
 * Higher-order functions (not a highlight)
 * Major value types: Atoms, numbers, tuples, lists, PIDs
 * Asynchronous messaging (CSP-like)
 * No need to marshall messages
 * VM-based, distributed, heterogeneous
+* Typical uses (telecom, instant messaging
 
 What is Erlang not?
 * Shared memory communication
@@ -23,10 +25,18 @@ What is Erlang not?
 * String handling
 * Automatic distribution, load balance, fault recovery
 
+Fault Tolerance:
+* Our principal goal being to attempt fault tolerant parallel implementations of some Cowichan problems in Erlang
+* Erlang's approach to fault-tolerance
+* Stuff we tried, or thought about: timeouts, monitors, leases, Mnesia...
+* Our finding that problems that are easy to parallelize may or may not be easy to make fault tolerant
+* How do we characterize problems that are hard to make fault tolerant?
+
 Code examples?
 * Pattern matching and recursion
 * Spawning processes
 * Messaging
+* Scatter and gather, timeouts
 * Recovery?
 
 Case studies
@@ -39,11 +49,13 @@ Case studies
   * Imbalanced workload
   * Easy to recover from
   * Live demo?
-* Sorting with sample sort (Colin)
-  * (...Fill in details...)
+* Sorting with sample sort
+  * A distributed divide-and-conquer sorting algorithm with distinct stages
+  * Fault recovery options. Restarting the whole computation, or checkpointing after the first stage. Hard to do anything more fine-grained?
 
-Debugging Erlang (Colin)
-* (...Fill in details...)
+Debugging Erlang
+* Erlang comes with a nice visual debugger 
+* Makes it easy to visualize the flow of a program, to debug specific processes, inspect variables, etc.
 
 How does Erlang help HPC and distributed computing?
 * ... It doesn't?
