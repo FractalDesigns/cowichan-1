@@ -1,0 +1,25 @@
+Cowichan problems: The Cowichan Problems are a set of relatively simple computation problems. Examples include the Mandelbrot set, Gaussian elimination, Game of Life, and convex hull. They are considered as toy problems to test the programmer and the programming environment, to see how easy or hard it is to solve the problem. They can be used to show whether new programming paradigms, such as functional programming, are easier for the programmer and faster for the machine.
+
+Mandelbrot set: The problem is that given a grid of points, determine whether each point is in the Mandelbrot set or not, and return how many iterations it took to determine that. The amount of work in each iteration is constant, which is a few floating-point operations. The work per point is proportional to the number returned.
+
+Mandelbrot set, analysis: This problem was easy to solve and implement. In Erlang and C alike, the mathematical core of the code was about 10 lines or so. As far as parallel computation goes, the value of each point can be computed independently of all other points. So this naturally leads to a fork-join model, where a master process forks a number of workers, distributes the work, and collects a result from each of them. The workers don't communicate among each other. It is relatively easy to recover from worker failures because workers are not aware of each other; only the master is responsible for recovering the work. One slight challenge with the Mandelbrot set is that the workload is uneven. An easy way to solve this is to divide the computation not in big contiguous blocks, but in small stripes.
+
+Mandelbrot set, analysis, continued: One of the more difficult aspects of implementing Mandelbrot and the Game of Life in Erlang was the lack of 2D arrays in Erlang. We had to write our own modules to supply that high level abstraction of a 2D array.
+
+Performance compared to C: First off, let me show you this to establish the context. This is the computation of Mandelbrot on a 2000x2000 grid on a modern system, single-threaded. I wrote both implementations, C and Erlang, and neither one used clever tricks. The numbers for the graph show that C is more than 50x faster than Erlang for this kind of floating-point computation. So when you see the upcoming pure Erlang results, remember how much performance we lost already.
+
+Strong and weak scaling: We did two kinds of scaling tests: strong and weak scaling. In strong scaling, we keep the problem size fixed and increase the number of processors. The time should go down. In weak scaling, we increase the number of processors while proportionally increasing the number of computations in the problem. So the time should stay flat, ideally.
+
+Mandelbrot, strong scaling, 1 node: Here's the performance of Erlang Mandelbrot on a single SciNet GPC node. It has 8 processors, and 16 threads due to Hyper-Threading. We see that the performance levels off after 10 processors.
+
+Mandelbrot, strong scaling: Now here's strong scaling on 5 nodes, which is 40 processors. We only ran up to 8 Erlang processes per node, to avoid Hyper-Threading. Here's the same graph in terms of the speedup factor. Disappointingly, the speedup only goes up to 10. I haven't quite worked out the reason for that yet; it's probably a problem in my algorithm.
+
+Mandelbrot, weak scaling: Here is Mandelbrot under weak scaling. This should not be much of a surprise considering the previous graph, because the speedup factor does not keep up with the problem size increasing.
+
+Game of life, strong scaling: Here's the Game of Life under strong scaling. It falls short of the ideal by a lot. Here's the speedup graph. It looks very similar to the Mandelbrot one, levelling off at a speedup of 10.
+
+Game of life, weak scaling: Here's the weak scaling graph. It's about twice as worse as the Mandelbrot one.
+
+Erlang and C: One area which we haven't had a chance to explore is using Erland and C together to solve a problem. There are reasonable APIs to make Erlang and C interact with each other. So it's possible to solve a problem using Erlang's strengths combined with C's strengths. Erlang handles the process control signals, like spawning, making processes aware of each other like in the Game of Life, and detecting timeouts and faults. Then C is used for the heavy number crunching.
+
+Acknowledgements: Before we wrap up, I'd like to take a moment to thank the people who made this possible. First is the Erlang community for providing the Erlang package open source. Second is our mentors Greg Wilson and Jonathan Dursi. And finally, the CPU time provided by SciNet's GPC cluster.
