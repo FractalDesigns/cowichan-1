@@ -1,0 +1,2 @@
+Parallel programming is widely acknowledged to be more difficult than sequential programming. One reason for this is that parallel programming systems are more difficult to use than their sequential counterparts. In particular, few parallel programming systems can support the software engineering requirements of large applications. We intend
+to assess and compare the usability of a variety of parallel programming systems using a small suite of chained applications called the Cowichan Problems.
