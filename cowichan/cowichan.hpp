@@ -144,7 +144,9 @@
 #include "cowichan_defaults.hpp"
 
 // BASIC HEADERS ============================================================//
+#include <cstddef>
 #include <iostream>
+#include <unistd.h>
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
